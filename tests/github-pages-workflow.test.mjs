@@ -15,15 +15,13 @@ test("GitHub Pages disables Jekyll and publishes Astro dist to master root", () 
 
     const yaml = fs.readFileSync(pagesWorkflow, "utf8");
 
-    assert.match(yaml, /peaceiris\/actions-gh-pages/);
-    assert.match(yaml, /publish_branch:\s*master/);
-    assert.match(yaml, /keep_files:\s*true/);
     assert.match(yaml, /packages\/landing-page\/dist/);
-    assert.match(yaml, /enable_jekyll:\s*false/);
+    assert.match(yaml, /Merge dist into master root/);
+    assert.match(yaml, /git push/);
     assert.doesNotMatch(
         yaml,
-        /destination_dir:/,
-        "dist must merge to branch root for /stillmark/ project Pages URL"
+        /peaceiris\/actions-gh-pages/,
+        "peaceiris blocks master-to-master deploy"
     );
     assert.doesNotMatch(yaml, /jekyll-build-pages/);
 

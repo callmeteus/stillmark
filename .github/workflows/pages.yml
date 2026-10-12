@@ -27,6 +27,8 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -46,11 +48,22 @@ jobs:
               run: npm run verify -w @stillmark/landing-page
 
             - name: Merge dist into master root for Pages
-              uses: peaceiris/actions-gh-pages@v4
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: packages/landing-page/dist
-                  publish_branch: master
-                  keep_files: true
-                  enable_jekyll: false
-                  commit_message: "chore(t): atualiza arquivos estáticos do GitHub Pages"
+              run: |
+                  set -e
+                  DIST=packages/landing-page/dist
+                  cp "$DIST/index.html" .
+                  cp "$DIST/install.md" .
+                  cp "$DIST/.nojekyll" .
+                  rm -rf _astro pt-br
+                  cp -r "$DIST/_astro" .
+                  cp -r "$DIST/pt-br" .
+                  cp "$DIST"/sitemap-*.xml . 2>/dev/null || true
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add index.html install.md .nojekyll _astro pt-br sitemap-index.xml sitemap-0.xml
+                  if git diff --staged --quiet; then
+                    echo "No static site changes to publish"
+                  else
+                    git commit -m "chore(t): atualiza arquivos estáticos do GitHub Pages"
+                    git push
+                  fi

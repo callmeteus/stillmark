@@ -18,7 +18,7 @@ This repo uses **(1) + CI**.
 ## How this repository deploys
 
 1. **`.nojekyll`** at the **repository root** tells GitHub Pages **not to run Jekyll** on the published branch root.
-2. [`.github/workflows/pages.yml`](workflows/pages.yml) builds Astro and merges `packages/landing-page/dist` into **master root** (`index.html`, `_astro/`, `pt-br/`, …) with `keep_files: true` so the monorepo stays intact.
+2. [`.github/workflows/pages.yml`](workflows/pages.yml) builds Astro and commits `packages/landing-page/dist` outputs into **master root** (`index.html`, `_astro/`, `pt-br/`, …) via `git push` (not `peaceiris`, which forbids `master` → `master`).
 3. Pages can stay **Deploy from a branch → `master` → `/ (root)`** — the setting that was failing before is OK **after** `.nojekyll` is on `master`.
 
 Site URL: `https://callmeteus.github.io/stillmark/`
