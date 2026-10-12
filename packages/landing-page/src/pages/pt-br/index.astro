@@ -128,11 +128,16 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
 
         <section id="commands" class="page-section">
             <h2>{t.commands.title}</h2>
-            <p class="muted section-lead">{t.commands.intro}</p>
             <CommandReference
                 commandHeader={t.commands.tableCommand}
                 descriptionHeader={t.commands.tableDescription}
+                introConsole={t.commands.introConsole}
+                introAgent={t.commands.introAgent}
+                modeConsoleLabel={t.commands.modeConsoleLabel}
+                modeAgentLabel={t.commands.modeAgentLabel}
+                modeGroupLabel={t.commands.modeGroupLabel}
                 rows={t.commands.rows}
+                agentOnlyRows={t.commands.agentOnlyRows}
             />
         </section>
     </main>

@@ -2,13 +2,68 @@
 interface Props {
     commandHeader: string;
     descriptionHeader: string;
+    introConsole: string;
+    introAgent: string;
+    modeConsoleLabel: string;
+    modeAgentLabel: string;
+    modeGroupLabel: string;
     rows: [string, string][];
+    agentOnlyRows: [string, string][];
 }
 
-const { commandHeader, descriptionHeader, rows } = Astro.props;
+const {
+    commandHeader,
+    descriptionHeader,
+    introConsole,
+    introAgent,
+    modeConsoleLabel,
+    modeAgentLabel,
+    modeGroupLabel,
+    rows,
+    agentOnlyRows
+} = Astro.props;
+
+/**
+ * Maps a terminal command to the agent slash form (`stillmark plan add` -> `/stillmark plan add`).
+ */
+function toAgentCommand(cmd: string): string {
+    if (cmd.startsWith("stillmark ")) {
+        return `/${cmd}`;
+    }
+
+    return cmd;
+}
 ---
 
-<div class="command-reference">
+<div
+    class="command-reference"
+    data-command-reference
+    data-mode="agent"
+    data-intro-console={introConsole}
+    data-intro-agent={introAgent}
+>
+    <div class="command-reference-toolbar">
+        <p class="muted command-reference-intro" data-command-intro>{introAgent}</p>
+        <div class="command-reference-mode" role="group" aria-label={modeGroupLabel}>
+            <button
+                type="button"
+                class="command-reference-mode-btn"
+                data-command-mode="agent"
+                aria-pressed="true"
+            >
+                {modeAgentLabel}
+            </button>
+            <button
+                type="button"
+                class="command-reference-mode-btn"
+                data-command-mode="console"
+                aria-pressed="false"
+            >
+                {modeConsoleLabel}
+            </button>
+        </div>
+    </div>
+
     <div class="card table-card command-reference-table-wrap">
         <table class="command-reference-table">
             <thead>
@@ -21,7 +76,20 @@ const { commandHeader, descriptionHeader, rows } = Astro.props;
                 {
                     rows.map(([cmd, desc]) => (
                         <tr>
-                            <th scope="row" class="command-cell break-code">{cmd}</th>
+                            <th scope="row" class="command-cell break-code">
+                                <span class="cmd-label cmd-console">{cmd}</span>
+                                <span class="cmd-label cmd-agent">{toAgentCommand(cmd)}</span>
+                            </th>
+                            <td class="muted command-desc">{desc}</td>
+                        </tr>
+                    ))
+                }
+                {
+                    agentOnlyRows.map(([cmd, desc]) => (
+                        <tr class="command-reference-agent-only">
+                            <th scope="row" class="command-cell break-code">
+                                <span class="cmd-label cmd-agent">{cmd}</span>
+                            </th>
                             <td class="muted command-desc">{desc}</td>
                         </tr>
                     ))
@@ -33,10 +101,60 @@ const { commandHeader, descriptionHeader, rows } = Astro.props;
         {
             rows.map(([cmd, desc]) => (
                 <li class="command-reference-card">
-                    <p class="command-reference-card-cmd break-code">{cmd}</p>
+                    <p class="command-reference-card-cmd break-code">
+                        <span class="cmd-label cmd-console">{cmd}</span>
+                        <span class="cmd-label cmd-agent">{toAgentCommand(cmd)}</span>
+                    </p>
+                    <p class="muted command-reference-card-desc">{desc}</p>
+                </li>
+            ))
+        }
+        {
+            agentOnlyRows.map(([cmd, desc]) => (
+                <li class="command-reference-card command-reference-agent-only">
+                    <p class="command-reference-card-cmd break-code">
+                        <span class="cmd-label cmd-agent">{cmd}</span>
+                    </p>
                     <p class="muted command-reference-card-desc">{desc}</p>
                 </li>
             ))
         }
     </ul>
 </div>
+
+<script>
+    function initCommandReference(root: HTMLElement) {
+        const introEl = root.querySelector("[data-command-intro]");
+        const introConsole = root.dataset.introConsole ?? "";
+        const introAgent = root.dataset.introAgent ?? "";
+        const buttons = root.querySelectorAll<HTMLButtonElement>("[data-command-mode]");
+
+        function setMode(mode: "agent" | "console") {
+            root.dataset.mode = mode;
+
+            if (introEl) {
+                introEl.textContent = mode === "agent" ? introAgent : introConsole;
+            }
+
+            for (const button of buttons) {
+                const pressed = button.dataset.commandMode === mode;
+
+                button.setAttribute("aria-pressed", pressed ? "true" : "false");
+            }
+        }
+
+        for (const button of buttons) {
+            button.addEventListener("click", () => {
+                const mode = button.dataset.commandMode;
+
+                if (mode === "agent" || mode === "console") {
+                    setMode(mode);
+                }
+            });
+        }
+    }
+
+    for (const root of document.querySelectorAll<HTMLElement>("[data-command-reference]")) {
+        initCommandReference(root);
+    }
+</script>

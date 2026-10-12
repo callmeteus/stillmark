@@ -372,6 +372,63 @@ code:focus-visible {
     margin-top: 1rem;
 }
 
+.command-reference-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.command-reference-intro {
+    margin: 0;
+    flex: 1 1 16rem;
+    max-width: 42rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+.command-reference-mode {
+    display: inline-flex;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.command-reference-mode-btn {
+    margin: 0;
+    padding: 0.45rem 0.85rem;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    cursor: pointer;
+}
+
+.command-reference-mode-btn:hover {
+    color: var(--color-ink);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.command-reference-mode-btn[aria-pressed="true"] {
+    color: var(--color-ink);
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.command-reference[data-mode="agent"] .cmd-console {
+    display: none;
+}
+
+.command-reference[data-mode="console"] .cmd-agent,
+.command-reference[data-mode="console"] .command-reference-agent-only {
+    display: none;
+}
+
 .command-reference-cards {
     display: grid;
     gap: 0.75rem;

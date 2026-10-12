@@ -135,7 +135,12 @@ export const ptBR: Messages = {
     },
     commands: {
         title: "Referência de comandos",
-        intro: "Execute na raiz do projeto. Use --json quando o agente chama o CLI.",
+        introConsole: "Execute na raiz do projeto, no terminal.",
+        introAgent:
+            "Digite depois de /stillmark no chat. Entrada no formato do CLI roda como stillmark … --json; cobertura e design seguem os playbooks na skill stillmark.",
+        modeAgentLabel: "Agente (/stillmark)",
+        modeConsoleLabel: "Terminal",
+        modeGroupLabel: "Visualização da referência de comandos",
         tableCommand: "Comando",
         tableDescription: "O que faz",
         rows: [
@@ -161,10 +166,12 @@ export const ptBR: Messages = {
             ["stillmark coverage update", "Lista código e testes alterados desde o último commit do COVERAGE"],
             ["stillmark coverage check \"…\"", "Marca caso por correspondência parcial"],
             ["stillmark coverage uncheck \"…\"", "Desmarca caso"],
-            ["stillmark coverage add \"<título>\" \"…\"", "Adiciona caso com tag sob um título"],
-            ["/stillmark", "Espelho do CLI com --json, cobertura e design embutidos"],
-            ["/stillmark coverage", "Ajuda, fluxo de update ou edição em texto livre do COVERAGE.md"],
-            ["/stillmark coverage update", "Reconcilia o checklist com código e testes desde o último commit"]
+            ["stillmark coverage add \"<título>\" \"…\"", "Adiciona caso com tag sob um título"]
+        ],
+        agentOnlyRows: [
+            ["/stillmark coverage", "Mostra ajuda apenas (sem alterar arquivos)"],
+            ["/stillmark coverage <texto>", "Edição em texto livre do COVERAGE.md"],
+            ["/stillmark design …", "Ajustes de UI; seleção no browser no preview local"]
         ]
     },
     footer: {

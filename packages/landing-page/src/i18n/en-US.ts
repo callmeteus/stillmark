@@ -133,7 +133,12 @@ export const enUS = {
     },
     commands: {
         title: "Command reference",
-        intro: "Run from the project root. Add --json when an agent drives the CLI.",
+        introConsole: "Run from the project root in your terminal.",
+        introAgent:
+            "Type after /stillmark in chat. CLI-shaped input runs as stillmark … --json; coverage and design use the playbooks in the stillmark skill.",
+        modeAgentLabel: "Agent (/stillmark)",
+        modeConsoleLabel: "Terminal",
+        modeGroupLabel: "Command reference view",
         tableCommand: "Command",
         tableDescription: "What it does",
         rows: [
@@ -159,10 +164,12 @@ export const enUS = {
             ["stillmark coverage update", "List source and test files changed since last COVERAGE commit"],
             ["stillmark coverage check \"…\"", "Check off a case by substring match"],
             ["stillmark coverage uncheck \"…\"", "Uncheck a case"],
-            ["stillmark coverage add \"<heading>\" \"…\"", "Add a tagged case under a heading"],
-            ["/stillmark", "Full CLI mirror with --json, embedded coverage and design"],
-            ["/stillmark coverage", "Help, update workflow, or free-text COVERAGE.md edits"],
-            ["/stillmark coverage update", "Reconcile checklist with code and test changes since last commit"]
+            ["stillmark coverage add \"<heading>\" \"…\"", "Add a tagged case under a heading"]
+        ],
+        agentOnlyRows: [
+            ["/stillmark coverage", "Print help only (no file changes)"],
+            ["/stillmark coverage <text>", "Free-text COVERAGE.md edits"],
+            ["/stillmark design …", "UI fixes; browser selection on your local dev preview"]
         ]
     },
     footer: {
