@@ -251,6 +251,8 @@ export const ptBR: Messages = {
             ["stillmark config status", "Estado do primeiro uso e flags de compartilhamento (`--json`)"],
             ["stillmark config set --design-system=…", "Learnings de design locais ou versionar .stillmark/learnings/design no git (`--prompted`)"],
             ["stillmark config set --detail=…", "Itens compactos ou com detalhes embaixo, para tudo ou para um documento só (`--module=coverage|roadmap|plan`)"],
+            ["stillmark update", "Procura uma versão nova sozinho, uma vez por dia por padrão (`--force` verifica agora, `apply` atualiza)"],
+            ["stillmark config set --auto-update=…", "Liga ou desliga a verificação automática, ou muda a frequência (`--update-interval=<horas>`)"],
             ["stillmark classify \"…\"", "Encaminha texto ambíguo para roadmap ou plano"],
             ["stillmark add \"…\"", "Adiciona via classify, no roadmap ou plano"],
             ["stillmark roadmap add \"…\"", "Adiciona item público ao roadmap"],

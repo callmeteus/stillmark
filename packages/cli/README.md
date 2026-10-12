@@ -37,6 +37,7 @@ stillmark coverage update --json
 | `.stillmark/plans/TASK_PLAN.md` | Private execution plan (local) |
 | `.stillmark/plans/STATE.json` | Long-running recovery state (local) |
 | `COVERAGE.md` | Checkbox test coverage checklist (public in git) |
-| `stillmark.config.json` | Optional git integration; commit style learned from `git log` unless `git.commitMessage` is set; `detail` block picks compact or extended entries globally or per module (`stillmark config set --detail=compact\|extended\|inherit [--module=coverage\|roadmap\|plan]`) |
+| `stillmark.config.json` | Optional git integration; commit style learned from `git log` unless `git.commitMessage` is set; `detail` block picks compact or extended entries globally or per module (`stillmark config set --detail=compact\|extended\|inherit [--module=coverage\|roadmap\|plan]`); `update` block (`auto`, `intervalHours`, default on every 24h) controls how often `stillmark update` checks npm |
+| `.stillmark/plans/UPDATE.json` | Local update cache: last check, latest known version, version that wrote the agent files. `stillmark update [--force]` checks, `stillmark update apply` refreshes installed agent files |
 
 See [../../ARCHITECTURE.md](../../ARCHITECTURE.md) for design details.

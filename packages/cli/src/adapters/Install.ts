@@ -5,6 +5,19 @@ import { fileURLToPath } from "node:url";
 export type AgentId = "cursor" | "claude" | "codex";
 
 /**
+ * Every agent Stillmark can install templates for.
+ */
+export const AgentIds: AgentId[] = ["cursor", "claude", "codex"];
+
+/**
+ * One packaged template file and where it lands in the project.
+ */
+export interface AgentTemplateFile {
+    src: string;
+    dest: string;
+}
+
+/**
  * Resolve packaged templates directory.
  */
 export function resolveTemplatesDir(): string {
@@ -29,18 +42,40 @@ function copyFile(src: string, dest: string): void {
     fs.copyFileSync(src, dest);
 }
 
-function copyTree(srcDir: string, destDir: string, stripPrefix: string): void {
-    for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
-        const srcPath = path.join(srcDir, entry.name);
+/**
+ * Map packaged templates of one agent to their destination paths in the project.
+ */
+export function agentTemplateFiles(
+    projectRoot: string,
+    agent: AgentId
+): AgentTemplateFile[] {
+    const templates = resolveTemplatesDir();
+    const agentDir = path.join(templates, agent);
 
-        if (entry.isDirectory()) {
-            copyTree(srcPath, path.join(destDir, entry.name), stripPrefix);
-        } else {
-            const rel = path.relative(stripPrefix, srcPath);
-            const destPath = path.join(destDir, rel);
-            copyFile(srcPath, destPath);
-        }
+    if (!fs.existsSync(agentDir)) {
+        throw new Error(`Unknown agent templates: ${agent}`);
     }
+
+    if (agent === "codex") {
+        const files: AgentTemplateFile[] = [];
+        const sectionPath = path.join(agentDir, "AGENTS-stillmark.md");
+        const promptPath = path.join(agentDir, "prompts", "stillmark.md");
+
+        if (fs.existsSync(promptPath)) {
+            files.push({ src: promptPath, dest: path.join(projectRoot, "prompts", "stillmark.md") });
+        }
+
+        if (fs.existsSync(sectionPath)) {
+            files.push({ src: sectionPath, dest: path.join(projectRoot, "docs", "stillmark-agents.md") });
+        }
+
+        return files;
+    }
+
+    return listFiles(agentDir).map((rel) => ({
+        src: path.join(agentDir, rel),
+        dest: path.join(projectRoot, rel)
+    }));
 }
 
 /**
@@ -50,38 +85,34 @@ export function installAgent(
     projectRoot: string,
     agent: AgentId
 ): { installed: string[] } {
-    const templates = resolveTemplatesDir();
-    const agentDir = path.join(templates, agent);
     const installed: string[] = [];
 
-    if (!fs.existsSync(agentDir)) {
-        throw new Error(`Unknown agent templates: ${agent}`);
-    }
-
-    if (agent === "codex") {
-        const sectionPath = path.join(agentDir, "AGENTS-stillmark.md");
-        const promptPath = path.join(agentDir, "prompts", "stillmark.md");
-
-        if (fs.existsSync(promptPath)) {
-            const dest = path.join(projectRoot, "prompts", "stillmark.md");
-            copyFile(promptPath, dest);
-            installed.push(dest);
-        }
-
-        if (fs.existsSync(sectionPath)) {
-            const dest = path.join(projectRoot, "docs", "stillmark-agents.md");
-            copyFile(sectionPath, dest);
-            installed.push(dest);
-        }
-    } else {
-        copyTree(agentDir, projectRoot, agentDir);
-
-        for (const rel of listFiles(agentDir)) {
-            installed.push(path.join(projectRoot, rel));
-        }
+    for (const file of agentTemplateFiles(projectRoot, agent)) {
+        copyFile(file.src, file.dest);
+        installed.push(file.dest);
     }
 
     return { installed };
+}
+
+function normalizedContent(file: string): string {
+    return fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n");
+}
+
+/**
+ * True when at least one template file of the agent exists in the project.
+ */
+export function isAgentInstalled(projectRoot: string, agent: AgentId): boolean {
+    return agentTemplateFiles(projectRoot, agent).some((file) => fs.existsSync(file.dest));
+}
+
+/**
+ * Destination files that are missing or differ from the packaged templates (line endings ignored).
+ */
+export function staleAgentFiles(projectRoot: string, agent: AgentId): string[] {
+    return agentTemplateFiles(projectRoot, agent)
+        .filter((file) => !fs.existsSync(file.dest) || normalizedContent(file.dest) !== normalizedContent(file.src))
+        .map((file) => file.dest);
 }
 
 function listFiles(dir: string, base = dir): string[] {

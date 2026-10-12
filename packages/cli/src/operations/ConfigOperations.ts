@@ -109,6 +109,41 @@ export function setConfigDetail(
     };
 }
 
+/**
+ * Partial update of the `update` block; omitted fields keep their current value.
+ */
+export interface SetConfigUpdateOptions {
+    auto?: boolean;
+    intervalHours?: number;
+}
+
+/**
+ * Updates the `update` block of `stillmark.config.json`.
+ */
+export function setConfigUpdate(
+    paths: ProjectPaths,
+    options: SetConfigUpdateOptions
+): OperationResult & { config: StillmarkConfig } {
+    const config = loadConfig(paths);
+
+    config.update = {
+        auto: options.auto ?? config.update.auto,
+        intervalHours: options.intervalHours ?? config.update.intervalHours
+    };
+
+    writeConfig(paths, config);
+
+    return {
+        ok: true,
+        changed: true,
+        action: "config-set",
+        summary: config.update.auto
+            ? `Update checks every ${config.update.intervalHours}h`
+            : "Automatic update checks are off",
+        config
+    };
+}
+
 export interface SetConfigSharingOptions {
     shareDesignSystem: boolean;
     markPrompted: boolean;

@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import { sanitizeDetailConfig, type DetailConfig } from "./DetailLevel";
+import { DefaultUpdateConfig, sanitizeUpdateConfig, type UpdateConfig } from "./UpdateConfig";
 
 export interface SharingConfig {
     /**
@@ -42,6 +43,10 @@ export interface StillmarkConfig {
      * Compact (item line only) or extended (item line plus indented details), global or per module.
      */
     detail: DetailConfig;
+    /**
+     * Periodic update checks for the CLI and installed agent templates.
+     */
+    update: UpdateConfig;
 }
 
 const DEFAULT_LEARNED: LearnedConfig = {
@@ -61,7 +66,8 @@ const DEFAULT_CONFIG: StillmarkConfig = {
     },
     sharing: { ...DEFAULT_SHARING },
     learned: { ...DEFAULT_LEARNED },
-    detail: {}
+    detail: {},
+    update: { ...DefaultUpdateConfig }
 };
 
 /**
@@ -74,7 +80,8 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
             git: { ...DEFAULT_CONFIG.git },
             sharing: { ...DEFAULT_SHARING },
             learned: { ...DEFAULT_LEARNED },
-            detail: {}
+            detail: {},
+            update: { ...DefaultUpdateConfig }
         };
     }
 
@@ -97,7 +104,8 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
             designDir: parsed.learned?.designDir ?? DEFAULT_LEARNED.designDir,
             codeStyleDir: parsed.learned?.codeStyleDir ?? DEFAULT_LEARNED.codeStyleDir
         },
-        detail: sanitizeDetailConfig(parsed.detail)
+        detail: sanitizeDetailConfig(parsed.detail),
+        update: sanitizeUpdateConfig(parsed.update)
     };
 }
 

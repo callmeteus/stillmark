@@ -38,6 +38,8 @@ import {
 } from "../operations";
 import { resolveProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
+import { readPackageVersion, recordTemplatesVersion } from "../update";
+import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
 export interface CliOptions {
     json: boolean;
@@ -121,6 +123,15 @@ function parseFlags(argv: string[]): {
         } else
         if (arg === "--module" && argv[i + 1]) {
             flags.module = argv[++i];
+        } else
+        if (arg.startsWith("--auto-update=")) {
+            flags.autoUpdate = arg.slice("--auto-update=".length);
+        } else
+        if (arg.startsWith("--update-interval=")) {
+            flags.updateInterval = arg.slice("--update-interval=".length);
+        } else
+        if (arg === "--force") {
+            flags.force = true;
         } else {
             positional.push(arg);
         }
@@ -200,6 +211,7 @@ export async function runCli(argv: string[]): Promise<number> {
         if (cmd === "install") {
             const agent = (flags.agent as AgentId) ?? (sub as AgentId);
             const result = installAgent(paths.root, agent);
+            recordTemplatesVersion(paths, readPackageVersion());
             output(
                 {
                     ok: true,
@@ -211,6 +223,13 @@ export async function runCli(argv: string[]): Promise<number> {
             );
 
             return 0;
+        }
+
+        if (cmd === "update") {
+            const result = await runUpdateCommand(paths, sub, flags);
+            output(result, json);
+
+            return result.ok ? 0 : 1;
         }
 
         if (cmd === "long-running") {
@@ -425,6 +444,13 @@ export async function runCli(argv: string[]): Promise<number> {
                 return 0;
             }
 
+            if (sub === "set" && hasUpdateConfigFlags(flags)) {
+                const result = runConfigSetUpdate(paths, flags);
+                output(result, json);
+
+                return result.ok ? 0 : 1;
+            }
+
             if (sub === "set") {
                 const raw = flags.designSystem;
 
@@ -434,7 +460,7 @@ export async function runCli(argv: string[]): Promise<number> {
                             ok: false,
                             changed: false,
                             summary:
-                                "Usage: stillmark config set --design-system=true|false [--prompted] | --detail=compact|extended|inherit [--module=coverage|roadmap|plan] --json"
+                                "Usage: stillmark config set --design-system=true|false [--prompted] | --detail=compact|extended|inherit [--module=coverage|roadmap|plan] | --auto-update=true|false [--update-interval=<hours>] --json"
                         },
                         json
                     );
@@ -481,7 +507,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 {
                     ok: false,
                     changed: false,
-                    summary: "Usage: stillmark config status | set --design-system=… | set --detail=… [--module=…]"
+                    summary: "Usage: stillmark config status | set --design-system=… | set --detail=… [--module=…] | set --auto-update=… --update-interval=…"
                 },
                 json
             );
@@ -638,7 +664,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | config | classify | roadmap | plan | git | coverage | add | move | install | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | git | coverage | add | move | install | update | long-running"
             },
             json
         );

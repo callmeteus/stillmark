@@ -22,7 +22,19 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 
 - If the user repeats the binary (`/stillmark stillmark plan add …`), strip one leading `stillmark ` and run the rest.
 - Always append `--json` for CLI runs unless the user forbids it.
-- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `long-running`.
+- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `update`, `long-running`.
+
+## Auto-update (start of every `/stillmark`)
+
+Before handling the request, run:
+
+```bash
+stillmark update --json
+```
+
+It contacts npm at most once per `update.intervalHours` (default 24h) and returns at once otherwise, so it is cheap to call every time. When `updateAvailable` is **true**, run the command in `recommended` (`stillmark update apply --json` or `npx -y stillmark@<version> update apply --json`), tell the user in one line what was updated, then re-read this skill if its files changed and continue with the original request. Ignore `error` (offline, registry down) and keep going. Do not run `npm install` or edit `package.json` yourself; if the summary says the installed CLI is older, just mention it.
+
+User controls: "para de atualizar sozinho" = `stillmark config set --auto-update=false --json`; "verifica a cada 6 horas" = `stillmark config set --update-interval=6 --json`; "procura atualização agora" = `stillmark update --force --json`.
 
 ## First run: sharing under `.stillmark`
 
@@ -42,7 +54,7 @@ Let `text` = message after `/stillmark` (trimmed). Strip optional leading `still
 
 | Input pattern | Mode | Action |
 |---------------|------|--------|
-| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `config`, `git`, `long-running` | **CLI** | `stillmark <text> --json` |
+| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `config`, `git`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
 | Starts with `coverage` | **Coverage** | See [Coverage mode](#coverage-mode-embedded) and `reference/coverage.md` |
 | Starts with `design` | **Design** | Design pipeline; rest is brief |
 | Browser element attached | **Design** | Map selection to project source |

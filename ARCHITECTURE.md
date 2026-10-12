@@ -37,6 +37,8 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
 
 The `detail` block in `stillmark.config.json` (`global`, `coverage`, `roadmap`, `plan`) picks `compact` (item line only) or `extended` (item line plus indented detail lines written with `--details`). Resolution is module override, then `global`, then the module default: coverage and roadmap compact, plan extended. Parsers keep detail lines inside the item span so moves and splices carry them, and the coverage validator rejects detail lines when coverage is compact.
 
+Auto-update lives in `src/update/`. Agents start every `/stillmark` with `stillmark update --json`; it asks the npm registry for `stillmark@latest` at most once per `update.intervalHours` (default 24, `update.auto` turns it off) and caches the answer in `.stillmark/plans/UPDATE.json` with `templatesVersion`, the CLI version that last wrote the agent files. Installed agent files count as outdated only when `templatesVersion` is older than the running CLI and the content differs, so local edits survive until a real version bump. The result carries a `recommended` command: `stillmark update apply` for a local refresh, or `npx -y stillmark@<latest> update apply` when npm has a newer CLI. Once the templates already match the latest version, an older installed CLI stops recommending the same update.
+
 When `git.commitMessage` is omitted, auto-commits infer the subject prefix from recent `git log` (`stillmark git commit-style --json` previews the template). Set `commitMessage` with a `{summary}` placeholder to pin a fixed format.
 
 Per-call overrides: `--git`, `--no-git`.

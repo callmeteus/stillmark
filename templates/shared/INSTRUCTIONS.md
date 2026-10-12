@@ -35,7 +35,14 @@ stillmark coverage add "<### heading match>" "<case>" --tag=happy --json
 stillmark config status --json
 stillmark config set --design-system=true|false --prompted --json
 stillmark config set --detail=compact|extended|inherit [--module=coverage|roadmap|plan] --json
+stillmark config set --auto-update=true|false [--update-interval=<hours>] --json
+stillmark update [--force] --json
+stillmark update apply --json
 ```
+
+## Auto-update
+
+Start every `/stillmark` with `stillmark update --json`. It contacts the npm registry at most once per `update.intervalHours` (default 24) and answers from the local cache (`.stillmark/plans/UPDATE.json`) otherwise. When `updateAvailable` is true, run the `recommended` command: `stillmark update apply --json` refreshes installed agent files from the running CLI, and `npx -y stillmark@<version> update apply --json` does the same with a newer published CLI. Tell the user in one line, then continue with the request. Ignore `error`. Never run `npm install` or edit `package.json` on your own.
 
 ## Detail level (compact or extended)
 

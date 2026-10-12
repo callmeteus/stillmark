@@ -56,6 +56,15 @@ stillmark config set --detail=extended --json
 stillmark config set --detail=extended --module=coverage --json
 ```
 
+Atualizações: o agente procura uma versão nova do Stillmark sozinho, uma vez por dia, e atualiza os próprios arquivos quando sai uma. Para mudar a frequência ou desligar:
+
+```bash
+# a cada 6 horas
+stillmark config set --update-interval=6 --json
+# desligar
+stillmark config set --auto-update=false --json
+```
+
 ## 5. Opcional: checklist de cobertura de testes
 
 Quando o time quiser um checklist compartilhado de casos de teste no git:

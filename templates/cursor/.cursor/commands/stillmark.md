@@ -6,7 +6,9 @@ Follow the **stillmark** skill. Text after `/stillmark` is the full instruction.
 
 Any terminal command `stillmark <args>` works as `/stillmark <args>` with `--json` appended.
 
-Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `long-running`.
+Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `update`, `long-running`.
+
+Start each run with `stillmark update --json`; when `updateAvailable` is true, run `recommended` first (see the skill).
 
 ## Coverage (embedded)
 

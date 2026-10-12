@@ -13,6 +13,10 @@ export interface ProjectPaths {
     learningsCodeStyleDir: string;
     taskPlan: string;
     state: string;
+    /**
+     * Local update cache: last check, latest known version, installed templates version.
+     */
+    updateState: string;
     config: string;
     gitignore: string;
     coverage: string;
@@ -62,6 +66,7 @@ export function resolveProjectPaths(root: string): ProjectPaths {
         learningsCodeStyleDir: path.join(learningsDir, "code-style"),
         taskPlan: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "TASK_PLAN.md"),
         state: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "STATE.json"),
+        updateState: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "UPDATE.json"),
         config: path.join(normalized, "stillmark.config.json"),
         gitignore: path.join(normalized, ".gitignore"),
         coverage: path.join(normalized, "COVERAGE.md")

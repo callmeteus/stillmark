@@ -240,6 +240,8 @@ export const enUS = {
             ["stillmark config status", "First-run prompt state and sharing flags (`--json`)"],
             ["stillmark config set --design-system=…", "Keep design learnings local or version .stillmark/learnings/design in git (`--prompted`)"],
             ["stillmark config set --detail=…", "Compact entries or entries with details below them, for everything or one document (`--module=coverage|roadmap|plan`)"],
+            ["stillmark update", "Looks for a new version on its own, once a day by default (`--force` checks now, `apply` updates)"],
+            ["stillmark config set --auto-update=…", "Turn automatic update checks on or off, or change how often they run (`--update-interval=<hours>`)"],
             ["stillmark classify \"…\"", "Route ambiguous text to roadmap vs plan"],
             ["stillmark add \"…\"", "Add using classify, then roadmap or plan"],
             ["stillmark roadmap add \"…\"", "Add a public roadmap item"],
