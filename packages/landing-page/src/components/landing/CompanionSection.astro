@@ -1,0 +1,34 @@
+---
+export interface CompanionPoint {
+    title: string;
+    body: string;
+}
+
+export interface CompanionContent {
+    title: string;
+    lead: string;
+    points: CompanionPoint[];
+}
+
+interface Props {
+    id: string;
+    content: CompanionContent;
+}
+
+const { id, content } = Astro.props;
+---
+
+<section id={id} class="page-section companion-section">
+    <h2>{content.title}</h2>
+    <p class="muted section-lead">{content.lead}</p>
+    <div class="companion-points">
+        {
+            content.points.map((point) => (
+                <article class="card companion-point-card">
+                    <h3>{point.title}</h3>
+                    <p class="muted feature-body">{point.body}</p>
+                </article>
+            ))
+        }
+    </div>
+</section>

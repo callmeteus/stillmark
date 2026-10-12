@@ -2,8 +2,6 @@
 interface Props {
     commandHeader: string;
     descriptionHeader: string;
-    introConsole: string;
-    introAgent: string;
     modeConsoleLabel: string;
     modeAgentLabel: string;
     modeGroupLabel: string;
@@ -14,8 +12,6 @@ interface Props {
 const {
     commandHeader,
     descriptionHeader,
-    introConsole,
-    introAgent,
     modeConsoleLabel,
     modeAgentLabel,
     modeGroupLabel,
@@ -35,15 +31,8 @@ function toAgentCommand(cmd: string): string {
 }
 ---
 
-<div
-    class="command-reference"
-    data-command-reference
-    data-mode="agent"
-    data-intro-console={introConsole}
-    data-intro-agent={introAgent}
->
+<div class="command-reference" data-command-reference data-mode="agent">
     <div class="command-reference-toolbar">
-        <p class="muted command-reference-intro" data-command-intro>{introAgent}</p>
         <div class="command-reference-mode" role="group" aria-label={modeGroupLabel}>
             <button
                 type="button"
@@ -124,17 +113,10 @@ function toAgentCommand(cmd: string): string {
 
 <script>
     function initCommandReference(root: HTMLElement) {
-        const introEl = root.querySelector("[data-command-intro]");
-        const introConsole = root.dataset.introConsole ?? "";
-        const introAgent = root.dataset.introAgent ?? "";
         const buttons = root.querySelectorAll<HTMLButtonElement>("[data-command-mode]");
 
         function setMode(mode: "agent" | "console") {
             root.dataset.mode = mode;
-
-            if (introEl) {
-                introEl.textContent = mode === "agent" ? introAgent : introConsole;
-            }
 
             for (const button of buttons) {
                 const pressed = button.dataset.commandMode === mode;

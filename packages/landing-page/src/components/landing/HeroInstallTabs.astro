@@ -1,0 +1,198 @@
+---
+import { randomUUID } from "node:crypto";
+
+interface Props {
+    agentLabel: string;
+    cliLabel: string;
+    tabGroupLabel: string;
+    modeAgentLabel: string;
+    modeCliLabel: string;
+    agentPrompt: string;
+    cliCommand: string;
+    copyLabel: string;
+    copiedLabel: string;
+    failedLabel: string;
+    agentReadyLabel: string;
+    cliReadyLabel: string;
+    agentManualHint: string;
+    cliManualHint: string;
+}
+
+const {
+    agentLabel,
+    cliLabel,
+    tabGroupLabel,
+    modeAgentLabel,
+    modeCliLabel,
+    agentPrompt,
+    cliCommand,
+    copyLabel,
+    copiedLabel,
+    failedLabel,
+    agentReadyLabel,
+    cliReadyLabel,
+    agentManualHint,
+    cliManualHint
+} = Astro.props;
+
+const agentCommandId = `hero-install-agent-${randomUUID()}`;
+const cliCommandId = `hero-install-cli-${randomUUID()}`;
+---
+
+<div class="install-panel hero-install-tabs" data-hero-install-tabs data-mode="agent">
+    <div class="hero-install-toolbar">
+        <div class="hero-install-tablist" role="tablist" aria-label={tabGroupLabel}>
+            <button
+                type="button"
+                class="hero-install-tab"
+                role="tab"
+                id="hero-install-tab-agent"
+                aria-selected="true"
+                aria-controls="hero-install-panel-agent"
+                tabindex="0"
+                data-hero-install-mode="agent"
+            >
+                {modeAgentLabel}
+            </button>
+            <button
+                type="button"
+                class="hero-install-tab"
+                role="tab"
+                id="hero-install-tab-cli"
+                aria-selected="false"
+                aria-controls="hero-install-panel-cli"
+                tabindex="-1"
+                data-hero-install-mode="cli"
+            >
+                {modeCliLabel}
+            </button>
+        </div>
+    </div>
+
+    <p class="muted install-card-label" data-hero-install-heading>{agentLabel}</p>
+
+    <div
+        class="hero-install-panel"
+        id="hero-install-panel-agent"
+        role="tabpanel"
+        aria-labelledby="hero-install-tab-agent"
+        data-hero-install-panel="agent"
+        data-copy-root
+    >
+        <div class="install-prompt-shell">
+            <code id={agentCommandId} class="install-code break-code" tabindex="0">{agentPrompt}</code>
+            <button
+                type="button"
+                class="btn btn-copy btn-copy-embedded"
+                data-copy-target={agentCommandId}
+                data-copy-label={copyLabel}
+                data-copied-label={copiedLabel}
+                data-failed-label={failedLabel}
+                data-ready-label={agentReadyLabel}
+                aria-label={`${copyLabel}: ${agentPrompt}`}
+            >
+                {copyLabel}
+            </button>
+        </div>
+        <p class="copy-status muted" role="status" aria-live="polite"></p>
+        <p class="copy-manual-hint muted">{agentManualHint}</p>
+    </div>
+
+    <div
+        class="hero-install-panel"
+        id="hero-install-panel-cli"
+        role="tabpanel"
+        aria-labelledby="hero-install-tab-cli"
+        hidden
+        data-hero-install-panel="cli"
+        data-copy-root
+    >
+        <div class="install-prompt-shell install-prompt-shell-cli">
+            <code id={cliCommandId} class="install-code install-code-cli break-code" tabindex="0">{cliCommand}</code>
+            <button
+                type="button"
+                class="btn btn-copy btn-copy-embedded"
+                data-copy-target={cliCommandId}
+                data-copy-label={copyLabel}
+                data-copied-label={copiedLabel}
+                data-failed-label={failedLabel}
+                data-ready-label={cliReadyLabel}
+                aria-label={`${copyLabel}: ${cliCommand}`}
+            >
+                {copyLabel}
+            </button>
+        </div>
+        <p class="copy-status muted" role="status" aria-live="polite"></p>
+        <p class="copy-manual-hint muted">{cliManualHint}</p>
+    </div>
+</div>
+
+<script define:vars={{ agentLabel, cliLabel }}>
+    function initHeroInstallTabs(root) {
+        const tabs = root.querySelectorAll("[data-hero-install-mode]");
+        const panels = root.querySelectorAll("[data-hero-install-panel]");
+        const heading = root.querySelector("[data-hero-install-heading]");
+
+        function setMode(mode) {
+            root.dataset.mode = mode;
+
+            if (heading) {
+                heading.textContent = mode === "agent" ? agentLabel : cliLabel;
+            }
+
+            for (const tab of tabs) {
+                const selected = tab.dataset.heroInstallMode === mode;
+
+                tab.setAttribute("aria-selected", selected ? "true" : "false");
+                tab.tabIndex = selected ? 0 : -1;
+            }
+
+            for (const panel of panels) {
+                const show = panel.dataset.heroInstallPanel === mode;
+
+                if (show) {
+                    panel.removeAttribute("hidden");
+                } else {
+                    panel.setAttribute("hidden", "");
+                }
+            }
+        }
+
+        for (const tab of tabs) {
+            tab.addEventListener("click", () => {
+                const mode = tab.dataset.heroInstallMode;
+
+                if (mode === "agent" || mode === "cli") {
+                    setMode(mode);
+                }
+            });
+
+            tab.addEventListener("keydown", (event) => {
+                if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+                    return;
+                }
+
+                const list = [...tabs];
+                const currentIndex = list.indexOf(tab);
+
+                if (currentIndex < 0) {
+                    return;
+                }
+
+                const delta = event.key === "ArrowRight" ? 1 : -1;
+                const next = list[(currentIndex + delta + list.length) % list.length];
+                const mode = next.dataset.heroInstallMode;
+
+                if (mode === "agent" || mode === "cli") {
+                    event.preventDefault();
+                    next.focus();
+                    setMode(mode);
+                }
+            });
+        }
+    }
+
+    for (const root of document.querySelectorAll("[data-hero-install-tabs]")) {
+        initHeroInstallTabs(root);
+    }
+</script>

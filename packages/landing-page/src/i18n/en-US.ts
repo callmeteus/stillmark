@@ -7,6 +7,8 @@ export const enUS = {
     nav: {
         getStarted: "Get started",
         coverage: "Coverage",
+        design: "Design",
+        planning: "Planning",
         commands: "Commands",
         github: "GitHub",
         githubUnavailable: "Repository link not configured yet",
@@ -47,19 +49,36 @@ export const enUS = {
         subtitle:
             "Say what should change. Stillmark updates your roadmap, private task plan, and test checklist - plus embedded UI work through /stillmark, without hand-editing markdown.",
         installLabel: "Ask your agent to install",
+        installCliLabel: "Run in your terminal",
+        installTabGroupLabel: "Install method",
+        installModeAgentLabel: "Agent",
+        installModeCliLabel: "CLI",
+        cliInstallCommand: "npx stillmark@latest init",
+        cliInstallHint: "Requires Node.js. Then run stillmark install --agent with your editor.",
         installPromptTemplate:
             "Read and execute the markdown install guide at {url}. Follow every step in that file to install Stillmark in this repository."
     },
     howItWorks: {
         title: "How it works",
-        diagramActor: "User / Agent",
-        diagramAria:
-            "Agent intent flows through Stillmark into roadmap, task plan, and coverage checklist files.",
-        publicLabel: "git",
-        privateLabel: "local",
-        diagramCoverageSkill: "/stillmark coverage",
-        body:
-            "Long-term goals live in the roadmap. Concrete work lives in the private task plan under .stillmark/plans/. Test cases live in COVERAGE.md. One slash command: /stillmark mirrors the whole CLI (including stillmark coverage …) with --json, plus embedded design and stillmark config for .stillmark/design-system/ sharing."
+        lead:
+            "You describe what should change in chat. Stillmark keeps strategy, current work, and test tracking in three clear buckets.",
+        items: [
+            {
+                title: "Roadmap",
+                badge: "Shared with the team",
+                body: "Long-term goals and priorities everyone can see in the repo."
+            },
+            {
+                title: "Current plan",
+                badge: "Private on your machine",
+                body: "Concrete tasks for what you are building right now, without publishing half-baked plans."
+            },
+            {
+                title: "Test checklist",
+                badge: "Shared with the team",
+                body: "A simple list of what is already covered by tests, so nothing important is forgotten."
+            }
+        ]
     },
     coverage: {
         title: "Test coverage companion",
@@ -77,6 +96,63 @@ export const enUS = {
             {
                 title: "Git-aware updates",
                 body: "stillmark coverage update lists source and test files that changed since the last COVERAGE.md commit so the agent knows what to reconcile."
+            }
+        ]
+    },
+    design: {
+        title: "UI design companion",
+        lead:
+            "Point at what looks wrong in your running app and say what should change. Stillmark connects that feedback to your project instead of one-off tweaks.",
+        points: [
+            {
+                title: "Browser selection",
+                body: "Select an element on your local preview. The agent finds the matching screen or component in your codebase."
+            },
+            {
+                title: "Via /stillmark design",
+                body: "Ask for spacing, type, color, or layout in plain language, or open with /stillmark design and a short brief."
+            },
+            {
+                title: "Consistent polish",
+                body: "Design playbooks ship inside the stillmark skill so visual fixes stay aligned across sessions."
+            }
+        ]
+    },
+    planning: {
+        title: "Planning companion",
+        lead:
+            "Turn vague intent into a shared roadmap and a private task list without hand-editing markdown for every change.",
+        points: [
+            {
+                title: "Natural language",
+                body: "/stillmark handles adds, deferrals, priorities, and moves. The CLI keeps sections, IDs, and history intact."
+            },
+            {
+                title: "Scope and privacy",
+                body: "Sensitive roadmap content and work outside the current objective are flagged before they land in shared files."
+            },
+            {
+                title: "Long-running work",
+                body: "When a task spans many agent turns, approved plan updates are saved so execution can continue safely."
+            }
+        ]
+    },
+    workspace: {
+        title: "Workspace preferences",
+        lead:
+            "Stillmark keeps task plans on your machine by default and asks once how much of .stillmark you want in git.",
+        points: [
+            {
+                title: "Private task plans",
+                body: "Active execution plans stay local. Only the roadmap and test checklist are meant for the team repo."
+            },
+            {
+                title: "stillmark config",
+                body: "On first use, stillmark config status asks whether design reference files under .stillmark should be versioned with the project."
+            },
+            {
+                title: "Optional roadmap git",
+                body: "When you enable it in config, Stillmark can commit or push ROADMAP.md for you - never the private plan folder."
             }
         ]
     },
@@ -106,25 +182,14 @@ export const enUS = {
             {
                 title: "Optional git for roadmap",
                 body: "Auto-commit or push ROADMAP.md only when you enable it in config."
-            },
-            {
-                title: "COVERAGE.md companion",
-                body: "Validate, check off, and add test cases with stillmark coverage or /stillmark coverage … from the agent."
-            },
-            {
-                title: "Embedded design",
-                body: "/stillmark design or casual feedback with a browser selection on your dev preview. Design playbooks ship inside the stillmark skill."
-            },
-            {
-                title: "Local vs shared .stillmark",
-                body: "Task plans always stay local. stillmark config status asks once whether to version design-system files in git."
             }
         ]
     },
     agents: {
         stepLabel: "Step 2",
         title: "Install agent templates",
-        intro: "Choose your agent and copy the matching install command. One stillmark skill handles planning, coverage, and design through /stillmark.",
+        intro: "One stillmark skill handles planning, coverage, and design through /stillmark.",
+        tabGroupLabel: "Installation agent",
         items: [
             { label: "Cursor", command: "stillmark install --agent cursor" },
             { label: "Claude", command: "stillmark install --agent claude" },
@@ -133,9 +198,6 @@ export const enUS = {
     },
     commands: {
         title: "Command reference",
-        introConsole: "Run from the project root in your terminal.",
-        introAgent:
-            "Type after /stillmark in chat. CLI-shaped input runs as stillmark … --json; coverage and design use the playbooks in the stillmark skill.",
         modeAgentLabel: "Agent (/stillmark)",
         modeConsoleLabel: "Terminal",
         modeGroupLabel: "Command reference view",

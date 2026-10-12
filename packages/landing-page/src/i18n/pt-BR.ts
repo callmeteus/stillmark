@@ -9,6 +9,8 @@ export const ptBR: Messages = {
     nav: {
         getStarted: "Começar",
         coverage: "Cobertura",
+        design: "Design",
+        planning: "Planejamento",
         commands: "Comandos",
         github: "GitHub",
         githubUnavailable: "Link do repositório ainda não configurado",
@@ -49,19 +51,36 @@ export const ptBR: Messages = {
         subtitle:
             "Diga o que precisa mudar. O Stillmark atualiza roadmap, plano privado e checklist de testes - e UI embutida via /stillmark, sem editar markdown na mão.",
         installLabel: "Peça ao agente para instalar",
+        installCliLabel: "Execute no terminal",
+        installTabGroupLabel: "Forma de instalação",
+        installModeAgentLabel: "Agente",
+        installModeCliLabel: "CLI",
+        cliInstallCommand: "npx stillmark@latest init",
+        cliInstallHint: "Requer Node.js. Depois rode stillmark install --agent com seu editor.",
         installPromptTemplate:
             "Leia e execute o markdown do guia de instalação em {url}. Siga cada passo desse arquivo para instalar o Stillmark neste repositório."
     },
     howItWorks: {
         title: "Como funciona",
-        diagramActor: "Usuário / Agente",
-        diagramAria:
-            "A intenção do agente passa pelo Stillmark para roadmap, plano de tarefas e checklist de cobertura.",
-        publicLabel: "git",
-        privateLabel: "local",
-        diagramCoverageSkill: "/stillmark coverage",
-        body:
-            "Metas de longo prazo ficam no roadmap. O trabalho concreto fica no plano privado em .stillmark/plans/. Os casos de teste ficam no COVERAGE.md. Um único comando: /stillmark espelha o CLI inteiro (incluindo stillmark coverage …) com --json, além de design embutido e stillmark config para compartilhar .stillmark/design-system/."
+        lead:
+            "Você descreve o que precisa mudar no chat. O Stillmark organiza estratégia, trabalho do momento e testes em três blocos claros.",
+        items: [
+            {
+                title: "Roadmap",
+                badge: "Compartilhado com o time",
+                body: "Metas e prioridades de longo prazo que todo mundo vê no repositório."
+            },
+            {
+                title: "Plano atual",
+                badge: "Privado na sua máquina",
+                body: "Tarefas concretas do que você está entregando agora, sem publicar plano pela metade."
+            },
+            {
+                title: "Checklist de testes",
+                badge: "Compartilhado com o time",
+                body: "Lista simples do que já está coberto por testes, para não esquecer o que importa."
+            }
+        ]
     },
     coverage: {
         title: "Companheiro de cobertura de testes",
@@ -79,6 +98,63 @@ export const ptBR: Messages = {
             {
                 title: "Updates com git",
                 body: "O stillmark coverage update lista arquivos de código e de teste alterados desde o último commit do COVERAGE.md para o agente saber o que reconciliar."
+            }
+        ]
+    },
+    design: {
+        title: "Companheiro de design de UI",
+        lead:
+            "Aponte o que está errado no app em execução e diga o que mudar. O Stillmark liga esse feedback ao seu projeto em vez de remendos soltos.",
+        points: [
+            {
+                title: "Seleção no browser",
+                body: "Selecione um elemento no preview local. O agente encontra a tela ou o componente correspondente no código."
+            },
+            {
+                title: "Via /stillmark design",
+                body: "Peça ajustes de espaçamento, tipografia, cor ou layout em linguagem natural, ou comece com /stillmark design e um brief curto."
+            },
+            {
+                title: "Polimento consistente",
+                body: "Playbooks de design vêm na skill stillmark para o visual ficar alinhado entre sessões."
+            }
+        ]
+    },
+    planning: {
+        title: "Companheiro de planejamento",
+        lead:
+            "Transforme intenção vaga em roadmap compartilhado e lista de tarefas privada, sem editar markdown a cada mudança.",
+        points: [
+            {
+                title: "Linguagem natural",
+                body: "/stillmark cuida de adições, adiamentos, prioridades e movimentações. O CLI preserva seções, IDs e histórico."
+            },
+            {
+                title: "Escopo e privacidade",
+                body: "Conteúdo sensível no roadmap e trabalho fora do objetivo atual são sinalizados antes de ir para arquivos compartilhados."
+            },
+            {
+                title: "Trabalho longo",
+                body: "Quando uma tarefa atravessa várias rodadas do agente, atualizações aprovadas do plano são salvas para a execução continuar com segurança."
+            }
+        ]
+    },
+    workspace: {
+        title: "Preferências do workspace",
+        lead:
+            "O Stillmark mantém planos de tarefa na sua máquina por padrão e pergunta uma vez quanto do .stillmark você quer versionar no git.",
+        points: [
+            {
+                title: "Planos privados",
+                body: "Planos de execução ativos ficam locais. Só o roadmap e o checklist de testes são pensados para o repositório do time."
+            },
+            {
+                title: "stillmark config",
+                body: "No primeiro uso, stillmark config status pergunta se arquivos de referência de design em .stillmark entram no controle de versão do projeto."
+            },
+            {
+                title: "Git opcional no roadmap",
+                body: "Se você habilitar na config, o Stillmark pode commitar ou enviar o ROADMAP.md - nunca a pasta privada de planos."
             }
         ]
     },
@@ -108,25 +184,14 @@ export const ptBR: Messages = {
             {
                 title: "Git opcional no roadmap",
                 body: "Commit ou push só do ROADMAP.md quando você habilitar na configuração."
-            },
-            {
-                title: "Companheiro COVERAGE.md",
-                body: "Valide, marque e adicione casos com stillmark coverage ou /stillmark coverage … pelo agente."
-            },
-            {
-                title: "Design embutido",
-                body: "/stillmark design ou feedback informal com elemento selecionado no preview local. Playbooks de design vêm na skill stillmark."
-            },
-            {
-                title: "Local vs compartilhado em .stillmark",
-                body: "Planos de tarefa ficam sempre locais. stillmark config status pergunta uma vez se o design-system versiona no git."
             }
         ]
     },
     agents: {
         stepLabel: "Passo 2",
         title: "Instalar templates do agente",
-        intro: "Escolha o agente e copie o comando de instalação correspondente. Uma skill stillmark cobre planejamento, cobertura e design via /stillmark.",
+        intro: "Uma skill stillmark cobre planejamento, cobertura e design via /stillmark.",
+        tabGroupLabel: "Agente de instalação",
         items: [
             { label: "Cursor", command: "stillmark install --agent cursor" },
             { label: "Claude", command: "stillmark install --agent claude" },
@@ -135,9 +200,6 @@ export const ptBR: Messages = {
     },
     commands: {
         title: "Referência de comandos",
-        introConsole: "Execute na raiz do projeto, no terminal.",
-        introAgent:
-            "Digite depois de /stillmark no chat. Entrada no formato do CLI roda como stillmark … --json; cobertura e design seguem os playbooks na skill stillmark.",
         modeAgentLabel: "Agente (/stillmark)",
         modeConsoleLabel: "Terminal",
         modeGroupLabel: "Visualização da referência de comandos",

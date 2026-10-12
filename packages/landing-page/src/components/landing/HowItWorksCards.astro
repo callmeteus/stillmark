@@ -1,0 +1,31 @@
+---
+interface HowItWorksItem {
+    title: string;
+    badge: string;
+    body: string;
+}
+
+interface Props {
+    lead: string;
+    items: HowItWorksItem[];
+}
+
+const { lead, items } = Astro.props;
+---
+
+<p class="muted section-lead how-it-works-lead">{lead}</p>
+<ul class="how-it-works-grid">
+    {
+        items.map((item) => (
+            <li>
+                <article class="card how-it-works-card">
+                    <div class="how-it-works-card-head">
+                        <h3>{item.title}</h3>
+                        <span class="how-it-works-badge">{item.badge}</span>
+                    </div>
+                    <p class="muted feature-body">{item.body}</p>
+                </article>
+            </li>
+        ))
+    }
+</ul>

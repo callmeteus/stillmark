@@ -221,36 +221,83 @@ code:focus-visible {
 
 .page-section > h2 + .section-lead,
 .page-section > h2 + .features,
+.page-section > h2 + .companion-points,
+.page-section > h2 + .section-lead + .companion-points,
 .page-section > h2 + .coverage-points,
 .page-section > h2 + .section-lead + .coverage-points,
+.page-section > h2 + .agent-install-tabs,
+.page-section > .section-lead + .agent-install-tabs,
 .page-section > h2 + .agent-commands-list,
 .page-section > h2 + .table-card {
     margin-top: 1rem;
 }
 
+.companion-section > h2 + .section-lead,
 .coverage-section > h2 + .section-lead {
     margin-top: 0.75rem;
     max-width: 42rem;
 }
 
+.companion-points,
 .coverage-points {
     display: grid;
     gap: 1rem;
 }
 
 @media (min-width: 768px) {
+    .companion-points,
     .coverage-points {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
+.companion-point-card h3,
 .coverage-point-card h3 {
     font-size: 1rem;
 }
 
 .workflow-panel h2 + .workflow-steps,
-.how-it-works-panel h2 + .split-layout {
+.how-it-works-panel h2 + .how-it-works-lead {
     margin-top: 1.25rem;
+}
+
+.how-it-works-lead {
+    max-width: 40rem;
+}
+
+.how-it-works-grid {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .how-it-works-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.how-it-works-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 0.75rem;
+    margin-bottom: 0.35rem;
+}
+
+.how-it-works-card h3 {
+    font-size: 1rem;
+}
+
+.how-it-works-badge {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-muted);
 }
 
 .workflow-panel .workflow-steps {
@@ -339,24 +386,6 @@ code:focus-visible {
     margin-top: 0.75rem;
 }
 
-.split-layout {
-    display: grid;
-    gap: 1.25rem;
-}
-
-@media (min-width: 960px) {
-    .split-layout {
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-        gap: 1.5rem;
-        align-items: start;
-    }
-
-    .split-layout-lead {
-        margin-top: 0;
-        padding-top: 0.25rem;
-    }
-}
-
 .features-section .features {
     margin-top: 1rem;
 }
@@ -375,18 +404,8 @@ code:focus-visible {
 .command-reference-toolbar {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem 1.5rem;
+    justify-content: flex-end;
     margin-bottom: 1rem;
-}
-
-.command-reference-intro {
-    margin: 0;
-    flex: 1 1 16rem;
-    max-width: 42rem;
-    font-size: 0.9375rem;
-    line-height: 1.55;
 }
 
 .command-reference-mode {
@@ -540,6 +559,54 @@ body.has-mobile-install-bar .page-main {
     margin-top: 0.5rem;
 }
 
+.agent-install-tabs {
+    padding: 0;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.agent-install-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.agent-install-tab {
+    margin: 0;
+    padding: 0.65rem 1.1rem;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    cursor: pointer;
+}
+
+.agent-install-tab:hover {
+    color: var(--color-ink);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.agent-install-tab[aria-selected="true"] {
+    color: var(--color-ink);
+    border-bottom-color: var(--color-trail-line);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.agent-install-panel {
+    padding: 1rem 1.25rem 1.25rem;
+}
+
+.agent-install-panel .copy-status {
+    margin: 0.5rem 0 0;
+    min-height: 0;
+    font-size: 0.8125rem;
+}
+
 .agent-commands-list {
     list-style: none;
     margin: 0;
@@ -611,10 +678,6 @@ body.has-mobile-install-bar .page-main {
     overflow-x: auto;
 }
 
-.diagram-block {
-    margin-top: 1rem;
-}
-
 .site-footer {
     border-top: 1px solid var(--color-border);
     padding: 2rem 1.5rem;
@@ -637,15 +700,6 @@ body.has-mobile-install-bar .page-main {
     font-family: var(--font-mono);
     font-weight: 400;
     color: var(--color-accent);
-}
-
-.how-it-works-panel .flow-diagram {
-    border: 1px solid var(--color-terminal-frame);
-    box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.15);
-}
-
-.how-it-works-panel .flow-diagram-pre {
-    font-size: 0.9375rem;
 }
 
 .command-reference-table thead th {
@@ -729,6 +783,53 @@ body.has-mobile-install-bar .page-main {
     border: none;
     padding: 0;
     box-shadow: none;
+}
+
+.hero-install-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.75rem;
+}
+
+.hero-install-tablist {
+    display: inline-flex;
+    border: 1px solid color-mix(in srgb, var(--color-terminal-frame) 85%, transparent);
+    border-radius: var(--radius-button);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-code-block-bg) 55%, transparent);
+}
+
+.hero-install-tab {
+    margin: 0;
+    padding: 0.4rem 0.85rem;
+    border: none;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-code-text) 65%, transparent);
+    cursor: pointer;
+}
+
+.hero-install-tab:hover {
+    color: var(--color-code-text);
+    background: color-mix(in srgb, var(--color-code-text) 8%, transparent);
+}
+
+.hero-install-tab[aria-selected="true"] {
+    color: var(--color-code-text);
+    background: color-mix(in srgb, var(--color-accent) 35%, var(--color-code-block-bg));
+}
+
+.hero-install-panel[hidden] {
+    display: none;
+}
+
+.hero-install-anchor .install-prompt-shell-cli .install-code-cli {
+    padding: 1.125rem 5rem 1.125rem 1.125rem;
+    font-size: 1rem;
 }
 
 .hero-install-anchor .install-card-label {
@@ -958,35 +1059,6 @@ tbody th[scope="row"] {
 
 .install-code.is-copied {
     box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.45);
-}
-
-.flow-diagram-pre {
-    margin: 0;
-}
-
-.flow-diagram-pre code {
-    display: block;
-    font-family: var(--font-mono);
-}
-
-.flow-actor {
-    color: var(--color-code-text);
-}
-
-.flow-cli {
-    color: #e2e8f0;
-}
-
-.flow-flag {
-    color: var(--color-trail-private);
-}
-
-.flow-branch-public {
-    color: var(--color-trail-public);
-}
-
-.flow-branch-private {
-    color: var(--color-trail-private);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,8 +1,9 @@
 ---
 import CommandReference from "../../components/landing/CommandReference.astro";
-import CopyCommandRow from "../../components/landing/CopyCommandRow.astro";
-import CopyInstall from "../../components/landing/CopyInstall.astro";
-import HowItWorksDiagram from "../../components/landing/HowItWorksDiagram.astro";
+import AgentInstallTabs from "../../components/landing/AgentInstallTabs.astro";
+import HeroInstallTabs from "../../components/landing/HeroInstallTabs.astro";
+import CompanionSection from "../../components/landing/CompanionSection.astro";
+import HowItWorksCards from "../../components/landing/HowItWorksCards.astro";
 import MobileInstallBar from "../../components/landing/MobileInstallBar.astro";
 import SiteHeader from "../../components/landing/SiteHeader.astro";
 import WorkflowSteps from "../../components/landing/WorkflowSteps.astro";
@@ -41,14 +42,21 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
                 </p>
             </div>
             <div id="hero-install" class="hero-install-anchor">
-                <CopyInstall
-                    label={t.hero.installLabel}
-                    command={installPrompt}
+                <HeroInstallTabs
+                    agentLabel={t.hero.installLabel}
+                    cliLabel={t.hero.installCliLabel}
+                    tabGroupLabel={t.hero.installTabGroupLabel}
+                    modeAgentLabel={t.hero.installModeAgentLabel}
+                    modeCliLabel={t.hero.installModeCliLabel}
+                    agentPrompt={installPrompt}
+                    cliCommand={t.hero.cliInstallCommand}
                     copyLabel={t.copy.copyShort}
                     copiedLabel={t.copy.copied}
                     failedLabel={t.copy.failed}
-                    readyLabel={t.copy.readyInTerminal}
-                    manualHint={t.copy.manualHint}
+                    agentReadyLabel={t.copy.readyInTerminal}
+                    cliReadyLabel={t.copy.readyInTerminal}
+                    agentManualHint={t.copy.manualHint}
+                    cliManualHint={t.hero.cliInstallHint}
                 />
             </div>
         </section>
@@ -60,32 +68,13 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
 
         <section class="card section-card how-it-works-panel">
             <h2>{t.howItWorks.title}</h2>
-            <div class="split-layout">
-                <HowItWorksDiagram
-                    actorLabel={t.howItWorks.diagramActor}
-                    publicLabel={t.howItWorks.publicLabel}
-                    privateLabel={t.howItWorks.privateLabel}
-                    coverageSkill={t.howItWorks.diagramCoverageSkill}
-                    ariaLabel={t.howItWorks.diagramAria}
-                />
-                <p class="muted section-lead split-layout-lead">{t.howItWorks.body}</p>
-            </div>
+            <HowItWorksCards lead={t.howItWorks.lead} items={t.howItWorks.items} />
         </section>
 
-        <section id="coverage" class="page-section coverage-section">
-            <h2>{t.coverage.title}</h2>
-            <p class="muted section-lead">{t.coverage.lead}</p>
-            <div class="coverage-points">
-                {
-                    t.coverage.points.map((point) => (
-                        <article class="card coverage-point-card">
-                            <h3>{point.title}</h3>
-                            <p class="muted feature-body">{point.body}</p>
-                        </article>
-                    ))
-                }
-            </div>
-        </section>
+        <CompanionSection id="coverage" content={t.coverage} />
+        <CompanionSection id="design" content={t.design} />
+        <CompanionSection id="planning" content={t.planning} />
+        <CompanionSection id="workspace" content={t.workspace} />
 
         <section class="page-section features-section">
             <h2>{t.features.title}</h2>
@@ -107,22 +96,14 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
                 <h2>{t.agents.title}</h2>
             </div>
             <p class="muted section-lead">{t.agents.intro}</p>
-            <ul class="agent-commands-list">
-                {
-                    t.agents.items.map((item) => (
-                        <li>
-                            <CopyCommandRow
-                                label={item.label}
-                                command={item.command}
-                                copyLabel={t.copy.copyShort}
-                                copiedLabel={t.copy.copied}
-                                failedLabel={t.copy.failed}
-                                readyLabel={t.copy.readyInTerminal}
-                            />
-                        </li>
-                    ))
-                }
-            </ul>
+            <AgentInstallTabs
+                items={t.agents.items}
+                tabGroupLabel={t.agents.tabGroupLabel}
+                copyLabel={t.copy.copyShort}
+                copiedLabel={t.copy.copied}
+                failedLabel={t.copy.failed}
+                readyLabel={t.copy.readyInTerminal}
+            />
             <p class="copy-manual-hint muted agents-copy-hint">{t.copy.manualHint}</p>
         </section>
 
@@ -131,8 +112,6 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
             <CommandReference
                 commandHeader={t.commands.tableCommand}
                 descriptionHeader={t.commands.tableDescription}
-                introConsole={t.commands.introConsole}
-                introAgent={t.commands.introAgent}
                 modeConsoleLabel={t.commands.modeConsoleLabel}
                 modeAgentLabel={t.commands.modeAgentLabel}
                 modeGroupLabel={t.commands.modeGroupLabel}
