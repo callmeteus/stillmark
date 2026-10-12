@@ -1,0 +1,35 @@
+---
+import { randomUUID } from "node:crypto";
+
+interface Props {
+    label: string;
+    command: string;
+    copyLabel: string;
+    copiedLabel: string;
+    failedLabel: string;
+    readyLabel: string;
+}
+
+const { label, command, copyLabel, copiedLabel, failedLabel, readyLabel } = Astro.props;
+const commandId = `agent-${randomUUID()}`;
+---
+
+<div class="agent-command-row" data-copy-root>
+    <p class="agent-command-label muted">{label}</p>
+    <div class="install-row">
+        <code id={commandId} class="install-code break-code" tabindex="0">{command}</code>
+        <button
+            type="button"
+            class="btn btn-copy"
+            data-copy-target={commandId}
+            data-copy-label={copyLabel}
+            data-copied-label={copiedLabel}
+            data-failed-label={failedLabel}
+            data-ready-label={readyLabel}
+            aria-label={`${copyLabel}: ${command}`}
+        >
+            {copyLabel}
+        </button>
+    </div>
+    <p class="copy-status muted" role="status" aria-live="polite"></p>
+</div>

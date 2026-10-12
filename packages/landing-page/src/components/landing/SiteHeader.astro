@@ -1,0 +1,42 @@
+---
+import { SiteLinks } from "../../config/SiteLinks";
+import type { Messages } from "../../i18n/en-US";
+
+interface Props {
+    nav: Messages["nav"];
+    logoHref: string;
+    langSwitchHref: string;
+    langSwitchLabel: string;
+    navAriaLabel: string;
+}
+
+const { nav, logoHref, langSwitchHref, langSwitchLabel, navAriaLabel } = Astro.props;
+---
+
+<header class="container site-header">
+    <a href={logoHref} class="site-logo" aria-label="Stillmark home">
+        <span class="logo-prompt" aria-hidden="true">&gt;_</span>
+        Stillmark
+    </a>
+    <nav class="site-nav muted" aria-label={navAriaLabel}>
+        <a href="#get-started">{nav.getStarted}</a>
+        <a href="#coverage">{nav.coverage}</a>
+        <a href="#commands">{nav.commands}</a>
+        {
+            SiteLinks.github
+                ? (
+                    <a
+                        href={SiteLinks.github}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                    >
+                        {nav.github}
+                    </a>
+                )
+                : null
+        }
+        <a href={langSwitchHref} lang={langSwitchLabel === "PT" ? "pt-BR" : "en-US"}>
+            {langSwitchLabel}
+        </a>
+    </nav>
+</header>

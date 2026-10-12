@@ -1,0 +1,17 @@
+{
+    "name": "stillmark-monorepo",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "engines": {
+        "node": ">=20"
+    },
+    "scripts": {
+        "build": "npm run build -w stillmark && npm run build -w @stillmark/landing-page",
+        "test": "npm run test -w stillmark",
+        "lint": "npm run lint -w stillmark",
+        "typecheck": "npm run typecheck -w stillmark",
+        "ci": "npm run lint && npm run typecheck && npm run test && npm run build"
+    }
+}

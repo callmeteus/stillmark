@@ -1,0 +1,42 @@
+---
+interface Props {
+    commandHeader: string;
+    descriptionHeader: string;
+    rows: [string, string][];
+}
+
+const { commandHeader, descriptionHeader, rows } = Astro.props;
+---
+
+<div class="command-reference">
+    <div class="card table-card command-reference-table-wrap">
+        <table class="command-reference-table">
+            <thead>
+                <tr>
+                    <th scope="col">{commandHeader}</th>
+                    <th scope="col">{descriptionHeader}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    rows.map(([cmd, desc]) => (
+                        <tr>
+                            <th scope="row" class="command-cell break-code">{cmd}</th>
+                            <td class="muted command-desc">{desc}</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
+    <ul class="command-reference-cards">
+        {
+            rows.map(([cmd, desc]) => (
+                <li class="command-reference-card">
+                    <p class="command-reference-card-cmd break-code">{cmd}</p>
+                    <p class="muted command-reference-card-desc">{desc}</p>
+                </li>
+            ))
+        }
+    </ul>
+</div>

@@ -1,0 +1,37 @@
+---
+interface WorkflowStep {
+    title: string;
+    body: string;
+    linkHref?: string;
+    linkLabel?: string;
+}
+
+interface Props {
+    steps: WorkflowStep[];
+}
+
+const { steps } = Astro.props;
+---
+
+<ol class="workflow-steps">
+    {
+        steps.map((step, index) => (
+            <li class="workflow-step">
+                <span class="workflow-step-index" aria-hidden="true">{index + 1}</span>
+                <div class="workflow-step-body">
+                    <p class="workflow-step-title">{step.title}</p>
+                    <p class="muted workflow-step-text">{step.body}</p>
+                    {
+                        step.linkHref && step.linkLabel
+                            ? (
+                                <a class="workflow-step-link" href={step.linkHref}>
+                                    {step.linkLabel}
+                                </a>
+                            )
+                            : null
+                    }
+                </div>
+            </li>
+        ))
+    }
+</ol>

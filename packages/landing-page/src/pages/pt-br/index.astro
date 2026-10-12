@@ -1,0 +1,151 @@
+---
+import CommandReference from "../../components/landing/CommandReference.astro";
+import CopyCommandRow from "../../components/landing/CopyCommandRow.astro";
+import CopyInstall from "../../components/landing/CopyInstall.astro";
+import HowItWorksDiagram from "../../components/landing/HowItWorksDiagram.astro";
+import MobileInstallBar from "../../components/landing/MobileInstallBar.astro";
+import SiteHeader from "../../components/landing/SiteHeader.astro";
+import WorkflowSteps from "../../components/landing/WorkflowSteps.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { SiteLinks } from "../../config/SiteLinks";
+import { ptBR } from "../../i18n/pt-BR";
+import { buildInstallPrompt } from "../../utils/BuildInstallPrompt";
+
+const t = ptBR;
+const lang = "pt-BR";
+const installGuideUrl = SiteLinks.resolveInstallGuideUrl(lang);
+const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGuideUrl);
+---
+
+<BaseLayout
+    title={t.meta.title}
+    description={t.meta.description}
+    lang={lang}
+    skipToContent={t.nav.skipToContent}
+>
+    <SiteHeader
+        nav={t.nav}
+        logoHref="/pt-br/"
+        langSwitchHref="/"
+        langSwitchLabel="EN"
+        navAriaLabel="Principal"
+    />
+
+    <main id="main-content" class="container page-main" tabindex="-1">
+        <section class="grid-hero hero-trail hero-peak" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <h1 id="hero-title" class="hero-title">{t.hero.title}</h1>
+                <p class="muted hero-subtitle">{t.hero.subtitle}</p>
+                <p class="hero-cta">
+                    <a class="hero-cta-link" href="#get-started">{t.nav.getStarted}</a>
+                </p>
+            </div>
+            <div id="hero-install" class="hero-install-anchor">
+                <CopyInstall
+                    label={t.hero.installLabel}
+                    command={installPrompt}
+                    copyLabel={t.copy.copyShort}
+                    copiedLabel={t.copy.copied}
+                    failedLabel={t.copy.failed}
+                    readyLabel={t.copy.readyInTerminal}
+                    manualHint={t.copy.manualHint}
+                />
+            </div>
+        </section>
+
+        <section id="get-started" class="card section-card workflow-panel">
+            <h2>{t.quickStart.title}</h2>
+            <WorkflowSteps steps={t.quickStart.steps} />
+        </section>
+
+        <section class="card section-card how-it-works-panel">
+            <h2>{t.howItWorks.title}</h2>
+            <div class="split-layout">
+                <HowItWorksDiagram
+                    actorLabel={t.howItWorks.diagramActor}
+                    publicLabel={t.howItWorks.publicLabel}
+                    privateLabel={t.howItWorks.privateLabel}
+                    coverageSkill={t.howItWorks.diagramCoverageSkill}
+                    ariaLabel={t.howItWorks.diagramAria}
+                />
+                <p class="muted section-lead split-layout-lead">{t.howItWorks.body}</p>
+            </div>
+        </section>
+
+        <section id="coverage" class="page-section coverage-section">
+            <h2>{t.coverage.title}</h2>
+            <p class="muted section-lead">{t.coverage.lead}</p>
+            <div class="coverage-points">
+                {
+                    t.coverage.points.map((point) => (
+                        <article class="card coverage-point-card">
+                            <h3>{point.title}</h3>
+                            <p class="muted feature-body">{point.body}</p>
+                        </article>
+                    ))
+                }
+            </div>
+        </section>
+
+        <section class="page-section features-section">
+            <h2>{t.features.title}</h2>
+            <div class="features">
+                {
+                    t.features.items.map((item) => (
+                        <article class="card">
+                            <h3>{item.title}</h3>
+                            <p class="muted feature-body">{item.body}</p>
+                        </article>
+                    ))
+                }
+            </div>
+        </section>
+
+        <section id="agents" class="page-section workflow-step-section">
+            <div class="section-heading-row">
+                <span class="step-badge">{t.agents.stepLabel}</span>
+                <h2>{t.agents.title}</h2>
+            </div>
+            <p class="muted section-lead">{t.agents.intro}</p>
+            <ul class="agent-commands-list">
+                {
+                    t.agents.items.map((item) => (
+                        <li>
+                            <CopyCommandRow
+                                label={item.label}
+                                command={item.command}
+                                copyLabel={t.copy.copyShort}
+                                copiedLabel={t.copy.copied}
+                                failedLabel={t.copy.failed}
+                                readyLabel={t.copy.readyInTerminal}
+                            />
+                        </li>
+                    ))
+                }
+            </ul>
+            <p class="copy-manual-hint muted agents-copy-hint">{t.copy.manualHint}</p>
+        </section>
+
+        <section id="commands" class="page-section">
+            <h2>{t.commands.title}</h2>
+            <CommandReference
+                commandHeader={t.commands.tableCommand}
+                descriptionHeader={t.commands.tableDescription}
+                rows={t.commands.rows}
+            />
+        </section>
+    </main>
+
+    <footer class="site-footer muted">
+        {t.footer.tagline}
+    </footer>
+
+    <MobileInstallBar
+        command={installPrompt}
+        copyLabel={t.copy.copyShort}
+        copiedLabel={t.copy.copied}
+        failedLabel={t.copy.failed}
+        readyLabel={t.copy.readyInTerminal}
+        barLabel={t.hero.installLabel}
+    />
+</BaseLayout>
