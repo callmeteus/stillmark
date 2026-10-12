@@ -57,7 +57,7 @@ npm run preview -w @stillmark/landing-page
 
 | Surface | How |
 |---------|-----|
-| **GitHub Pages** | Push to `master` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml). In the repo, set **Settings → Pages → Build and deployment → GitHub Actions** once. |
+| **GitHub Pages** | Push to `master` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml). **One-time:** [Settings → Pages](https://github.com/callmeteus/stillmark/settings/pages) → **Build and deployment** → **Source: GitHub Actions**. Without this, `deploy-pages` fails with HTTP 404. Then re-run the workflow or push again. Site URL: `https://callmeteus.github.io/stillmark/`. |
 | **CLI download** | Push a tag `vX.Y.Z` matching `packages/cli/package.json` runs [`.github/workflows/release.yml`](.github/workflows/release.yml) and uploads `stillmark.tgz` on the GitHub Release. The landing install guide uses `releases/latest/download/stillmark.tgz`. |
 
 ## License
