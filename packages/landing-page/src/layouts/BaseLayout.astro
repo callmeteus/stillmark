@@ -20,11 +20,12 @@ const { title, description, lang, skipToContent } = Astro.props;
         <title>{title}</title>
     </head>
     <body>
-        <a class="skip-link" href="#main-content">{skipToContent}</a>
+        <a class="skip-link" href="#main-content" data-i18n="nav.skipToContent">{skipToContent}</a>
         <slot />
         <script>
             import "../scripts/initCopyButtons.ts";
             import "../scripts/initMobileInstallBar.ts";
+            import "../scripts/initLocale.ts";
         </script>
     </body>
 </html>

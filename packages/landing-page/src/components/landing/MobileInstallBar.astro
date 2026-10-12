@@ -15,9 +15,9 @@ const commandId = `mobile-install-${randomUUID()}`;
 ---
 
 <div class="mobile-install-bar" data-mobile-install-bar hidden data-copy-root>
-    <p class="mobile-install-bar-label">{barLabel}</p>
+    <p class="mobile-install-bar-label" data-i18n="hero.installLabel">{barLabel}</p>
     <div class="mobile-install-bar-row">
-        <code id={commandId} class="mobile-install-code break-code">{command}</code>
+        <code id={commandId} class="mobile-install-code break-code" data-mobile-install-command>{command}</code>
         <button
             type="button"
             class="btn btn-copy mobile-install-copy"

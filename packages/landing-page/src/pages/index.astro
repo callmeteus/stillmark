@@ -2,20 +2,23 @@
 import CommandReference from "../components/landing/CommandReference.astro";
 import AgentInstallTabs from "../components/landing/AgentInstallTabs.astro";
 import HeroInstallTabs from "../components/landing/HeroInstallTabs.astro";
-import CompanionSection from "../components/landing/CompanionSection.astro";
-import HowItWorksCards from "../components/landing/HowItWorksCards.astro";
 import MobileInstallBar from "../components/landing/MobileInstallBar.astro";
 import SiteHeader from "../components/landing/SiteHeader.astro";
-import WorkflowSteps from "../components/landing/WorkflowSteps.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SiteLinks } from "../config/SiteLinks";
+import { createLocaleBundle } from "../i18n/LocaleBundle";
+import type { LocaleId } from "../i18n/LocaleIds";
 import { enUS } from "../i18n/en-US";
 import { buildInstallPrompt } from "../utils/BuildInstallPrompt";
 
 const t = enUS;
 const lang = "en-US";
-const installGuideUrl = SiteLinks.resolveInstallGuideUrl(lang);
-const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGuideUrl);
+const installUrls: Record<LocaleId, string> = {
+    "en-US": SiteLinks.resolveInstallGuideUrl("en-US"),
+    "pt-BR": SiteLinks.resolveInstallGuideUrl("pt-BR")
+};
+const localeBundle = createLocaleBundle(installUrls);
+const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installUrls[lang]);
 ---
 
 <BaseLayout
@@ -24,21 +27,15 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
     lang={lang}
     skipToContent={t.nav.skipToContent}
 >
-    <SiteHeader
-        nav={t.nav}
-        logoHref="/"
-        langSwitchHref="/pt-br/"
-        langSwitchLabel="PT"
-        navAriaLabel="Primary"
-    />
+    <SiteHeader nav={t.nav} logoHref="/stillmark/" navAriaLabel="Primary" />
 
     <main id="main-content" class="container page-main" tabindex="-1">
         <section class="grid-hero hero-trail hero-peak" aria-labelledby="hero-title">
             <div class="hero-copy">
-                <h1 id="hero-title" class="hero-title">{t.hero.title}</h1>
-                <p class="muted hero-subtitle">{t.hero.subtitle}</p>
+                <h1 id="hero-title" class="hero-title" data-i18n="hero.title">{t.hero.title}</h1>
+                <p class="muted hero-subtitle" data-i18n="hero.subtitle">{t.hero.subtitle}</p>
                 <p class="hero-cta">
-                    <a class="hero-cta-link" href="#get-started">{t.nav.getStarted}</a>
+                    <a class="hero-cta-link" href="#get-started" data-i18n="nav.getStarted">{t.nav.getStarted}</a>
                 </p>
             </div>
             <div id="hero-install" class="hero-install-anchor">
@@ -62,40 +59,31 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
         </section>
 
         <section id="get-started" class="card section-card workflow-panel">
-            <h2>{t.quickStart.title}</h2>
-            <WorkflowSteps steps={t.quickStart.steps} />
+            <h2 data-i18n="quickStart.title">{t.quickStart.title}</h2>
+            <ol class="workflow-steps" data-i18n-mount="workflow-steps"></ol>
         </section>
 
         <section class="card section-card how-it-works-panel">
-            <h2>{t.howItWorks.title}</h2>
-            <HowItWorksCards lead={t.howItWorks.lead} items={t.howItWorks.items} />
+            <h2 data-i18n="howItWorks.title">{t.howItWorks.title}</h2>
+            <div data-i18n-mount="how-it-works"></div>
         </section>
 
-        <CompanionSection id="coverage" content={t.coverage} />
-        <CompanionSection id="design" content={t.design} />
-        <CompanionSection id="planning" content={t.planning} />
-        <CompanionSection id="workspace" content={t.workspace} />
+        <section id="coverage" class="page-section companion-section" data-i18n-mount="companion-coverage"></section>
+        <section id="design" class="page-section companion-section" data-i18n-mount="companion-design"></section>
+        <section id="planning" class="page-section companion-section" data-i18n-mount="companion-planning"></section>
+        <section id="workspace" class="page-section companion-section" data-i18n-mount="companion-workspace"></section>
 
         <section class="page-section features-section">
-            <h2>{t.features.title}</h2>
-            <div class="features">
-                {
-                    t.features.items.map((item) => (
-                        <article class="card">
-                            <h3>{item.title}</h3>
-                            <p class="muted feature-body">{item.body}</p>
-                        </article>
-                    ))
-                }
-            </div>
+            <h2 data-i18n="features.title">{t.features.title}</h2>
+            <div class="features" data-i18n-mount="features"></div>
         </section>
 
         <section id="agents" class="page-section workflow-step-section">
             <div class="section-heading-row">
-                <span class="step-badge">{t.agents.stepLabel}</span>
-                <h2>{t.agents.title}</h2>
+                <span class="step-badge" data-i18n="agents.stepLabel">{t.agents.stepLabel}</span>
+                <h2 data-i18n="agents.title">{t.agents.title}</h2>
             </div>
-            <p class="muted section-lead">{t.agents.intro}</p>
+            <p class="muted section-lead" data-i18n="agents.intro">{t.agents.intro}</p>
             <AgentInstallTabs
                 items={t.agents.items}
                 tabGroupLabel={t.agents.tabGroupLabel}
@@ -104,11 +92,11 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
                 failedLabel={t.copy.failed}
                 readyLabel={t.copy.readyInTerminal}
             />
-            <p class="copy-manual-hint muted agents-copy-hint">{t.copy.manualHint}</p>
+            <p class="copy-manual-hint muted agents-copy-hint" data-i18n="copy.manualHint">{t.copy.manualHint}</p>
         </section>
 
         <section id="commands" class="page-section">
-            <h2>{t.commands.title}</h2>
+            <h2 data-i18n="commands.title">{t.commands.title}</h2>
             <CommandReference
                 commandHeader={t.commands.tableCommand}
                 descriptionHeader={t.commands.tableDescription}
@@ -122,7 +110,7 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
     </main>
 
     <footer class="site-footer muted">
-        {t.footer.tagline}
+        <span data-i18n="footer.tagline">{t.footer.tagline}</span>
     </footer>
 
     <MobileInstallBar
@@ -133,4 +121,8 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installGu
         readyLabel={t.copy.readyInTerminal}
         barLabel={t.hero.installLabel}
     />
+
+    <script define:vars={{ localeBundle }}>
+        window.__STILLMARK_LOCALE__ = localeBundle;
+    </script>
 </BaseLayout>

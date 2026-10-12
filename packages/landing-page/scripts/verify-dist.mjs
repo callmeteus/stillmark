@@ -15,7 +15,6 @@ export function assertLandingDist(distDir) {
 
     const requiredFiles = [
         "index.html",
-        "pt-br/index.html",
         "install.md",
         "pt-br/install.md",
         ".nojekyll"

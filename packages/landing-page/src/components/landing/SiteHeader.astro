@@ -5,12 +5,10 @@ import type { Messages } from "../../i18n/en-US";
 interface Props {
     nav: Messages["nav"];
     logoHref: string;
-    langSwitchHref: string;
-    langSwitchLabel: string;
     navAriaLabel: string;
 }
 
-const { nav, logoHref, langSwitchHref, langSwitchLabel, navAriaLabel } = Astro.props;
+const { nav, logoHref, navAriaLabel } = Astro.props;
 ---
 
 <header class="container site-header">
@@ -19,11 +17,11 @@ const { nav, logoHref, langSwitchHref, langSwitchLabel, navAriaLabel } = Astro.p
         Stillmark
     </a>
     <nav class="site-nav muted" aria-label={navAriaLabel}>
-        <a href="#get-started">{nav.getStarted}</a>
-        <a href="#coverage">{nav.coverage}</a>
-        <a href="#design">{nav.design}</a>
-        <a href="#planning">{nav.planning}</a>
-        <a href="#commands">{nav.commands}</a>
+        <a href="#get-started" data-i18n="nav.getStarted">{nav.getStarted}</a>
+        <a href="#coverage" data-i18n="nav.coverage">{nav.coverage}</a>
+        <a href="#design" data-i18n="nav.design">{nav.design}</a>
+        <a href="#planning" data-i18n="nav.planning">{nav.planning}</a>
+        <a href="#commands" data-i18n="nav.commands">{nav.commands}</a>
         {
             SiteLinks.github
                 ? (
@@ -31,14 +29,15 @@ const { nav, logoHref, langSwitchHref, langSwitchLabel, navAriaLabel } = Astro.p
                         href={SiteLinks.github}
                         rel="noopener noreferrer"
                         target="_blank"
+                        data-i18n="nav.github"
                     >
                         {nav.github}
                     </a>
                 )
                 : null
         }
-        <a href={langSwitchHref} lang={langSwitchLabel === "PT" ? "pt-BR" : "en-US"}>
-            {langSwitchLabel}
-        </a>
+        <button type="button" class="locale-toggle" data-locale-toggle lang="pt-BR">
+            PT
+        </button>
     </nav>
 </header>

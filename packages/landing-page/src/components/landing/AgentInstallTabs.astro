@@ -32,7 +32,12 @@ const panels = items.map((item) => ({
 ---
 
 <div class="agent-install-tabs card" data-agent-install-tabs>
-    <div class="agent-install-tablist" role="tablist" aria-label={tabGroupLabel}>
+    <div
+        class="agent-install-tablist"
+        role="tablist"
+        aria-label={tabGroupLabel}
+        data-i18n-aria-label="agents.tabGroupLabel"
+    >
         {
             panels.map((panel, index) => (
                 <button

@@ -33,12 +33,18 @@ function toAgentCommand(cmd: string): string {
 
 <div class="command-reference" data-command-reference data-mode="agent">
     <div class="command-reference-toolbar">
-        <div class="command-reference-mode" role="group" aria-label={modeGroupLabel}>
+        <div
+            class="command-reference-mode"
+            role="group"
+            aria-label={modeGroupLabel}
+            data-i18n-aria-label="commands.modeGroupLabel"
+        >
             <button
                 type="button"
                 class="command-reference-mode-btn"
                 data-command-mode="agent"
                 aria-pressed="true"
+                data-i18n="commands.modeAgentLabel"
             >
                 {modeAgentLabel}
             </button>
@@ -47,6 +53,7 @@ function toAgentCommand(cmd: string): string {
                 class="command-reference-mode-btn"
                 data-command-mode="console"
                 aria-pressed="false"
+                data-i18n="commands.modeConsoleLabel"
             >
                 {modeConsoleLabel}
             </button>
@@ -57,8 +64,8 @@ function toAgentCommand(cmd: string): string {
         <table class="command-reference-table">
             <thead>
                 <tr>
-                    <th scope="col">{commandHeader}</th>
-                    <th scope="col">{descriptionHeader}</th>
+                    <th scope="col" data-i18n="commands.tableCommand">{commandHeader}</th>
+                    <th scope="col" data-i18n="commands.tableDescription">{descriptionHeader}</th>
                 </tr>
             </thead>
             <tbody>

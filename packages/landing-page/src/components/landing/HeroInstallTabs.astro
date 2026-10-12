@@ -41,7 +41,12 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
 
 <div class="install-panel hero-install-tabs" data-hero-install-tabs data-mode="agent">
     <div class="hero-install-toolbar">
-        <div class="hero-install-tablist" role="tablist" aria-label={tabGroupLabel}>
+        <div
+            class="hero-install-tablist"
+            role="tablist"
+            aria-label={tabGroupLabel}
+            data-i18n-aria-label="hero.installTabGroupLabel"
+        >
             <button
                 type="button"
                 class="hero-install-tab"
@@ -51,6 +56,7 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
                 aria-controls="hero-install-panel-agent"
                 tabindex="0"
                 data-hero-install-mode="agent"
+                data-i18n="hero.installModeAgentLabel"
             >
                 {modeAgentLabel}
             </button>
@@ -63,6 +69,7 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
                 aria-controls="hero-install-panel-cli"
                 tabindex="-1"
                 data-hero-install-mode="cli"
+                data-i18n="hero.installModeCliLabel"
             >
                 {modeCliLabel}
             </button>
@@ -80,7 +87,14 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
         data-copy-root
     >
         <div class="install-prompt-shell">
-            <code id={agentCommandId} class="install-code break-code" tabindex="0">{agentPrompt}</code>
+            <code
+                id={agentCommandId}
+                class="install-code break-code"
+                tabindex="0"
+                data-hero-agent-prompt
+            >
+                {agentPrompt}
+            </code>
             <button
                 type="button"
                 class="btn btn-copy btn-copy-embedded"
@@ -95,7 +109,7 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
             </button>
         </div>
         <p class="copy-status muted" role="status" aria-live="polite"></p>
-        <p class="copy-manual-hint muted">{agentManualHint}</p>
+        <p class="copy-manual-hint muted" data-i18n="copy.manualHint">{agentManualHint}</p>
     </div>
 
     <div
@@ -108,7 +122,14 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
         data-copy-root
     >
         <div class="install-prompt-shell install-prompt-shell-cli">
-            <code id={cliCommandId} class="install-code install-code-cli break-code" tabindex="0">{cliCommand}</code>
+            <code
+                id={cliCommandId}
+                class="install-code install-code-cli break-code"
+                tabindex="0"
+                data-hero-cli-command
+            >
+                {cliCommand}
+            </code>
             <button
                 type="button"
                 class="btn btn-copy btn-copy-embedded"
@@ -123,7 +144,7 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
             </button>
         </div>
         <p class="copy-status muted" role="status" aria-live="polite"></p>
-        <p class="copy-manual-hint muted">{cliManualHint}</p>
+        <p class="copy-manual-hint muted" data-i18n="hero.cliInstallHint">{cliManualHint}</p>
     </div>
 </div>
 

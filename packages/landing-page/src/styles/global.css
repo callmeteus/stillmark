@@ -149,11 +149,28 @@ code:focus-visible {
     justify-content: flex-end;
 }
 
-.site-nav a {
+.site-nav a,
+.site-nav .locale-toggle {
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
     padding: 0.25rem 0.125rem;
+}
+
+.locale-toggle {
+    margin: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.locale-toggle:hover {
+    color: var(--color-accent);
 }
 
 .page-main {
