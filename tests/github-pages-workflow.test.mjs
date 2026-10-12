@@ -7,18 +7,19 @@ import { test } from "node:test";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pagesWorkflow = path.join(repoRoot, ".github", "workflows", "pages.yml");
 
-test("GitHub Pages workflow deploys Astro dist, not Jekyll on the monorepo", () => {
+test("GitHub Pages workflow publishes Astro dist to gh-pages, not Jekyll on master", () => {
     assert.ok(fs.existsSync(pagesWorkflow), "missing .github/workflows/pages.yml");
 
     const yaml = fs.readFileSync(pagesWorkflow, "utf8");
 
-    assert.match(yaml, /upload-pages-artifact/);
-    assert.match(yaml, /deploy-pages/);
+    assert.match(yaml, /peaceiris\/actions-gh-pages/);
+    assert.match(yaml, /publish_branch:\s*gh-pages/);
     assert.match(yaml, /packages\/landing-page\/dist/);
+    assert.match(yaml, /enable_jekyll:\s*false/);
     assert.doesNotMatch(
         yaml,
         /jekyll-build-pages/,
-        "do not use Jekyll; Pages must upload the Astro dist artifact"
+        "do not build the monorepo with Jekyll"
     );
 
     const rootConfig = path.join(repoRoot, "_config.yml");

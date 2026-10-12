@@ -57,7 +57,7 @@ npm run preview -w @stillmark/landing-page
 
 | Surface | How |
 |---------|-----|
-| **GitHub Pages** | Push to `master` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml). **One-time:** [Settings → Pages](https://github.com/callmeteus/stillmark/settings/pages) → **Build and deployment** → **Source: GitHub Actions** (not “Deploy from a branch”). Branch/Jekyll mode tries to build the whole monorepo and fails on `.astro` files. Without Actions source, `deploy-pages` can return HTTP 404. Site URL: `https://callmeteus.github.io/stillmark/`. CI runs `npm run verify` on `packages/landing-page/dist` after Astro build. |
+| **GitHub Pages** | Push to `master` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml) (Astro build → `gh-pages` branch). **One-time:** [Settings → Pages](https://github.com/callmeteus/stillmark/settings/pages) → **Deploy from a branch** → **`gh-pages`** / `/ (root)` — **not `master`**. If source is `master`, GitHub runs Jekyll on the monorepo and fails on `.astro` files (“pages build and deployment”). See [docs/GITHUB-PAGES.md](docs/GITHUB-PAGES.md). |
 | **CLI download** | Push a tag `vX.Y.Z` matching `packages/cli/package.json` runs [`.github/workflows/release.yml`](.github/workflows/release.yml) and uploads `stillmark.tgz` on the GitHub Release. The landing install guide uses `releases/latest/download/stillmark.tgz`. |
 
 ## License
