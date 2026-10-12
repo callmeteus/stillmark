@@ -5,3 +5,12 @@ dist-release/
 .DS_Store
 *.log
 .impeccable/
+
+# Published by .github/workflows/pages.yml (artifact deploy), not stored on master
+/index.html
+/install.md
+/.nojekyll
+/_astro/
+/pt-br/
+/sitemap-index.xml
+/sitemap-0.xml

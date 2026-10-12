@@ -57,7 +57,7 @@ npm run preview -w @stillmark/landing-page
 
 | Surface | How |
 |---------|-----|
-| **GitHub Pages** | Root **`.nojekyll`** skips Jekyll on `master`; [`.github/workflows/pages.yml`](.github/workflows/pages.yml) merges the Astro `dist` into the branch root. Pages: **Deploy from a branch → `master` → `/ (root)`**. See [.github/GITHUB-PAGES.md](.github/GITHUB-PAGES.md). |
+| **GitHub Pages** | [`.github/workflows/pages.yml`](.github/workflows/pages.yml) builds Astro and deploys `packages/landing-page/dist` as a Pages artifact (no static HTML on `master`). Repo setting: **Pages → Source: GitHub Actions**. See [.github/GITHUB-PAGES.md](.github/GITHUB-PAGES.md). |
 | **CLI download** | Push a tag `vX.Y.Z` matching `packages/cli/package.json` runs [`.github/workflows/release.yml`](.github/workflows/release.yml) and uploads `stillmark.tgz` on the GitHub Release. The landing install guide uses `releases/latest/download/stillmark.tgz`. |
 
 ## License

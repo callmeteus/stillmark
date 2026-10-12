@@ -4,31 +4,24 @@ on:
     push:
         branches:
             - master
-        paths-ignore:
-            - "index.html"
-            - "install.md"
-            - "pt-br/**"
-            - "_astro/**"
-            - "sitemap-*.xml"
     workflow_dispatch:
 
 permissions:
-    contents: write
+    contents: read
+    pages: write
+    id-token: write
 
 concurrency:
     group: pages
     cancel-in-progress: true
 
 jobs:
-    deploy:
-        name: Build Astro and publish static files to master root
+    build:
+        name: Build Astro static site
         runs-on: ubuntu-latest
-
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -47,23 +40,19 @@ jobs:
             - name: Verify static Pages artifact
               run: npm run verify -w @stillmark/landing-page
 
-            - name: Merge dist into master root for Pages
-              run: |
-                  set -e
-                  DIST=packages/landing-page/dist
-                  cp "$DIST/index.html" .
-                  cp "$DIST/install.md" .
-                  cp "$DIST/.nojekyll" .
-                  rm -rf _astro pt-br
-                  cp -r "$DIST/_astro" .
-                  cp -r "$DIST/pt-br" .
-                  cp "$DIST"/sitemap-*.xml . 2>/dev/null || true
-                  git config user.name "github-actions[bot]"
-                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                  git add index.html install.md .nojekyll _astro pt-br sitemap-index.xml sitemap-0.xml
-                  if git diff --staged --quiet; then
-                    echo "No static site changes to publish"
-                  else
-                    git commit -m "chore(t): atualiza arquivos estáticos do GitHub Pages"
-                    git push
-                  fi
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: packages/landing-page/dist
+
+    deploy:
+        name: Deploy to GitHub Pages
+        needs: build
+        runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Deploy
+              id: deployment
+              uses: actions/deploy-pages@v4

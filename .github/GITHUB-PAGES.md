@@ -1,34 +1,33 @@
 # GitHub Pages for Stillmark
 
-## Root cause of the Jekyll / `.astro` errors
+## How deployment works
 
-The automatic workflow **pages build and deployment** runs **Jekyll** on whatever GitHub Pages publishes. Your logs showed:
+The site is **not** committed to `master`. CI builds Astro and publishes **`packages/landing-page/dist`** as a [GitHub Pages workflow artifact](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
-`Source: /github/workspace/.`
+Workflow: [`.github/workflows/pages.yml`](workflows/pages.yml)
 
-That means **master root** is the site source. Jekyll then scans `packages/landing-page/src/**/*.astro` and dies on `---` front matter.
+1. `npm run build -w @stillmark/landing-page`
+2. `npm run verify -w @stillmark/landing-page` (includes `.nojekyll` in `dist`)
+3. `actions/upload-pages-artifact` + `actions/deploy-pages`
 
-Changing Astro or adding tests does **not** stop that job. You either:
+Site URL: `https://callmeteus.github.io/stillmark/` (`base: /stillmark` in `astro.config.mjs`).
 
-1. **Disable Jekyll** on the published root (this repo), or  
-2. Change Pages to publish only a static folder (`/docs` or `gh-pages`).
+## One-time repository setting
 
-This repo uses **(1) + CI**.
+In the GitHub repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
-## How this repository deploys
+Disable or ignore the legacy **pages build and deployment** job that reads the branch root. It is not used when the source is **GitHub Actions**.
 
-1. **`.nojekyll`** at the **repository root** tells GitHub Pages **not to run Jekyll** on the published branch root.
-2. [`.github/workflows/pages.yml`](workflows/pages.yml) builds Astro and commits `packages/landing-page/dist` outputs into **master root** (`index.html`, `_astro/`, `pt-br/`, …) via `git push` (not `peaceiris`, which forbids `master` → `master`).
-3. Pages can stay **Deploy from a branch → `master` → `/ (root)`** — the setting that was failing before is OK **after** `.nojekyll` is on `master`.
+## Remove old static files from git (if present)
 
-Site URL: `https://callmeteus.github.io/stillmark/`
+If `master` still contains `index.html`, `_astro/`, `pt-br/`, etc. at the repo root, delete them from the tree after switching Pages to Actions:
 
-## After merging
+```bash
+git rm -r --cached index.html install.md .nojekyll _astro pt-br sitemap-index.xml sitemap-0.xml 2>/dev/null || true
+git commit -m "chore: remove arquivos estáticos do Pages da branch master"
+```
 
-1. Push to `master` (must include root `.nojekyll`).
-2. Run **Deploy GitHub Pages** if needed (or wait for the push workflow).
-3. **pages build and deployment** should no longer run Jekyll (or should pass without parsing `.astro`).
-4. Open `https://callmeteus.github.io/stillmark/`.
+Root entries are listed in `.gitignore` so they are not re-committed.
 
 ## Local checks
 
