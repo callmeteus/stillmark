@@ -292,7 +292,7 @@ export function addCoverageCase(
 import type { CoverageChangedFile } from "./CoverageUpdateHints";
 
 /**
- * Git hints for `/coverage update` (changed paths since last COVERAGE.md commit).
+ * Git hints for `/stillmark coverage update` (changed paths since last COVERAGE.md commit).
  */
 export async function coverageUpdateHints(
     paths: ProjectPaths,

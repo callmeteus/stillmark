@@ -42,7 +42,7 @@ When the team wants a shared test-case checklist in git:
 stillmark coverage init
 ```
 
-Then use the agent skill `/coverage` (installed with Cursor and Claude templates) or `stillmark coverage validate --json` after edits.
+Then use `/stillmark coverage …` from the agent (same workflows as `stillmark coverage …`) or `stillmark coverage validate --json` after edits.
 
 ## 5. Verify
 

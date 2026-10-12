@@ -30,7 +30,7 @@ export const enUS = {
             {
                 title: "Plan with your agent",
                 body:
-                    "Use /stillmark for planning and design (browser selection + feedback). Use /coverage to keep COVERAGE.md aligned with tests."
+                    "Use /stillmark for everything: planning, /stillmark coverage for the test checklist, and design (browser selection + feedback)."
             }
         ]
     },
@@ -57,9 +57,9 @@ export const enUS = {
             "Agent intent flows through Stillmark into roadmap, task plan, and coverage checklist files.",
         publicLabel: "git",
         privateLabel: "local",
-        diagramCoverageSkill: "/coverage",
+        diagramCoverageSkill: "/stillmark coverage",
         body:
-            "Long-term goals live in the roadmap. Concrete work for the current objective lives in the private task plan under .stillmark/plans/. Test cases live in COVERAGE.md. Agents call the CLI with --json; /stillmark also handles UI fixes and stillmark config set records whether .stillmark/design-system/ is shared in git."
+            "Long-term goals live in the roadmap. Concrete work lives in the private task plan under .stillmark/plans/. Test cases live in COVERAGE.md. One slash command: /stillmark mirrors the whole CLI (including stillmark coverage …) with --json, plus embedded design and stillmark config for .stillmark/design-system/ sharing."
     },
     coverage: {
         title: "Test coverage companion",
@@ -67,8 +67,8 @@ export const enUS = {
             "COVERAGE.md is a checkbox-only checklist grouped by area. No percentages or prose blocks - just cases tagged happy, sad, edge, or security that track what is actually tested.",
         points: [
             {
-                title: "Agent skill",
-                body: "Cursor and Claude installs include a /coverage skill. It prints help, runs update workflows, and edits the file in plain language."
+                title: "Via /stillmark coverage",
+                body: "/stillmark coverage shows help, /stillmark coverage update reconciles with git changes, and free text after /stillmark coverage edits the checklist in plain language."
             },
             {
                 title: "Strict format",
@@ -109,7 +109,7 @@ export const enUS = {
             },
             {
                 title: "COVERAGE.md companion",
-                body: "Validate, check off, and add test cases with stillmark coverage while /coverage handles natural language."
+                body: "Validate, check off, and add test cases with stillmark coverage or /stillmark coverage … from the agent."
             },
             {
                 title: "Embedded design",
@@ -124,7 +124,7 @@ export const enUS = {
     agents: {
         stepLabel: "Step 2",
         title: "Install agent templates",
-        intro: "Choose your agent and copy the matching install command. Cursor and Claude also install the /coverage skill.",
+        intro: "Choose your agent and copy the matching install command. One stillmark skill handles planning, coverage, and design through /stillmark.",
         items: [
             { label: "Cursor", command: "stillmark install --agent cursor" },
             { label: "Claude", command: "stillmark install --agent claude" },
@@ -160,8 +160,9 @@ export const enUS = {
             ["stillmark coverage check \"…\"", "Check off a case by substring match"],
             ["stillmark coverage uncheck \"…\"", "Uncheck a case"],
             ["stillmark coverage add \"<heading>\" \"…\"", "Add a tagged case under a heading"],
-            ["/stillmark", "Planning, config, and embedded design (selection + UI feedback)"],
-            ["/coverage", "Agent skill: help, update workflow, free-text checklist edits"]
+            ["/stillmark", "Full CLI mirror with --json, embedded coverage and design"],
+            ["/stillmark coverage", "Help, update workflow, or free-text COVERAGE.md edits"],
+            ["/stillmark coverage update", "Reconcile checklist with code and test changes since last commit"]
         ]
     },
     footer: {

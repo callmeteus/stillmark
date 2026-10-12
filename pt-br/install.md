@@ -42,7 +42,7 @@ Quando o time quiser um checklist compartilhado de casos de teste no git:
 stillmark coverage init
 ```
 
-Depois use a skill do agente `/coverage` (instalada com os templates Cursor e Claude) ou `stillmark coverage validate --json` após editar.
+Depois use `/stillmark coverage …` no agente (mesmos fluxos que `stillmark coverage …`) ou `stillmark coverage validate --json` após editar.
 
 ## 5. Verificar
 

@@ -32,7 +32,7 @@ export const ptBR: Messages = {
             {
                 title: "Planejar com o agente",
                 body:
-                    "Use /stillmark para planejar e para design (seleção no browser + feedback). Use /coverage para manter o COVERAGE.md alinhado aos testes."
+                    "Use /stillmark para tudo: planejamento, /stillmark coverage para o checklist de testes e design (seleção no browser + feedback)."
             }
         ]
     },
@@ -59,9 +59,9 @@ export const ptBR: Messages = {
             "A intenção do agente passa pelo Stillmark para roadmap, plano de tarefas e checklist de cobertura.",
         publicLabel: "git",
         privateLabel: "local",
-        diagramCoverageSkill: "/coverage",
+        diagramCoverageSkill: "/stillmark coverage",
         body:
-            "Metas de longo prazo ficam no roadmap. O trabalho concreto fica no plano privado em .stillmark/plans/. Os casos de teste ficam no COVERAGE.md. Agentes usam o CLI com --json; /stillmark também cobre ajustes de UI e stillmark config set registra se .stillmark/design-system/ vai para o git."
+            "Metas de longo prazo ficam no roadmap. O trabalho concreto fica no plano privado em .stillmark/plans/. Os casos de teste ficam no COVERAGE.md. Um único comando: /stillmark espelha o CLI inteiro (incluindo stillmark coverage …) com --json, além de design embutido e stillmark config para compartilhar .stillmark/design-system/."
     },
     coverage: {
         title: "Companheiro de cobertura de testes",
@@ -69,8 +69,8 @@ export const ptBR: Messages = {
             "O COVERAGE.md é um checklist só com caixas, agrupado por área. Sem porcentagens nem blocos de texto - apenas casos marcados como happy, sad, edge ou security que registram o que de fato está testado.",
         points: [
             {
-                title: "Skill do agente",
-                body: "As instalações Cursor e Claude incluem a skill /coverage. Ela mostra ajuda, conduz o fluxo de update e edita o arquivo em linguagem natural."
+                title: "Via /stillmark coverage",
+                body: "/stillmark coverage mostra ajuda, /stillmark coverage update reconcilia com mudanças no git e texto livre após /stillmark coverage edita o checklist em linguagem natural."
             },
             {
                 title: "Formato rígido",
@@ -111,7 +111,7 @@ export const ptBR: Messages = {
             },
             {
                 title: "Companheiro COVERAGE.md",
-                body: "Valide, marque e adicione casos com stillmark coverage enquanto o /coverage trata linguagem natural."
+                body: "Valide, marque e adicione casos com stillmark coverage ou /stillmark coverage … pelo agente."
             },
             {
                 title: "Design embutido",
@@ -126,7 +126,7 @@ export const ptBR: Messages = {
     agents: {
         stepLabel: "Passo 2",
         title: "Instalar templates do agente",
-        intro: "Escolha o agente e copie o comando de instalação correspondente. Cursor e Claude também instalam a skill /coverage.",
+        intro: "Escolha o agente e copie o comando de instalação correspondente. Uma skill stillmark cobre planejamento, cobertura e design via /stillmark.",
         items: [
             { label: "Cursor", command: "stillmark install --agent cursor" },
             { label: "Claude", command: "stillmark install --agent claude" },
@@ -162,8 +162,9 @@ export const ptBR: Messages = {
             ["stillmark coverage check \"…\"", "Marca caso por correspondência parcial"],
             ["stillmark coverage uncheck \"…\"", "Desmarca caso"],
             ["stillmark coverage add \"<título>\" \"…\"", "Adiciona caso com tag sob um título"],
-            ["/stillmark", "Planejamento, config e design embutido (seleção + feedback de UI)"],
-            ["/coverage", "Skill do agente: ajuda, fluxo de update e edição em texto livre"]
+            ["/stillmark", "Espelho do CLI com --json, cobertura e design embutidos"],
+            ["/stillmark coverage", "Ajuda, fluxo de update ou edição em texto livre do COVERAGE.md"],
+            ["/stillmark coverage update", "Reconcilia o checklist com código e testes desde o último commit"]
         ]
     },
     footer: {

@@ -6,7 +6,7 @@ You manage project planning and test-coverage checklists through the Stillmark C
 
 - **ROADMAP.md** (version-controlled): strategic goals, initiatives, milestones, future capabilities, deferred work.
 - **.stillmark/plans/TASK_PLAN.md** (private local, gitignored): concrete tasks for the current execution scope, including **design and UI work** when relevant (dependencies, visual acceptance criteria, blockers, verification). Planning is optional for a one-off browser fix; use the plan when design spans multiple steps or long-running execution.
-- **COVERAGE.md** (version-controlled): checkbox-only test case checklist by area (companion to `/coverage` skill). English case text; tags `[happy]`, `[sad]`, `[edge]`, `[security]`.
+- **COVERAGE.md** (version-controlled): checkbox-only test case checklist by area (edited via `/stillmark coverage …`). English case text; tags `[happy]`, `[sad]`, `[edge]`, `[security]`.
 
 When the user names a destination, respect it. When omitted, run:
 
@@ -36,7 +36,7 @@ stillmark config status --json
 stillmark config set --design-system=true|false --prompted --json
 ```
 
-For `/coverage` natural-language edits, follow the installed `coverage` skill. Validate after every change.
+Use **only `/stillmark`** (not `/coverage`). Mirror the CLI: `/stillmark <args>` runs `stillmark <args> --json`. For COVERAGE.md, use `/stillmark coverage …` or free text about the checklist; follow the stillmark skill `reference/coverage.md`. Validate after every change with `stillmark coverage validate --json`.
 
 ## Design (embedded in `/stillmark`)
 

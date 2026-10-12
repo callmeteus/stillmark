@@ -1,23 +1,21 @@
 # Stillmark
 
-Follow the **stillmark** skill. Text after `/stillmark` is the full instruction.
+Follow the **stillmark** skill. Text after `/stillmark` is the full instruction. **Do not use `/coverage`** - use `/stillmark coverage …` instead.
 
-## Planning
+## CLI mirror
 
-Parse as CLI when it starts with `roadmap`, `plan`, `coverage`, `move`, `add`, `init`, `install`, `classify`, or `long-running`. Run from project root:
+Any terminal command `stillmark <args>` works as `/stillmark <args>` with `--json` appended.
 
-`stillmark <args> --json`
+Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `long-running`.
+
+## Coverage (embedded)
+
+`/stillmark coverage` (help), `/stillmark coverage update`, `/stillmark coverage validate`, or `/stillmark coverage <free text>` / natural language about the test checklist. See `reference/coverage.md` in the stillmark skill.
 
 ## Design (embedded)
 
-Also design mode when:
-
-- The user says `design …`, or
-- A **browser element** is attached (Cursor preview selection), or
-- The message is casual UI feedback (e.g. "ta uma bosta arruma", "melhora isso", "fix this layout").
-
-Map the selection to the **project's** source files, apply fixes, run the app, inspect once. If the preview is not this project (external site), explain and ask to select an element on the local dev app.
+`design …`, browser selection on the **local dev preview**, or casual UI feedback. See `reference/craft-floor.md`.
 
 ## Report
 
-Planning: CLI JSON summary. Design: what you changed, files touched, what you verified in the browser.
+CLI: JSON `summary`. Coverage: what changed in COVERAGE.md + validate result. Design: files touched and what you verified.

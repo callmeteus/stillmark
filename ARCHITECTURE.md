@@ -8,11 +8,11 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
                                       +--> COVERAGE.md validator + git hints
 ```
 
-- **Agents** map `/stillmark` (planning, embedded `design`, browser selection + free text), `/coverage`, and natural language to CLI invocations with `--json`.
+- **Agents** use a single `/stillmark` entry: it mirrors every CLI verb (including `coverage …`) with `--json`, plus embedded `design` (browser selection + free text) and natural-language routing via `classify`.
 - **CLI** (`packages/cli/src/cli/Cli.ts`) dispatches `init`, `config`, `roadmap`, `plan`, `coverage`, `add`, `move`, `classify`, `install`, `long-running`.
 - **Documents** parse `ROADMAP.md` and `TASK_PLAN.md` into line spans and splice edits without full regeneration.
 - **Guards** enforce duplicates, plan scope, and roadmap privacy.
-- **Coverage** (`packages/cli/src/coverage/`) validates checkbox-only `COVERAGE.md`, toggles cases, and surfaces git diff hints for `/coverage update` (aligned with luckymaker-workspace coverage skill).
+- **Coverage** (`packages/cli/src/coverage/`) validates checkbox-only `COVERAGE.md`, toggles cases, and surfaces git diff hints for `/stillmark coverage update` (playbook in `templates/.../stillmark/reference/coverage.md`).
 - **Git** (`GitRunner`) optionally commits or pushes **only** `ROADMAP.md` when enabled in `stillmark.config.json`.
 - **Long-running** persists `.stillmark/plans/STATE.json` and recomputes the next actionable task after authorized plan changes.
 

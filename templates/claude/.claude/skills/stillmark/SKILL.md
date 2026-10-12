@@ -1,18 +1,29 @@
 ---
 name: stillmark
 description: >-
-  Stillmark companion: planning CLI plus embedded design mode. Use /stillmark
-  with CLI args, design briefs, or browser-selected elements and casual UI feedback.
+  Single Stillmark entry: every CLI command and COVERAGE.md workflow through
+  /stillmark, plus embedded design. Do not use a separate /coverage slash command.
 ---
 
 # Stillmark
 
-Follow the shared Stillmark instructions. Run `stillmark … --json` from the project root for roadmap, plan, coverage, and long-running work.
+**Only entry point:** `/stillmark`. Follow shared Stillmark instructions. Run `stillmark … --json` from the project root.
 
-## Design (same `/stillmark` entry)
+## CLI mirror
 
-- `/stillmark design …` for explicit UI work.
-- Browser element selection + free text (e.g. "ta uma bosta arruma") → map DOM to **this project's** source, fix, run app, inspect once.
-- External sites in the browser are not editable; use the local dev preview of the repo.
+`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `long-running`.
 
-Playbooks: `reference/` next to this skill (`.claude/skills/stillmark/reference/` after install).
+## Modes
+
+| Pattern | Mode |
+|---------|------|
+| CLI verbs above | Run `stillmark <text> --json` |
+| `coverage …` or COVERAGE/test checklist intent | `reference/coverage.md` (help, update, free text, or `stillmark coverage …`) |
+| `design …`, browser selection, UI critique | Design; `reference/craft-floor.md` |
+| Else | `stillmark classify "<text>" --json` |
+
+Never use `/coverage`. Playbooks under `reference/` (`.claude/skills/stillmark/reference/`).
+
+First run: `stillmark config status --json` when `needsFirstRunPrompt`.
+
+Git: never commit without user grant; `stillmark git commit-style` for preview.

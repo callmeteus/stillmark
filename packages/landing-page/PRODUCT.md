@@ -20,7 +20,7 @@ Astro 6 static site (`@astrojs/sitemap`), plain CSS in `src/styles/global.css`, 
 
 ## Product Purpose
 
-The **landing-page** surface exists to persuade visitors that Stillmark is the right companion for agentic development: public strategic roadmap in git, private `.stillmark/plans/TASK_PLAN.md`, checkbox-only `COVERAGE.md`, deterministic CLI writes, `/coverage` agent skill, and optional git integration for roadmap only.
+The **landing-page** surface exists to persuade visitors that Stillmark is the right companion for agentic development: public strategic roadmap in git, private `.stillmark/plans/TASK_PLAN.md`, checkbox-only `COVERAGE.md`, deterministic CLI writes, `/stillmark` (including `/stillmark coverage …`) as the agent entry point, and optional git integration for roadmap only.
 
 Success for this surface: a visitor understands the split between roadmap, plan, and coverage checklist, copies or remembers the install prompt, and knows which `stillmark install --agent` variant matches their tool.
 

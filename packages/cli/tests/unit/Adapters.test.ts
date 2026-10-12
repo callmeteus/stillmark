@@ -12,5 +12,7 @@ describe("Adapters", () => {
         expect(text).toContain("long-running");
         expect(text).toContain("reference/");
         expect(text).toContain("needsClarification");
+        expect(text).toContain("/stillmark coverage");
+        expect(text).not.toContain("Use `/coverage`");
     });
 });
