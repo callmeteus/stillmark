@@ -22,6 +22,8 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 
 - If the user repeats the binary (`/stillmark stillmark plan add …`), strip one leading `stillmark ` and run the rest.
 - Always append `--json` for CLI runs unless the user forbids it.
+- `stillmark <command> --help` prints usage and changes nothing. Unknown options are refused; put text that starts with a dash after `--`.
+- Task criteria go through flags, not hand edits: `plan add "<title>" --acceptance "<a>\n<b>" --verification "<check>"` (`--acceptance` also works on `roadmap add`).
 - Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `update`, `long-running`.
 
 ## Auto-update (start of every `/stillmark`)
@@ -35,6 +37,10 @@ stillmark update --json
 It contacts npm at most once per `update.intervalHours` (default 24h) and returns at once otherwise, so it is cheap to call every time. When `updateAvailable` is **true**, run the command in `recommended` (`stillmark update apply --json` or `npx -y stillmark@<version> update apply --json`), tell the user in one line what was updated, then re-read this skill if its files changed and continue with the original request. Ignore `error` (offline, registry down) and keep going. Do not run `npm install` or edit `package.json` yourself; if the summary says the installed CLI is older, just mention it.
 
 User controls: "para de atualizar sozinho" = `stillmark config set --auto-update=false --json`; "verifica a cada 6 horas" = `stillmark config set --update-interval=6 --json`; "procura atualização agora" = `stillmark update --force --json`.
+
+## Repo without Stillmark files (global install)
+
+When the skill was installed with `--global`, a repository may have no `stillmark.config.json` or `ROADMAP.md` yet. Before the first file-backed command there, ask once whether to set Stillmark up in this repo; on yes run `stillmark init --json`, on no answer without touching files.
 
 ## First run: sharing under `.stillmark`
 

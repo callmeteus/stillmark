@@ -34,14 +34,18 @@ function forEachMessage(
 }
 
 function updateInstallPrompts(bundle: LocaleBundle, locale: LocaleId, messages: Messages): void {
-    const prompt = buildInstallPrompt(messages.hero.installPromptTemplate, bundle.installUrls[locale]);
+    const url = bundle.installUrls[locale];
+    const prompt = buildInstallPrompt(messages.hero.installPromptTemplate, url);
+    const globalPrompt = buildInstallPrompt(messages.hero.installPromptGlobalTemplate, url);
 
     for (const element of document.querySelectorAll<HTMLElement>("[data-hero-agent-prompt], [data-mobile-install-command]")) {
-        element.textContent = prompt;
+        element.textContent = element.dataset.heroAgentPrompt === "global" ? globalPrompt : prompt;
     }
 
     for (const element of document.querySelectorAll<HTMLElement>("[data-hero-cli-command]")) {
-        element.textContent = messages.hero.cliInstallCommand;
+        element.textContent = element.dataset.heroCliCommand === "global"
+            ? messages.hero.cliInstallGlobalCommand
+            : messages.hero.cliInstallCommand;
     }
 }
 

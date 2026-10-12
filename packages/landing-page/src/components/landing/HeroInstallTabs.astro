@@ -7,8 +7,13 @@ interface Props {
     tabGroupLabel: string;
     modeAgentLabel: string;
     modeCliLabel: string;
+    scopeGroupLabel: string;
+    scopeProjectLabel: string;
+    scopeGlobalLabel: string;
     agentPrompt: string;
+    globalAgentPrompt: string;
     cliCommand: string;
+    globalCliCommand: string;
     copyLabel: string;
     copiedLabel: string;
     failedLabel: string;
@@ -16,6 +21,7 @@ interface Props {
     cliReadyLabel: string;
     agentManualHint: string;
     cliManualHint: string;
+    globalCliManualHint: string;
 }
 
 const {
@@ -24,22 +30,30 @@ const {
     tabGroupLabel,
     modeAgentLabel,
     modeCliLabel,
+    scopeGroupLabel,
+    scopeProjectLabel,
+    scopeGlobalLabel,
     agentPrompt,
+    globalAgentPrompt,
     cliCommand,
+    globalCliCommand,
     copyLabel,
     copiedLabel,
     failedLabel,
     agentReadyLabel,
     cliReadyLabel,
     agentManualHint,
-    cliManualHint
+    cliManualHint,
+    globalCliManualHint
 } = Astro.props;
 
 const agentCommandId = `hero-install-agent-${randomUUID()}`;
+const agentGlobalCommandId = `hero-install-agent-global-${randomUUID()}`;
 const cliCommandId = `hero-install-cli-${randomUUID()}`;
+const cliGlobalCommandId = `hero-install-cli-global-${randomUUID()}`;
 ---
 
-<div class="title-block" data-hero-install-tabs data-mode="agent">
+<div class="title-block" data-hero-install-tabs data-mode="agent" data-scope="project">
     <div class="title-block-head">
         <p class="title-block-label">
             <span class="title-block-label-agent" data-i18n="hero.installLabel">{agentLabel}</span>
@@ -81,6 +95,32 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
     </div>
 
     <div
+        class="segmented title-block-scope"
+        role="group"
+        aria-label={scopeGroupLabel}
+        data-i18n-aria-label="hero.installScopeGroupLabel"
+    >
+        <button
+            type="button"
+            class="segmented-btn"
+            aria-pressed="true"
+            data-hero-install-scope="project"
+            data-i18n="hero.installScopeProjectLabel"
+        >
+            {scopeProjectLabel}
+        </button>
+        <button
+            type="button"
+            class="segmented-btn"
+            aria-pressed="false"
+            data-hero-install-scope="global"
+            data-i18n="hero.installScopeGlobalLabel"
+        >
+            {scopeGlobalLabel}
+        </button>
+    </div>
+
+    <div
         class="title-block-panel"
         id="hero-install-panel-agent"
         role="tabpanel"
@@ -88,8 +128,17 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
         data-hero-install-panel="agent"
         data-copy-root
     >
-        <code id={agentCommandId} class="prompt-code break-code" tabindex="0" data-hero-agent-prompt>
+        <code id={agentCommandId} class="prompt-code break-code" tabindex="0" data-hero-agent-prompt data-scope-variant="project">
             {agentPrompt}
+        </code>
+        <code
+            id={agentGlobalCommandId}
+            class="prompt-code break-code"
+            tabindex="0"
+            data-hero-agent-prompt="global"
+            data-scope-variant="global"
+        >
+            {globalAgentPrompt}
         </code>
         <div class="title-block-actions">
             <p class="title-block-hint" data-i18n="copy.manualHint">{agentManualHint}</p>
@@ -97,6 +146,8 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
                 type="button"
                 class="btn btn-copy"
                 data-copy-target={agentCommandId}
+                data-copy-target-project={agentCommandId}
+                data-copy-target-global={agentGlobalCommandId}
                 data-copy-label={copyLabel}
                 data-copied-label={copiedLabel}
                 data-failed-label={failedLabel}
@@ -118,15 +169,35 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
         data-hero-install-panel="cli"
         data-copy-root
     >
-        <code id={cliCommandId} class="prompt-code prompt-code-cli break-code" tabindex="0" data-hero-cli-command>
+        <code
+            id={cliCommandId}
+            class="prompt-code prompt-code-cli break-code"
+            tabindex="0"
+            data-hero-cli-command
+            data-scope-variant="project"
+        >
             {cliCommand}
         </code>
+        <code
+            id={cliGlobalCommandId}
+            class="prompt-code prompt-code-cli break-code"
+            tabindex="0"
+            data-hero-cli-command="global"
+            data-scope-variant="global"
+        >
+            {globalCliCommand}
+        </code>
         <div class="title-block-actions">
-            <p class="title-block-hint" data-i18n="hero.cliInstallHint">{cliManualHint}</p>
+            <p class="title-block-hint" data-i18n="hero.cliInstallHint" data-scope-variant="project">{cliManualHint}</p>
+            <p class="title-block-hint" data-i18n="hero.cliInstallGlobalHint" data-scope-variant="global">
+                {globalCliManualHint}
+            </p>
             <button
                 type="button"
                 class="btn btn-copy"
                 data-copy-target={cliCommandId}
+                data-copy-target-project={cliCommandId}
+                data-copy-target-global={cliGlobalCommandId}
                 data-copy-label={copyLabel}
                 data-copied-label={copiedLabel}
                 data-failed-label={failedLabel}
@@ -141,9 +212,12 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
 </div>
 
 <script>
+    type InstallScope = "project" | "global";
+
     function initHeroInstallTabs(root: HTMLElement) {
         const tabs = root.querySelectorAll<HTMLButtonElement>("[data-hero-install-mode]");
         const panels = root.querySelectorAll<HTMLElement>("[data-hero-install-panel]");
+        const scopeButtons = root.querySelectorAll<HTMLButtonElement>("[data-hero-install-scope]");
 
         function setMode(mode: "agent" | "cli") {
             root.dataset.mode = mode;
@@ -164,6 +238,37 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
                     panel.setAttribute("hidden", "");
                 }
             }
+        }
+
+        function setScope(scope: InstallScope) {
+            root.dataset.scope = scope;
+
+            for (const button of scopeButtons) {
+                button.setAttribute("aria-pressed", button.dataset.heroInstallScope === scope ? "true" : "false");
+            }
+
+            for (const copy of root.querySelectorAll<HTMLButtonElement>("[data-copy-target-project]")) {
+                const targetId = scope === "global" ? copy.dataset.copyTargetGlobal : copy.dataset.copyTargetProject;
+                const target = targetId ? document.getElementById(targetId) : null;
+
+                if (targetId) {
+                    copy.setAttribute("data-copy-target", targetId);
+                }
+
+                if (target?.textContent) {
+                    copy.setAttribute("aria-label", `${copy.dataset.copyLabel ?? ""}: ${target.textContent.trim()}`);
+                }
+            }
+        }
+
+        for (const button of scopeButtons) {
+            button.addEventListener("click", () => {
+                const scope = button.dataset.heroInstallScope;
+
+                if (scope === "project" || scope === "global") {
+                    setScope(scope);
+                }
+            });
         }
 
         for (const tab of tabs) {

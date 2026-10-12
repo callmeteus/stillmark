@@ -27,6 +27,7 @@ const installUrls: Record<LocaleId, string> = {
 };
 const localeBundle = createLocaleBundle(installUrls);
 const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installUrls[lang]);
+const globalInstallPrompt = buildInstallPrompt(t.hero.installPromptGlobalTemplate, installUrls[lang]);
 ---
 
 <BaseLayout
@@ -70,8 +71,13 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installUr
                         tabGroupLabel={t.hero.installTabGroupLabel}
                         modeAgentLabel={t.hero.installModeAgentLabel}
                         modeCliLabel={t.hero.installModeCliLabel}
+                        scopeGroupLabel={t.hero.installScopeGroupLabel}
+                        scopeProjectLabel={t.hero.installScopeProjectLabel}
+                        scopeGlobalLabel={t.hero.installScopeGlobalLabel}
                         agentPrompt={installPrompt}
+                        globalAgentPrompt={globalInstallPrompt}
                         cliCommand={t.hero.cliInstallCommand}
+                        globalCliCommand={t.hero.cliInstallGlobalCommand}
                         copyLabel={t.copy.copyShort}
                         copiedLabel={t.copy.copied}
                         failedLabel={t.copy.failed}
@@ -79,6 +85,7 @@ const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installUr
                         cliReadyLabel={t.copy.readyInTerminal}
                         agentManualHint={t.copy.manualHint}
                         cliManualHint={t.hero.cliInstallHint}
+                        globalCliManualHint={t.hero.cliInstallGlobalHint}
                     />
                 </div>
 

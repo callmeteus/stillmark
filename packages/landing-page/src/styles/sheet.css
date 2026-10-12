@@ -360,6 +360,20 @@
     display: none;
 }
 
+.title-block-scope {
+    margin-top: 0.75rem;
+}
+
+.title-block-scope .segmented-btn {
+    min-height: 2.25rem;
+    font-size: 0.85rem;
+}
+
+.title-block[data-scope="project"] [data-scope-variant="global"],
+.title-block[data-scope="global"] [data-scope-variant="project"] {
+    display: none;
+}
+
 .prompt-code {
     display: block;
     margin-top: 1rem;

@@ -5,6 +5,7 @@ import type { ProjectPaths } from "../paths/ProjectPaths";
 
 /**
  * Local, gitignored cache under `.stillmark/plans/UPDATE.json`.
+ * Global installs keep their own copy in `~/.stillmark/UPDATE.json` (only `templatesVersion` is used there).
  */
 export interface UpdateState {
     /**
@@ -22,15 +23,22 @@ export interface UpdateState {
 }
 
 /**
- * Read the update cache; a missing or corrupt file counts as empty.
+ * Path of the update cache for global (home directory) installs.
  */
-export function loadUpdateState(paths: ProjectPaths): UpdateState {
-    if (!fs.existsSync(paths.updateState)) {
+export function globalUpdateStatePath(homeDir: string): string {
+    return path.join(homeDir, ".stillmark", "UPDATE.json");
+}
+
+/**
+ * Read an update cache file; a missing or corrupt file counts as empty.
+ */
+export function loadUpdateStateFile(file: string): UpdateState {
+    if (!fs.existsSync(file)) {
         return {};
     }
 
     try {
-        const parsed = JSON.parse(fs.readFileSync(paths.updateState, "utf8")) as unknown;
+        const parsed = JSON.parse(fs.readFileSync(file, "utf8")) as unknown;
 
         return parsed !== null && typeof parsed === "object" ? (parsed as UpdateState) : {};
     } catch {
@@ -39,16 +47,37 @@ export function loadUpdateState(paths: ProjectPaths): UpdateState {
 }
 
 /**
- * Persist the update cache.
+ * Persist an update cache file.
  */
-export function writeUpdateState(paths: ProjectPaths, state: UpdateState): void {
-    fs.mkdirSync(path.dirname(paths.updateState), { recursive: true });
-    fs.writeFileSync(paths.updateState, `${JSON.stringify(state, null, 4)}\n`, "utf8");
+export function writeUpdateStateFile(file: string, state: UpdateState): void {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, `${JSON.stringify(state, null, 4)}\n`, "utf8");
 }
 
 /**
- * Record which CLI version wrote the agent templates.
+ * Read the project update cache.
+ */
+export function loadUpdateState(paths: ProjectPaths): UpdateState {
+    return loadUpdateStateFile(paths.updateState);
+}
+
+/**
+ * Persist the project update cache.
+ */
+export function writeUpdateState(paths: ProjectPaths, state: UpdateState): void {
+    writeUpdateStateFile(paths.updateState, state);
+}
+
+/**
+ * Record which CLI version wrote the agent templates in an update cache file.
+ */
+export function recordTemplatesVersionFile(file: string, version: string): void {
+    writeUpdateStateFile(file, { ...loadUpdateStateFile(file), templatesVersion: version });
+}
+
+/**
+ * Record which CLI version wrote the project agent templates.
  */
 export function recordTemplatesVersion(paths: ProjectPaths, version: string): void {
-    writeUpdateState(paths, { ...loadUpdateState(paths), templatesVersion: version });
+    recordTemplatesVersionFile(paths.updateState, version);
 }

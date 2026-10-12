@@ -2,6 +2,15 @@
 
 Execute estes passos na **raiz do projeto** onde os arquivos de planejamento devem ficar.
 
+## Projeto ou global
+
+O prompt que trouxe você até aqui diz qual opção o usuário escolheu:
+
+- **Este projeto** (padrão): execute todos os passos abaixo. A skill fica dentro deste repositório.
+- **Global (todos os projetos)**: execute o passo 1, depois o passo 3 com `--global`, e pule os passos 2, 4 e 5. A skill vai para a pasta do usuário (`~/.cursor`, `~/.claude` ou `~/.codex`) e funciona em qualquer repositório; cada projeto ganha os arquivos de planejamento no primeiro `/stillmark` usado nele.
+
+Se o prompt não disser, pergunte uma vez ao usuário qual ele prefere.
+
 ## 1. Adicionar a CLI
 
 Instale pela [última release no GitHub](https://github.com/callmeteus/stillmark/releases/latest) (arquivo `stillmark.tgz`):
@@ -32,6 +41,12 @@ stillmark install --agent claude
 
 ```bash
 stillmark install --agent codex
+```
+
+Instalação global (todos os projetos): adicione `--global`, por exemplo:
+
+```bash
+stillmark install --agent cursor --global
 ```
 
 ## 4. Primeiro `/stillmark` (compartilhamento opcional)

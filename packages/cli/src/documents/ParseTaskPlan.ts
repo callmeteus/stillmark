@@ -3,6 +3,17 @@ import type { PlanTask, TaskPlanDocument } from "./types";
 const TASK_HEADER_RE = /^### (T-\d+) (.+)$/;
 const FIELD_RE =
     /^(status|priority|depends|blocked-by):\s*(.+)$/i;
+/**
+ * Template placeholders from `plan init`; they mean "empty", not real scope.
+ */
+const PLACEHOLDER_RE = /^\((define|not set)\)$/i;
+
+/**
+ * True for unfilled template values such as `(define)` or `(Not set)`.
+ */
+export function isPlanPlaceholder(value: string): boolean {
+    return PLACEHOLDER_RE.test(value.trim());
+}
 
 /**
  * Parse `.stillmark/plans/TASK_PLAN.md`.
@@ -35,7 +46,7 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
         }
 
         if (section === "objective" && line.trim() && !line.startsWith("#")) {
-            objective = line.trim();
+            objective = isPlanPlaceholder(line) ? "" : line.trim();
             i += 1;
             continue;
         }
@@ -53,11 +64,14 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
                 continue;
             }
 
-            if (line.startsWith("- ") && scopeMode === "in") {
-                inScope.push(line.slice(2).trim());
+            const entry = line.slice(2).trim();
+            const isEntry = line.startsWith("- ") && !isPlanPlaceholder(entry);
+
+            if (isEntry && scopeMode === "in") {
+                inScope.push(entry);
             } else
-            if (line.startsWith("- ") && scopeMode === "out") {
-                outOfScope.push(line.slice(2).trim());
+            if (isEntry && scopeMode === "out") {
+                outOfScope.push(entry);
             }
 
             i += 1;

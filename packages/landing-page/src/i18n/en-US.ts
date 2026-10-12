@@ -55,6 +55,13 @@ export const enUS = {
         cliInstallHint: "Requires Node.js. Then run stillmark install --agent with your editor.",
         installPromptTemplate:
             "Read and execute the markdown install guide at {url}. Follow every step in that file to install Stillmark in this repository.",
+        installScopeGroupLabel: "Where to install",
+        installScopeProjectLabel: "This project",
+        installScopeGlobalLabel: "Global",
+        installPromptGlobalTemplate:
+            "Read and execute the markdown install guide at {url}. Follow the global install steps in that file so Stillmark works in every project on this computer.",
+        cliInstallGlobalCommand: "npx stillmark@latest install --agent cursor --global",
+        cliInstallGlobalHint: "Requires Node.js. Swap cursor for claude or codex. Works in every project.",
         demo: {
             label: "Example revisions",
             requestLabel: "You say",
@@ -236,7 +243,7 @@ export const enUS = {
         tableDescription: "What it does",
         rows: [
             ["stillmark init", "Create ROADMAP.md, stillmark.config.json, and .stillmark/plans/"],
-            ["stillmark install --agent cursor|claude|codex", "Install agent skills and shared instructions"],
+            ["stillmark install --agent cursor|claude|codex", "Install agent skills and shared instructions (`--global` for every project)"],
             ["stillmark config status", "First-run prompt state and sharing flags (`--json`)"],
             ["stillmark config set --design-system=…", "Keep design learnings local or version .stillmark/learnings/design in git (`--prompted`)"],
             ["stillmark config set --detail=…", "Compact entries or entries with details below them, for everything or one document (`--module=coverage|roadmap|plan`)"],

@@ -1,14 +1,16 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { installAgent } from "../../src/adapters";
+import { installAgent, resolveSourceTemplatesDir } from "../../src/adapters";
 import { loadConfig, sanitizeUpdateConfig } from "../../src/config";
 import { setConfigUpdate } from "../../src/operations/ConfigOperations";
 import {
     applyUpdate,
     checkForUpdates,
     compareVersions,
+    installTemplates,
     loadUpdateState,
     readPackageVersion,
     recordTemplatesVersion,
@@ -17,6 +19,7 @@ import {
 import { createTempProject } from "../helpers/TempProject";
 
 const NOW = new Date("2026-10-12T12:00:00.000Z");
+const HOME = fs.mkdtempSync(path.join(os.tmpdir(), "stillmark-home-"));
 
 function fetcher(version: string): { fetch: (name: string) => Promise<string>; calls: () => number } {
     let count = 0;
@@ -80,7 +83,7 @@ describe("checkForUpdates", () => {
         const registry = fetcher("0.2.0");
 
         try {
-            const result = await checkForUpdates(paths, { now: NOW, fetchLatest: registry.fetch, currentVersion: "0.1.0" });
+            const result = await checkForUpdates(paths, { now: NOW, fetchLatest: registry.fetch, currentVersion: "0.1.0", homeDir: HOME });
 
             expect(result.checked).toBe(true);
             expect(result.cliOutdated).toBe(true);
@@ -95,7 +98,7 @@ describe("checkForUpdates", () => {
     it("skips the registry until the interval passes, unless forced", async () => {
         const { paths, cleanup } = createTempProject();
         const registry = fetcher("0.1.0");
-        const options = { fetchLatest: registry.fetch, currentVersion: "0.1.0" };
+        const options = { fetchLatest: registry.fetch, currentVersion: "0.1.0", homeDir: HOME };
 
         try {
             await checkForUpdates(paths, { ...options, now: NOW });
@@ -120,7 +123,7 @@ describe("checkForUpdates", () => {
         try {
             setConfigUpdate(paths, { auto: false });
 
-            const result = await checkForUpdates(paths, { now: NOW, fetchLatest: registry.fetch, currentVersion: "0.1.0" });
+            const result = await checkForUpdates(paths, { now: NOW, fetchLatest: registry.fetch, currentVersion: "0.1.0", homeDir: HOME });
 
             expect(result.skipped).toBe("disabled");
             expect(result.nextCheckAt).toBeNull();
@@ -137,6 +140,7 @@ describe("checkForUpdates", () => {
             const result = await checkForUpdates(paths, {
                 now: NOW,
                 currentVersion: "0.1.0",
+                homeDir: HOME,
                 fetchLatest: async () => {
                     throw new Error("offline");
                 }
@@ -157,7 +161,7 @@ describe("checkForUpdates", () => {
         try {
             writeUpdateState(paths, { templatesVersion: "0.2.0" });
 
-            const result = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.2.0").fetch, currentVersion: "0.1.0" });
+            const result = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.2.0").fetch, currentVersion: "0.1.0", homeDir: HOME });
 
             expect(result.cliOutdated).toBe(true);
             expect(result.recommended).toBeNull();
@@ -177,12 +181,12 @@ describe("agent template refresh", () => {
             recordTemplatesVersion(paths, "0.0.1");
             fs.writeFileSync(skill, "old skill\n", "utf8");
 
-            const check = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.1.0").fetch, currentVersion: "0.1.0" });
+            const check = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.1.0").fetch, currentVersion: "0.1.0", homeDir: HOME });
 
             expect(check.outdatedAgents).toEqual(["cursor"]);
             expect(check.recommended).toBe("stillmark update apply --json");
 
-            const applied = applyUpdate(paths, { currentVersion: "0.1.0" });
+            const applied = applyUpdate(paths, { currentVersion: "0.1.0", homeDir: HOME });
 
             expect(applied.updatedAgents).toEqual(["cursor"]);
             expect(applied.updatedFiles).toContain(skill);
@@ -202,10 +206,89 @@ describe("agent template refresh", () => {
             recordTemplatesVersion(paths, "0.1.0");
             fs.writeFileSync(skill, "custom skill\n", "utf8");
 
-            const check = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.1.0").fetch, currentVersion: "0.1.0" });
+            const check = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.1.0").fetch, currentVersion: "0.1.0", homeDir: HOME });
 
             expect(check.outdatedAgents).toEqual([]);
             expect(check.updateAvailable).toBe(false);
+        } finally {
+            cleanup();
+        }
+    });
+
+    it("installs globally into the home directory and refreshes it on apply", async () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+        const skill = path.join(home, ".cursor", "skills", "stillmark", "SKILL.md");
+
+        try {
+            const installed = installTemplates(paths, "cursor", { global: true, homeDir: home, currentVersion: "0.0.1" });
+
+            expect(installed.scope).toBe("global");
+            expect(fs.existsSync(skill)).toBe(true);
+            expect(fs.existsSync(path.join(root, ".cursor"))).toBe(false);
+
+            fs.writeFileSync(skill, "old skill\n", "utf8");
+
+            const check = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.1.0").fetch, currentVersion: "0.1.0", homeDir: home });
+
+            expect(check.outdatedGlobalAgents).toEqual(["cursor"]);
+            expect(check.recommended).toBe("stillmark update apply --json");
+
+            const applied = applyUpdate(paths, { currentVersion: "0.1.0", homeDir: home });
+
+            expect(applied.updatedGlobalAgents).toEqual(["cursor"]);
+            expect(fs.readFileSync(skill, "utf8")).not.toBe("old skill\n");
+        } finally {
+            cleanup();
+        }
+    });
+
+    it("installs only the prompt for global codex", () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+
+        try {
+            const installed = installTemplates(paths, "codex", { global: true, homeDir: home });
+
+            expect(installed.installed).toEqual([path.join(home, ".codex", "prompts", "stillmark.md")]);
+        } finally {
+            cleanup();
+        }
+    });
+
+    it("links the source templates in dev mode and never writes through the link", async () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+        const skillDir = path.join(home, ".cursor", "skills", "stillmark");
+        const source = path.join(resolveSourceTemplatesDir(), "cursor", ".cursor", "skills", "stillmark", "SKILL.md");
+        const before = fs.readFileSync(source, "utf8");
+
+        try {
+            const result = installTemplates(paths, "cursor", { global: true, link: true, homeDir: home });
+
+            expect(result.ok).toBe(true);
+            expect(fs.lstatSync(skillDir).isSymbolicLink()).toBe(true);
+            expect(fs.readFileSync(path.join(skillDir, "SKILL.md"), "utf8")).toBe(before);
+
+            const check = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.1.0").fetch, currentVersion: "0.1.0", homeDir: home });
+
+            expect(check.outdatedGlobalAgents).toEqual([]);
+
+            const copied = installTemplates(paths, "cursor", { global: true, homeDir: home });
+
+            expect(copied.installed.some((file) => file.startsWith(skillDir))).toBe(false);
+            expect(fs.readFileSync(source, "utf8")).toBe(before);
+        } finally {
+            cleanup();
+        }
+    });
+
+    it("refuses an unknown agent", () => {
+        const { paths, cleanup } = createTempProject();
+
+        try {
+            expect(installTemplates(paths, "vim").ok).toBe(false);
+            expect(installTemplates(paths, undefined).ok).toBe(false);
         } finally {
             cleanup();
         }
@@ -215,7 +298,7 @@ describe("agent template refresh", () => {
         const { paths, cleanup } = createTempProject();
 
         try {
-            const applied = applyUpdate(paths, { currentVersion: "0.1.0" });
+            const applied = applyUpdate(paths, { currentVersion: "0.1.0", homeDir: HOME });
 
             expect(applied.changed).toBe(false);
             expect(applied.updatedAgents).toEqual([]);

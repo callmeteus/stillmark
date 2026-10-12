@@ -34,17 +34,23 @@ export interface AddRoadmapOptions {
      * Indented detail lines under the item; requires roadmap detail `extended`.
      */
     details?: string[];
+    /**
+     * Acceptance criteria written as indented `  - ` lines; allowed in compact and extended.
+     */
+    acceptance?: string[];
 }
 
 function formatRoadmapItem(
     id: string,
     title: string,
     priority: string,
-    details: string[]
+    details: string[],
+    acceptance: string[]
 ): string {
     const detailBlock = details.map((line) => `\n  ${line}`).join("");
+    const acceptanceBlock = acceptance.map((line) => `\n  - ${line}`).join("");
 
-    return `- [ ] **${id}** ${title}\n  priority: ${priority} · status: planned${detailBlock}`;
+    return `- [ ] **${id}** ${title}\n  priority: ${priority} · status: planned${detailBlock}${acceptanceBlock}`;
 }
 
 /**
@@ -124,7 +130,7 @@ export async function addRoadmapItem(
     const ids = allRoadmapIds(parseRoadmap(updated));
     const id = nextId("R", ids);
     const priority = options.priority ?? "medium";
-    const block = formatRoadmapItem(id, options.description, priority, details);
+    const block = formatRoadmapItem(id, options.description, priority, details, options.acceptance ?? []);
     const insertAt =
         section.items.length > 0
             ? section.items[section.items.length - 1].itemSpan.endLine - 1

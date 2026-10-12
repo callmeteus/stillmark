@@ -1,9 +1,12 @@
+import os from "node:os";
+
 import {
     AgentIds,
     installAgent,
     isAgentInstalled,
     staleAgentFiles,
-    type AgentId
+    type AgentId,
+    type InstallScope
 } from "../adapters";
 import { loadConfig } from "../config";
 import type { ProjectPaths } from "../paths/ProjectPaths";
@@ -15,7 +18,13 @@ import {
     readPackageVersion,
     type LatestVersionFetcher
 } from "./PackageVersion";
-import { loadUpdateState, writeUpdateState, type UpdateState } from "./UpdateState";
+import {
+    globalUpdateStatePath,
+    loadUpdateState,
+    loadUpdateStateFile,
+    recordTemplatesVersionFile,
+    writeUpdateState
+} from "./UpdateState";
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -33,6 +42,10 @@ export interface UpdateOptions {
      * Version of the running CLI; defaults to the packaged version.
      */
     currentVersion?: string;
+    /**
+     * Home directory holding global installs; defaults to the OS home.
+     */
+    homeDir?: string;
 }
 
 /**
@@ -48,6 +61,10 @@ export interface UpdateCheckResult extends OperationResult {
     latest: string | null;
     cliOutdated: boolean;
     outdatedAgents: AgentId[];
+    /**
+     * Agents installed in the home directory (`install --global`) that need a refresh.
+     */
+    outdatedGlobalAgents: AgentId[];
     updateAvailable: boolean;
     /**
      * Command the agent should run to update, or null when up to date.
@@ -57,41 +74,36 @@ export interface UpdateCheckResult extends OperationResult {
     error?: string;
 }
 
+function isBehind(version: string | undefined, target: string): boolean {
+    return version === undefined || compareVersions(version, target) < 0;
+}
+
+/**
+ * Agents installed under `root` for that scope.
+ */
+export function installedAgents(root: string, scope: InstallScope): AgentId[] {
+    return AgentIds.filter((agent) => isAgentInstalled(root, agent, scope));
+}
+
 /**
  * Installed agents whose templates were written by an older CLI and differ from the packaged ones.
  */
-export function outdatedAgents(paths: ProjectPaths, state: UpdateState, current: string): AgentId[] {
-    if (state.templatesVersion !== undefined && compareVersions(state.templatesVersion, current) >= 0) {
+export function outdatedAgents(
+    root: string,
+    scope: InstallScope,
+    templatesVersion: string | undefined,
+    current: string
+): AgentId[] {
+    if (!isBehind(templatesVersion, current)) {
         return [];
     }
 
-    return AgentIds.filter(
-        (agent) => isAgentInstalled(paths.root, agent) && staleAgentFiles(paths.root, agent).length > 0
-    );
-}
-
-function recommendedCommand(
-    latest: string | null,
-    templatesVersion: string | undefined,
-    agents: AgentId[]
-): string | null {
-    const templatesBehindLatest = latest !== null &&
-        (templatesVersion === undefined || compareVersions(templatesVersion, latest) < 0);
-
-    if (templatesBehindLatest) {
-        return `npx -y ${PackageName}@${latest} update apply --json`;
-    }
-
-    if (agents.length > 0) {
-        return `${PackageName} update apply --json`;
-    }
-
-    return null;
+    return installedAgents(root, scope).filter((agent) => staleAgentFiles(root, agent, scope).length > 0);
 }
 
 /**
  * Checks npm for a newer CLI at most once per configured interval, and compares installed templates
- * with the running CLI on every call (local and cheap).
+ * (project and global) with the running CLI on every call (local and cheap).
  */
 export async function checkForUpdates(
     paths: ProjectPaths,
@@ -100,7 +112,9 @@ export async function checkForUpdates(
     const config = loadConfig(paths);
     const now = options.now ?? new Date();
     const current = options.currentVersion ?? readPackageVersion();
+    const homeDir = options.homeDir ?? os.homedir();
     const state = loadUpdateState(paths);
+    const globalState = loadUpdateStateFile(globalUpdateStatePath(homeDir));
     const intervalMs = config.update.intervalHours * HOUR_MS;
     const lastCheck = state.lastCheckAt ? Date.parse(state.lastCheckAt) : Number.NaN;
     const due = Number.isNaN(lastCheck) || now.getTime() - lastCheck >= intervalMs;
@@ -129,10 +143,22 @@ export async function checkForUpdates(
 
     const latest = state.latestVersion ?? null;
     const cliOutdated = latest !== null && compareVersions(latest, current) > 0;
-    const agents = outdatedAgents(paths, state, current);
-    const recommended = cliOutdated
-        ? recommendedCommand(latest, state.templatesVersion, agents)
-        : recommendedCommand(null, state.templatesVersion, agents);
+    const agents = outdatedAgents(paths.root, "project", state.templatesVersion, current);
+    const globalAgents = outdatedAgents(homeDir, "global", globalState.templatesVersion, current);
+    const templatesBehindLatest = cliOutdated && latest !== null && (
+        isBehind(state.templatesVersion, latest) ||
+        (installedAgents(homeDir, "global").length > 0 && isBehind(globalState.templatesVersion, latest))
+    );
+
+    let recommended: string | null = null;
+
+    if (templatesBehindLatest) {
+        recommended = `npx -y ${PackageName}@${latest} update apply --json`;
+    } else
+    if (agents.length > 0 || globalAgents.length > 0) {
+        recommended = `${PackageName} update apply --json`;
+    }
+
     const nextCheckAt = config.update.auto && state.lastCheckAt
         ? new Date(Date.parse(state.lastCheckAt) + intervalMs).toISOString()
         : null;
@@ -147,6 +173,10 @@ export async function checkForUpdates(
 
     if (agents.length > 0) {
         parts.push(`agent files out of date: ${agents.join(", ")}`);
+    }
+
+    if (globalAgents.length > 0) {
+        parts.push(`global agent files out of date: ${globalAgents.join(", ")}`);
     }
 
     if (parts.length === 0) {
@@ -170,6 +200,7 @@ export async function checkForUpdates(
         latest,
         cliOutdated,
         outdatedAgents: agents,
+        outdatedGlobalAgents: globalAgents,
         updateAvailable: recommended !== null,
         recommended,
         nextCheckAt,
@@ -177,46 +208,60 @@ export async function checkForUpdates(
     };
 }
 
+function refreshScope(root: string, scope: InstallScope): { agents: AgentId[]; files: string[] } {
+    const agents: AgentId[] = [];
+    const files: string[] = [];
+
+    for (const agent of installedAgents(root, scope)) {
+        const stale = staleAgentFiles(root, agent, scope);
+
+        if (stale.length > 0) {
+            installAgent(root, agent, scope);
+            agents.push(agent);
+            files.push(...stale);
+        }
+    }
+
+    return { agents, files };
+}
+
 /**
- * Refreshes every installed agent whose files differ from the running CLI templates.
+ * Refreshes every installed agent (project and global) whose files differ from the running CLI templates.
  */
 export function applyUpdate(
     paths: ProjectPaths,
-    options: Pick<UpdateOptions, "currentVersion"> = {}
-): OperationResult & { current: string; updatedAgents: AgentId[]; updatedFiles: string[] } {
+    options: Pick<UpdateOptions, "currentVersion" | "homeDir"> = {}
+): OperationResult & {
+    current: string;
+    updatedAgents: AgentId[];
+    updatedGlobalAgents: AgentId[];
+    updatedFiles: string[];
+} {
     const current = options.currentVersion ?? readPackageVersion();
-    const state = loadUpdateState(paths);
-    const updatedAgents: AgentId[] = [];
-    const updatedFiles: string[] = [];
+    const homeDir = options.homeDir ?? os.homedir();
+    const project = refreshScope(paths.root, "project");
+    const global = refreshScope(homeDir, "global");
 
-    for (const agent of AgentIds) {
-        if (!isAgentInstalled(paths.root, agent)) {
-            continue;
-        }
+    writeUpdateState(paths, { ...loadUpdateState(paths), templatesVersion: current });
 
-        const stale = staleAgentFiles(paths.root, agent);
-
-        if (stale.length === 0) {
-            continue;
-        }
-
-        installAgent(paths.root, agent);
-        updatedAgents.push(agent);
-        updatedFiles.push(...stale);
+    if (installedAgents(homeDir, "global").length > 0) {
+        recordTemplatesVersionFile(globalUpdateStatePath(homeDir), current);
     }
 
-    writeUpdateState(paths, { ...state, templatesVersion: current });
+    const updatedFiles = [...project.files, ...global.files];
+    const labels = [...project.agents, ...global.agents.map((agent) => `${agent} (global)`)];
 
     return {
         ok: true,
         changed: updatedFiles.length > 0,
         action: "update-apply",
-        summary: updatedAgents.length > 0
-            ? `Updated Stillmark ${current} files for ${updatedAgents.join(", ")}`
+        summary: labels.length > 0
+            ? `Updated Stillmark ${current} files for ${labels.join(", ")}`
             : `Agent files already match Stillmark ${current}`,
         location: updatedFiles.join(", ") || undefined,
         current,
-        updatedAgents,
+        updatedAgents: project.agents,
+        updatedGlobalAgents: global.agents,
         updatedFiles
     };
 }

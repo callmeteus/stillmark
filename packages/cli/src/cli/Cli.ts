@@ -1,6 +1,5 @@
 import fs from "node:fs";
 
-import { installAgent, type AgentId } from "../adapters";
 import {
     isDetailLevel,
     isDetailModule,
@@ -38,7 +37,9 @@ import {
 } from "../operations";
 import { resolveProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
-import { readPackageVersion, recordTemplatesVersion } from "../update";
+import { installTemplates } from "../update";
+import { helpResult, unknownOptionsResult } from "./Help";
+import { parseFlags } from "./ParseFlags";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
 export interface CliOptions {
@@ -46,98 +47,6 @@ export interface CliOptions {
     root: string;
     gitOverride: GitOverride;
     gitRunner?: GitRunner;
-}
-
-function parseFlags(argv: string[]): {
-    flags: Record<string, string | boolean>;
-    positional: string[];
-} {
-    const flags: Record<string, string | boolean> = {};
-    const positional: string[] = [];
-
-    for (let i = 0; i < argv.length; i++) {
-        const arg = argv[i];
-
-        if (arg === "--json") {
-            flags.json = true;
-        } else
-        if (arg === "--git") {
-            flags.git = true;
-        } else
-        if (arg === "--no-git") {
-            flags.noGit = true;
-        } else
-        if (arg === "--accept-scope-change") {
-            flags.acceptScopeChange = true;
-        } else
-        if (arg === "--allow-sensitive") {
-            flags.allowSensitive = true;
-        } else
-        if (arg === "--confirm") {
-            flags.confirm = true;
-        } else
-        if (arg.startsWith("--root=")) {
-            flags.root = arg.slice("--root=".length);
-        } else
-        if (arg === "--root" && argv[i + 1]) {
-            flags.root = argv[++i];
-        } else
-        if (arg.startsWith("--agent=")) {
-            flags.agent = arg.slice("--agent=".length);
-        } else
-        if (arg === "--agent" && argv[i + 1]) {
-            flags.agent = argv[++i];
-        } else
-        if (arg.startsWith("--tag=")) {
-            flags.tag = arg.slice("--tag=".length);
-        } else
-        if (arg === "--tag" && argv[i + 1]) {
-            flags.tag = argv[++i];
-        } else
-        if (arg === "--checked") {
-            flags.checked = true;
-        } else
-        if (arg === "--prompted") {
-            flags.prompted = true;
-        } else
-        if (arg.startsWith("--design-system=")) {
-            flags.designSystem = arg.slice("--design-system=".length);
-        } else
-        if (arg === "--design-system" && argv[i + 1]) {
-            flags.designSystem = argv[++i];
-        } else
-        if (arg.startsWith("--details=")) {
-            flags.details = arg.slice("--details=".length);
-        } else
-        if (arg === "--details" && argv[i + 1]) {
-            flags.details = argv[++i];
-        } else
-        if (arg.startsWith("--detail=")) {
-            flags.detail = arg.slice("--detail=".length);
-        } else
-        if (arg === "--detail" && argv[i + 1]) {
-            flags.detail = argv[++i];
-        } else
-        if (arg.startsWith("--module=")) {
-            flags.module = arg.slice("--module=".length);
-        } else
-        if (arg === "--module" && argv[i + 1]) {
-            flags.module = argv[++i];
-        } else
-        if (arg.startsWith("--auto-update=")) {
-            flags.autoUpdate = arg.slice("--auto-update=".length);
-        } else
-        if (arg.startsWith("--update-interval=")) {
-            flags.updateInterval = arg.slice("--update-interval=".length);
-        } else
-        if (arg === "--force") {
-            flags.force = true;
-        } else {
-            positional.push(arg);
-        }
-    }
-
-    return { flags, positional };
 }
 
 function output(result: OperationResult, json: boolean): void {
@@ -167,7 +76,7 @@ function gitOverrideFromFlags(
  */
 export async function runCli(argv: string[]): Promise<number> {
     const args = argv.slice(2);
-    const { flags, positional } = parseFlags(args);
+    const { flags, positional, unknown } = parseFlags(args);
     const root = (flags.root as string) ?? process.cwd();
     const paths = resolveProjectPaths(root);
     const json = Boolean(flags.json);
@@ -177,6 +86,20 @@ export async function runCli(argv: string[]): Promise<number> {
     const cmd = positional[0];
     const sub = positional[1];
     const details = splitDetailLines(flags.details as string | undefined);
+    const acceptance = splitDetailLines(flags.acceptance as string | undefined);
+    const verification = splitDetailLines(flags.verification as string | undefined);
+
+    if (flags.help || cmd === "help") {
+        output(helpResult(cmd === "help" ? sub : cmd), json);
+
+        return 0;
+    }
+
+    if (unknown.length > 0) {
+        output(unknownOptionsResult(unknown, cmd), json);
+
+        return 1;
+    }
 
     try {
         if (cmd === "init") {
@@ -209,20 +132,13 @@ export async function runCli(argv: string[]): Promise<number> {
         }
 
         if (cmd === "install") {
-            const agent = (flags.agent as AgentId) ?? (sub as AgentId);
-            const result = installAgent(paths.root, agent);
-            recordTemplatesVersion(paths, readPackageVersion());
-            output(
-                {
-                    ok: true,
-                    changed: true,
-                    summary: `Installed ${agent} templates`,
-                    location: result.installed.join(", ")
-                },
-                json
-            );
+            const result = installTemplates(paths, (flags.agent as string | undefined) ?? sub, {
+                global: Boolean(flags.global),
+                link: Boolean(flags.link)
+            });
+            output(result, json);
 
-            return 0;
+            return result.ok ? 0 : 1;
         }
 
         if (cmd === "update") {
@@ -271,7 +187,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         gitOverride,
                         privatePlanRaw: planRaw,
                         gitRunner,
-                        details
+                        details,
+                        acceptance
                     }),
                     json
                 );
@@ -330,7 +247,9 @@ export async function runCli(argv: string[]): Promise<number> {
                     addPlanTask(paths, {
                         description: positional.slice(2).join(" "),
                         acceptScopeChange: Boolean(flags.acceptScopeChange),
-                        details
+                        details,
+                        acceptance,
+                        verification
                     }),
                     json
                 );
@@ -379,13 +298,28 @@ export async function runCli(argv: string[]): Promise<number> {
 
             const dest = classified.summary;
 
+            if (dest === "roadmap" && verification.length > 0) {
+                output(
+                    {
+                        ok: false,
+                        changed: false,
+                        action: "roadmap add",
+                        summary: "This item goes to ROADMAP.md, which has no verification section. Drop --verification or use stillmark plan add"
+                    },
+                    json
+                );
+
+                return 1;
+            }
+
             if (dest === "roadmap") {
                 output(
                     await addRoadmapItem(paths, {
                         description: text,
                         gitOverride,
                         gitRunner,
-                        details
+                        details,
+                        acceptance
                     }),
                     json
                 );
@@ -394,7 +328,9 @@ export async function runCli(argv: string[]): Promise<number> {
                     addPlanTask(paths, {
                         description: text,
                         acceptScopeChange: Boolean(flags.acceptScopeChange),
-                        details
+                        details,
+                        acceptance,
+                        verification
                     }),
                     json
                 );

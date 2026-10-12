@@ -2,6 +2,15 @@
 
 Execute these steps in the **project root** where planning files should live.
 
+## Project or global
+
+The prompt that sent you here says which one the user picked:
+
+- **This project** (default): run every step below. The skill lives inside this repository.
+- **Global (all projects)**: run step 1, then step 3 with `--global`, and skip steps 2, 4, and 5. The skill goes to the user's home folder (`~/.cursor`, `~/.claude`, or `~/.codex`) and works in every repository; each project gets its planning files the first time `/stillmark` runs there.
+
+If the prompt does not say, ask the user once which one they want.
+
 ## 1. Add the CLI
 
 Install from the [latest GitHub Release](https://github.com/callmeteus/stillmark/releases/latest) (asset `stillmark.tgz`):
@@ -32,6 +41,12 @@ stillmark install --agent claude
 
 ```bash
 stillmark install --agent codex
+```
+
+Global install (all projects): add `--global`, for example:
+
+```bash
+stillmark install --agent cursor --global
 ```
 
 ## 4. First `/stillmark` (optional sharing)

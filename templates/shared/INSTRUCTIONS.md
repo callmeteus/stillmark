@@ -21,12 +21,12 @@ If `needsClarification` is true, ask exactly one concise question. Do not duplic
 ```bash
 stillmark init
 stillmark roadmap add "<description>" --json
-stillmark plan add "<description>" --json
+stillmark plan add "<description>" [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
 stillmark add "<description>" --json
 stillmark move "<item>" to plan --json
 stillmark move "<item>" to roadmap --json
 stillmark long-running apply "<description>" --json [--accept-scope-change]
-stillmark install --agent cursor|claude|codex
+stillmark install --agent cursor|claude|codex [--global]
 stillmark coverage init
 stillmark coverage validate --json
 stillmark coverage update --json
@@ -39,6 +39,8 @@ stillmark config set --auto-update=true|false [--update-interval=<hours>] --json
 stillmark update [--force] --json
 stillmark update apply --json
 ```
+
+Run `stillmark <command> --help` to see the options; unknown options are refused, never written as text. Pass acceptance criteria and verification through `--acceptance` / `--verification` (split lines with `\n`) instead of editing `(define)` by hand. A fresh plan with `(Not set)` / `(define)` scope does not block `plan add`.
 
 ## Auto-update
 

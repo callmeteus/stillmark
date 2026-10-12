@@ -27,24 +27,40 @@ export interface AddPlanOptions {
      * Free-text detail lines under the task fields; requires plan detail `extended`.
      */
     details?: string[];
+    /**
+     * Acceptance criteria bullets; replaces the `(define)` placeholder.
+     */
+    acceptance?: string[];
+    /**
+     * Verification bullets; replaces the `(define)` placeholder.
+     */
+    verification?: string[];
+}
+
+function bulletList(items: string[]): string {
+    return (items.length > 0 ? items : ["(define)"]).map((item) => `- ${item}`).join("\n");
 }
 
 /**
- * Compact tasks keep only the header and fields; extended tasks add details and the criteria sections.
+ * Compact tasks keep only the header and fields, plus criteria sections when criteria were given;
+ * extended tasks always add details and both criteria sections.
  */
 function formatPlanTask(
     id: string,
     title: string,
     priority: string,
     detail: DetailLevel,
-    details: string[]
+    options: Pick<AddPlanOptions, "details" | "acceptance" | "verification">
 ): string {
+    const details = options.details ?? [];
+    const acceptance = options.acceptance ?? [];
+    const verification = options.verification ?? [];
     const header = `### ${id} ${title}
 status: pending
 priority: ${priority}
 `;
 
-    if (detail === "compact") {
+    if (detail === "compact" && acceptance.length === 0 && verification.length === 0) {
         return header;
     }
 
@@ -52,10 +68,10 @@ priority: ${priority}
 
     return `${header}${detailBlock}
 #### Acceptance criteria
-- (define)
+${bulletList(acceptance)}
 
 #### Verification
-- (define)
+${bulletList(verification)}
 `;
 }
 
@@ -175,7 +191,7 @@ export function addPlanTask(
 
     const id = nextId("T", allPlanTaskIds(doc));
     const priority = options.priority ?? "medium";
-    const block = formatPlanTask(id, options.description, priority, detail, details);
+    const block = formatPlanTask(id, options.description, priority, detail, options);
     const lines = raw.split(/\r?\n/);
     let tasksHeader = -1;
 
