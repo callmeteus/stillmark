@@ -5,7 +5,11 @@ on:
         branches:
             - master
         paths-ignore:
-            - "docs/**"
+            - "index.html"
+            - "install.md"
+            - "pt-br/**"
+            - "_astro/**"
+            - "sitemap-*.xml"
     workflow_dispatch:
 
 permissions:
@@ -17,7 +21,7 @@ concurrency:
 
 jobs:
     deploy:
-        name: Build Astro and update docs/ for Pages
+        name: Build Astro and publish static files to master root
         runs-on: ubuntu-latest
 
         steps:
@@ -41,13 +45,12 @@ jobs:
             - name: Verify static Pages artifact
               run: npm run verify -w @stillmark/landing-page
 
-            - name: Publish static site to docs/ on master
+            - name: Merge dist into master root for Pages
               uses: peaceiris/actions-gh-pages@v4
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: packages/landing-page/dist
                   publish_branch: master
-                  destination_dir: docs
                   keep_files: true
                   enable_jekyll: false
-                  commit_message: "chore(t): atualiza site estático em docs/"
+                  commit_message: "chore(t): atualiza arquivos estáticos do GitHub Pages"

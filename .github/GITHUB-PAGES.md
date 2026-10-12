@@ -1,32 +1,34 @@
 # GitHub Pages for Stillmark
 
-## Why you saw Jekyll errors on `.astro` files
+## Root cause of the Jekyll / `.astro` errors
 
-The workflow **pages build and deployment** (Jekyll) uses whatever folder you set in **Settings → Pages**. If that folder is **`/` (root) on `master`**, Jekyll scans the **entire monorepo** and fails on Astro source files.
+The automatic workflow **pages build and deployment** runs **Jekyll** on whatever GitHub Pages publishes. Your logs showed:
 
-The fix is **not** more Jekyll config. The fix is to publish **only the built static HTML** under `docs/`.
+`Source: /github/workspace/.`
 
-## Required GitHub settings (one time)
+That means **master root** is the site source. Jekyll then scans `packages/landing-page/src/**/*.astro` and dies on `---` front matter.
 
-1. [Settings → Pages](https://github.com/callmeteus/stillmark/settings/pages)
-2. **Build and deployment** → **Source:** **Deploy from a branch**
-3. **Branch:** `master`
-4. **Folder:** **`/docs`** (not `/ (root)`)
+Changing Astro or adding tests does **not** stop that job. You either:
 
-Then:
+1. **Disable Jekyll** on the published root (this repo), or  
+2. Change Pages to publish only a static folder (`/docs` or `gh-pages`).
 
-5. Run the **Deploy GitHub Pages** workflow (or push a change outside `docs/`).
+This repo uses **(1) + CI**.
 
-[`workflows/pages.yml`](workflows/pages.yml) builds Astro and writes `packages/landing-page/dist` into **`docs/`** on `master` (`keep_files: true` so the rest of the repo stays intact). Jekyll then only sees HTML in `docs/` (plus `.nojekyll` from the build).
+## How this repository deploys
+
+1. **`.nojekyll`** at the **repository root** tells GitHub Pages **not to run Jekyll** on the published branch root.
+2. [`.github/workflows/pages.yml`](workflows/pages.yml) builds Astro and merges `packages/landing-page/dist` into **master root** (`index.html`, `_astro/`, `pt-br/`, …) with `keep_files: true` so the monorepo stays intact.
+3. Pages can stay **Deploy from a branch → `master` → `/ (root)`** — the setting that was failing before is OK **after** `.nojekyll` is on `master`.
 
 Site URL: `https://callmeteus.github.io/stillmark/`
 
-## Wrong vs right
+## After merging
 
-| Pages setting | Result |
-|---------------|--------|
-| `master` + **`/` (root)** | Jekyll reads `packages/landing-page/src/**/*.astro` → YAML errors |
-| `master` + **`/docs`** | Jekyll serves static `docs/` (or skips with `.nojekyll`) |
+1. Push to `master` (must include root `.nojekyll`).
+2. Run **Deploy GitHub Pages** if needed (or wait for the push workflow).
+3. **pages build and deployment** should no longer run Jekyll (or should pass without parsing `.astro`).
+4. Open `https://callmeteus.github.io/stillmark/`.
 
 ## Local checks
 
