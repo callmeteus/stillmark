@@ -21,7 +21,7 @@ export const enUS = {
             {
                 title: "Send the install prompt",
                 body:
-                    "Copy the prompt from the top of the page and paste it into your agent chat. The linked guide lists every command, including `stillmark init`."
+                    "Copy the prompt from the top of the page and paste it into your agent chat. The linked guide lists every command, including `/stillmark init`."
             },
             {
                 title: "Install agent templates",
@@ -66,15 +66,15 @@ export const enUS = {
             requests: [
                 {
                     say: "Push the billing export out of this milestone.",
-                    run: "stillmark roadmap defer \"billing export\""
+                    run: "/stillmark roadmap defer \"billing export\""
                 },
                 {
                     say: "Add a task to retry webhooks on 429.",
-                    run: "stillmark plan add \"Retry on HTTP 429\""
+                    run: "/stillmark plan add \"Retry on HTTP 429\""
                 },
                 {
                     say: "The lockout case is tested now.",
-                    run: "stillmark coverage check \"lockout\""
+                    run: "/stillmark coverage check \"lockout\""
                 }
             ],
             roadmap: ["## Milestone A", "- [ ] **R-012** Team invites", "## Deferred", "- [ ] **R-014** Billing export"],
@@ -126,11 +126,11 @@ export const enUS = {
             },
             {
                 title: "Strict format",
-                body: "`stillmark coverage validate` catches legacy prose, wrong tags, and empty headings before you commit."
+                body: "`/stillmark coverage validate` catches legacy prose, wrong tags, and empty headings before you commit."
             },
             {
                 title: "Git-aware updates",
-                body: "`stillmark coverage update` lists source and test files that changed since the last COVERAGE.md commit so the agent knows what to reconcile."
+                body: "`/stillmark coverage update` lists source and test files that changed since the last COVERAGE.md commit so the agent knows what to reconcile."
             }
         ],
         sample: [
@@ -198,8 +198,8 @@ export const enUS = {
                 body: "Active execution plans stay local. Only the roadmap and test checklist are meant for the team repo."
             },
             {
-                title: "stillmark config",
-                body: "On first use, `stillmark config status` asks whether `.stillmark/learnings/design/` should be versioned with the project."
+                title: "/stillmark config",
+                body: "On first use, `/stillmark config status` asks whether `.stillmark/learnings/design/` should be versioned with the project."
             },
             {
                 title: "Optional roadmap git",
@@ -207,7 +207,7 @@ export const enUS = {
             },
             {
                 title: "Learns from you",
-                body: "Commit subjects follow your recent git log (`stillmark git commit-style`). Design and code habits accumulate as markdown under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/`, like Cursor rules."
+                body: "Commit subjects follow your recent git log (`/stillmark git commit-style`). Design and code habits accumulate as markdown under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/`, like Cursor rules."
             }
         ],
         tree: [

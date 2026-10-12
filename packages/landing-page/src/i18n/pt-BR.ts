@@ -23,7 +23,7 @@ export const ptBR: Messages = {
             {
                 title: "Enviar o prompt de instalação",
                 body:
-                    "Copie o prompt do topo da página e cole no chat do agente. O guia linkado lista cada comando, incluindo `stillmark init`."
+                    "Copie o prompt do topo da página e cole no chat do agente. O guia linkado lista cada comando, incluindo `/stillmark init`."
             },
             {
                 title: "Instalar templates do agente",
@@ -68,15 +68,15 @@ export const ptBR: Messages = {
             requests: [
                 {
                     say: "Tira a exportação de faturas deste marco.",
-                    run: "stillmark roadmap defer \"exportação de faturas\""
+                    run: "/stillmark roadmap defer \"exportação de faturas\""
                 },
                 {
                     say: "Adiciona uma tarefa para repetir webhooks no 429.",
-                    run: "stillmark plan add \"Repetir no HTTP 429\""
+                    run: "/stillmark plan add \"Repetir no HTTP 429\""
                 },
                 {
                     say: "O caso de bloqueio já tem teste.",
-                    run: "stillmark coverage check \"bloqueio\""
+                    run: "/stillmark coverage check \"bloqueio\""
                 }
             ],
             roadmap: [
@@ -137,11 +137,11 @@ export const ptBR: Messages = {
             },
             {
                 title: "Formato rígido",
-                body: "O `stillmark coverage validate` detecta texto legado, tags erradas e títulos vazios antes do commit."
+                body: "O `/stillmark coverage validate` detecta texto legado, tags erradas e títulos vazios antes do commit."
             },
             {
                 title: "Updates com git",
-                body: "O `stillmark coverage update` lista arquivos de código e de teste alterados desde o último commit do COVERAGE.md para o agente saber o que reconciliar."
+                body: "O `/stillmark coverage update` lista arquivos de código e de teste alterados desde o último commit do COVERAGE.md para o agente saber o que reconciliar."
             }
         ],
         sample: [
@@ -209,8 +209,8 @@ export const ptBR: Messages = {
                 body: "Planos de execução ativos ficam locais. Só o roadmap e o checklist de testes são pensados para o repositório do time."
             },
             {
-                title: "stillmark config",
-                body: "No primeiro uso, `stillmark config status` pergunta se `.stillmark/learnings/design/` entra no controle de versão do projeto."
+                title: "/stillmark config",
+                body: "No primeiro uso, `/stillmark config status` pergunta se `.stillmark/learnings/design/` entra no controle de versão do projeto."
             },
             {
                 title: "Git opcional no roadmap",
@@ -218,7 +218,7 @@ export const ptBR: Messages = {
             },
             {
                 title: "Aprende com você",
-                body: "Assuntos de commit seguem o seu git log (`stillmark git commit-style`). Hábitos de design e de código viram markdown em `.stillmark/learnings/design/` e `.stillmark/learnings/code-style/`, no estilo de Cursor rules."
+                body: "Assuntos de commit seguem o seu git log (`/stillmark git commit-style`). Hábitos de design e de código viram markdown em `.stillmark/learnings/design/` e `.stillmark/learnings/code-style/`, no estilo de Cursor rules."
             }
         ],
         tree: [
