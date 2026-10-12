@@ -9,9 +9,10 @@
     },
     "scripts": {
         "build": "npm run build -w stillmark && npm run build -w @stillmark/landing-page",
-        "test": "npm run test -w stillmark",
+        "test": "npm run test -w stillmark && npm run test -w @stillmark/landing-page",
+        "test:workflows": "node --test tests/github-pages-workflow.test.mjs",
         "lint": "npm run lint -w stillmark",
         "typecheck": "npm run typecheck -w stillmark",
-        "ci": "npm run lint && npm run typecheck && npm run test && npm run build"
+        "ci": "npm run lint && npm run typecheck && npm run test && npm run test:workflows && npm run build && npm run verify -w @stillmark/landing-page"
     }
 }

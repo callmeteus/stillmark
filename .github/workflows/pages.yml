@@ -41,6 +41,9 @@ jobs:
                   PUBLIC_STILLMARK_GITHUB: https://github.com/callmeteus/stillmark
               run: npm run build -w @stillmark/landing-page
 
+            - name: Verify static Pages artifact
+              run: npm run verify -w @stillmark/landing-page
+
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v4
               with:
