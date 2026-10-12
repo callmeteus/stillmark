@@ -32,7 +32,7 @@ export const ptBR: Messages = {
             {
                 title: "Planejar com o agente",
                 body:
-                    "Peça ao agente para adicionar ou mover trabalho em linguagem natural. Use /coverage para manter o COVERAGE.md alinhado aos testes."
+                    "Use /stillmark para planejar e para design (seleção no browser + feedback). Use /coverage para manter o COVERAGE.md alinhado aos testes."
             }
         ]
     },
@@ -47,7 +47,7 @@ export const ptBR: Messages = {
     hero: {
         title: "Planeje em linguagem natural. Execute com rastro claro.",
         subtitle:
-            "Diga o que precisa mudar. O Stillmark atualiza o roadmap, o plano privado e o checklist de testes - sem editar markdown na mão.",
+            "Diga o que precisa mudar. O Stillmark atualiza roadmap, plano privado e checklist de testes - e UI embutida via /stillmark, sem editar markdown na mão.",
         installLabel: "Peça ao agente para instalar",
         installPromptTemplate:
             "Leia e execute o markdown do guia de instalação em {url}. Siga cada passo desse arquivo para instalar o Stillmark neste repositório."
@@ -61,7 +61,7 @@ export const ptBR: Messages = {
         privateLabel: "local",
         diagramCoverageSkill: "/coverage",
         body:
-            "Metas de longo prazo ficam no roadmap. O trabalho concreto do objetivo atual fica no plano privado. Os casos de teste ficam no COVERAGE.md como checkboxes que o agente reconcilia com testes reais via /coverage e stillmark coverage validate."
+            "Metas de longo prazo ficam no roadmap. O trabalho concreto fica no plano privado em .stillmark/plans/. Os casos de teste ficam no COVERAGE.md. Agentes usam o CLI com --json; /stillmark também cobre ajustes de UI e stillmark config set registra se .stillmark/design-system/ vai para o git."
     },
     coverage: {
         title: "Companheiro de cobertura de testes",
@@ -112,6 +112,14 @@ export const ptBR: Messages = {
             {
                 title: "Companheiro COVERAGE.md",
                 body: "Valide, marque e adicione casos com stillmark coverage enquanto o /coverage trata linguagem natural."
+            },
+            {
+                title: "Design embutido",
+                body: "/stillmark design ou feedback informal com elemento selecionado no preview local. Playbooks de design vêm na skill stillmark."
+            },
+            {
+                title: "Local vs compartilhado em .stillmark",
+                body: "Planos de tarefa ficam sempre locais. stillmark config status pergunta uma vez se o design-system versiona no git."
             }
         ]
     },
@@ -127,19 +135,35 @@ export const ptBR: Messages = {
     },
     commands: {
         title: "Referência de comandos",
+        intro: "Execute na raiz do projeto. Use --json quando o agente chama o CLI.",
         tableCommand: "Comando",
         tableDescription: "O que faz",
         rows: [
-            ["stillmark roadmap add", "Adiciona item ao roadmap"],
-            ["stillmark plan add", "Adiciona tarefa ao plano ativo"],
-            ["stillmark add", "Infere roadmap ou plano"],
-            ["stillmark move … to plan", "Promove item do roadmap para o plano"],
-            ["stillmark long-running apply", "Aplica mudança no escopo durante a execução"],
-            ["stillmark git commit-style", "Pré-visualiza commit no estilo do seu git log"],
+            ["stillmark init", "Cria ROADMAP.md, stillmark.config.json e .stillmark/plans/"],
+            ["stillmark install --agent cursor|claude|codex", "Instala skills e instruções do agente"],
+            ["stillmark config status", "Estado do primeiro uso e flags de compartilhamento (--json)"],
+            ["stillmark config set --design-system=…", "Design-system local ou versionado no git (--prompted)"],
+            ["stillmark classify \"…\"", "Encaminha texto ambíguo para roadmap ou plano"],
+            ["stillmark add \"…\"", "Adiciona via classify, no roadmap ou plano"],
+            ["stillmark roadmap add \"…\"", "Adiciona item público ao roadmap"],
+            ["stillmark roadmap defer \"…\"", "Move item do roadmap para adiados"],
+            ["stillmark roadmap priority \"…\" <nível>", "Altera prioridade no roadmap"],
+            ["stillmark plan init [objetivo]", "Inicia TASK_PLAN.md para o objetivo atual"],
+            ["stillmark plan add \"…\"", "Adiciona tarefa ao plano ativo"],
+            ["stillmark plan blocked \"…\" <motivo>", "Marca tarefa do plano como bloqueada"],
+            ["stillmark move \"…\" to plan", "Promove trabalho do roadmap para o plano (--confirm)"],
+            ["stillmark move \"…\" to roadmap", "Devolve trabalho ao roadmap (--confirm)"],
+            ["stillmark long-running apply \"…\"", "Persiste mudança autorizada no plano em execução"],
+            ["stillmark git commit-style \"…\"", "Pré-visualiza assunto de commit a partir do git log"],
             ["stillmark coverage init", "Cria um COVERAGE.md inicial"],
-            ["stillmark coverage validate", "Valida o formato de checkboxes (erro com exit 1)"],
-            ["stillmark coverage update", "Dicas de git desde o último commit do COVERAGE.md"],
-            ["/coverage", "Skill do agente: ajuda, update e edições em texto livre"]
+            ["stillmark coverage validate", "Valida formato de checkboxes (exit 1 se houver erro)"],
+            ["stillmark coverage summary", "Resumo do checklist sem ruído de validação completa"],
+            ["stillmark coverage update", "Lista código e testes alterados desde o último commit do COVERAGE"],
+            ["stillmark coverage check \"…\"", "Marca caso por correspondência parcial"],
+            ["stillmark coverage uncheck \"…\"", "Desmarca caso"],
+            ["stillmark coverage add \"<título>\" \"…\"", "Adiciona caso com tag sob um título"],
+            ["/stillmark", "Planejamento, config e design embutido (seleção + feedback de UI)"],
+            ["/coverage", "Skill do agente: ajuda, fluxo de update e edição em texto livre"]
         ]
     },
     footer: {

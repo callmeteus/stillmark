@@ -30,7 +30,7 @@ export const enUS = {
             {
                 title: "Plan with your agent",
                 body:
-                    "Ask your agent to add or move work in plain language. Use /coverage to keep COVERAGE.md aligned with tests."
+                    "Use /stillmark for planning and design (browser selection + feedback). Use /coverage to keep COVERAGE.md aligned with tests."
             }
         ]
     },
@@ -45,7 +45,7 @@ export const enUS = {
     hero: {
         title: "Plan in plain language. Ship with a clear trail.",
         subtitle:
-            "Say what should change. Stillmark updates your roadmap, private task plan, and test checklist - no hand-editing markdown.",
+            "Say what should change. Stillmark updates your roadmap, private task plan, and test checklist - plus embedded UI work through /stillmark, without hand-editing markdown.",
         installLabel: "Ask your agent to install",
         installPromptTemplate:
             "Read and execute the markdown install guide at {url}. Follow every step in that file to install Stillmark in this repository."
@@ -59,7 +59,7 @@ export const enUS = {
         privateLabel: "local",
         diagramCoverageSkill: "/coverage",
         body:
-            "Long-term goals live in the roadmap. Concrete work for the current objective lives in the private task plan. Test cases live in COVERAGE.md as checkboxes your agent reconciles with real tests via /coverage and stillmark coverage validate."
+            "Long-term goals live in the roadmap. Concrete work for the current objective lives in the private task plan under .stillmark/plans/. Test cases live in COVERAGE.md. Agents call the CLI with --json; /stillmark also handles UI fixes and stillmark config set records whether .stillmark/design-system/ is shared in git."
     },
     coverage: {
         title: "Test coverage companion",
@@ -110,6 +110,14 @@ export const enUS = {
             {
                 title: "COVERAGE.md companion",
                 body: "Validate, check off, and add test cases with stillmark coverage while /coverage handles natural language."
+            },
+            {
+                title: "Embedded design",
+                body: "/stillmark design or casual feedback with a browser selection on your dev preview. Design playbooks ship inside the stillmark skill."
+            },
+            {
+                title: "Local vs shared .stillmark",
+                body: "Task plans always stay local. stillmark config status asks once whether to version design-system files in git."
             }
         ]
     },
@@ -125,19 +133,35 @@ export const enUS = {
     },
     commands: {
         title: "Command reference",
+        intro: "Run from the project root. Add --json when an agent drives the CLI.",
         tableCommand: "Command",
         tableDescription: "What it does",
         rows: [
-            ["stillmark roadmap add", "Add a roadmap item"],
-            ["stillmark plan add", "Add a task to the active plan"],
-            ["stillmark add", "Infer roadmap vs plan"],
-            ["stillmark move … to plan", "Promote roadmap work into the plan"],
-            ["stillmark long-running apply", "Apply an in-scope change during execution"],
-            ["stillmark git commit-style", "Preview commit subject learned from git log"],
+            ["stillmark init", "Create ROADMAP.md, stillmark.config.json, and .stillmark/plans/"],
+            ["stillmark install --agent cursor|claude|codex", "Install agent skills and shared instructions"],
+            ["stillmark config status", "First-run prompt state and sharing flags (--json)"],
+            ["stillmark config set --design-system=…", "Keep design-system local or version it in git (--prompted)"],
+            ["stillmark classify \"…\"", "Route ambiguous text to roadmap vs plan"],
+            ["stillmark add \"…\"", "Add using classify, then roadmap or plan"],
+            ["stillmark roadmap add \"…\"", "Add a public roadmap item"],
+            ["stillmark roadmap defer \"…\"", "Move a roadmap item to deferred"],
+            ["stillmark roadmap priority \"…\" <level>", "Change roadmap priority"],
+            ["stillmark plan init [objective]", "Start TASK_PLAN.md for the current objective"],
+            ["stillmark plan add \"…\"", "Add a task to the active plan"],
+            ["stillmark plan blocked \"…\" <reason>", "Mark a plan task blocked"],
+            ["stillmark move \"…\" to plan", "Promote roadmap work into the plan (--confirm)"],
+            ["stillmark move \"…\" to roadmap", "Move work back to the roadmap (--confirm)"],
+            ["stillmark long-running apply \"…\"", "Persist an authorized in-scope plan change"],
+            ["stillmark git commit-style \"…\"", "Preview commit subject learned from git log"],
             ["stillmark coverage init", "Create a starter COVERAGE.md"],
             ["stillmark coverage validate", "Validate checkbox format (exit 1 on errors)"],
-            ["stillmark coverage update", "Git hints since last COVERAGE.md commit"],
-            ["/coverage", "Agent skill: help, update workflow, free-text edits"]
+            ["stillmark coverage summary", "Print checklist stats without full validation noise"],
+            ["stillmark coverage update", "List source and test files changed since last COVERAGE commit"],
+            ["stillmark coverage check \"…\"", "Check off a case by substring match"],
+            ["stillmark coverage uncheck \"…\"", "Uncheck a case"],
+            ["stillmark coverage add \"<heading>\" \"…\"", "Add a tagged case under a heading"],
+            ["/stillmark", "Planning, config, and embedded design (selection + UI feedback)"],
+            ["/coverage", "Agent skill: help, update workflow, free-text checklist edits"]
         ]
     },
     footer: {
