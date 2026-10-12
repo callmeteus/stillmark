@@ -34,7 +34,21 @@ stillmark install --agent claude
 stillmark install --agent codex
 ```
 
-## 4. Opcional: checklist de cobertura de testes
+## 4. Primeiro `/stillmark` (compartilhamento opcional)
+
+O agente pode executar:
+
+```bash
+stillmark config status --json
+```
+
+Se perguntar, escolha se `.stillmark/design-system/` entra no git. Planos em `.stillmark/plans/` continuam sempre locais.
+
+```bash
+stillmark config set --design-system=true --prompted --json
+```
+
+## 5. Opcional: checklist de cobertura de testes
 
 Quando o time quiser um checklist compartilhado de casos de teste no git:
 
@@ -44,6 +58,6 @@ stillmark coverage init
 
 Depois use `/stillmark coverage …` no agente (mesmos fluxos que `stillmark coverage …`) ou `stillmark coverage validate --json` após editar.
 
-## 5. Verificar
+## 6. Verificar
 
 Confirme que `ROADMAP.md` existe, que `.stillmark/` está no `.gitignore` e que `.stillmark/plans/` foi criado. Use `stillmark --help` se algum passo falhar.
