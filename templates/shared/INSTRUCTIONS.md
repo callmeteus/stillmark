@@ -32,6 +32,8 @@ stillmark coverage validate --json
 stillmark coverage update --json
 stillmark coverage check "<case substring>" --json
 stillmark coverage add "<### heading match>" "<case>" --tag=happy --json
+stillmark config status --json
+stillmark config set --design-system=true|false --prompted --json
 ```
 
 For `/coverage` natural-language edits, follow the installed `coverage` skill. Validate after every change.
@@ -53,7 +55,11 @@ UI work uses the same **stillmark** skill, not a separate slash command:
 | Strategic visual initiative (later quarter) | `stillmark roadmap add "…" --json` |
 | Ambiguous add | `stillmark classify` or `stillmark add` (design phrases route to plan or roadmap) |
 
-Playbook files ship under `skills/stillmark-design/reference/`. Persist research in `.stillmark/plans/FINDINGS.md`, outcomes in `PROGRESS.md`.
+Playbook files ship under `skills/stillmark-design/reference/`. Persist research in `.stillmark/plans/FINDINGS.md`, outcomes in `PROGRESS.md`. Durable team design-system notes belong in `.stillmark/design-system/` when the user chose to share them in git.
+
+## First-run sharing (`.stillmark`)
+
+On the first `/stillmark` in a repo, run `stillmark config status --json`. When `needsFirstRunPrompt` is true, ask whether to **version `.stillmark/design-system/` in git**. **Never** offer to commit `.stillmark/plans/`. Record the answer with `stillmark config set --design-system=true|false --prompted --json`. If the user defers, skip `--prompted` so the question can return later.
 
 Use `--accept-scope-change` only after the user authorizes expanding scope. Use `--allow-sensitive` on roadmap writes only after warning the user about public ROADMAP.md.
 

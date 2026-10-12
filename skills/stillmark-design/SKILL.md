@@ -63,7 +63,7 @@ stillmark long-running apply "<in-scope design change>" --json --accept-scope-ch
 stillmark classify "<ambiguous request>" --json
 ```
 
-Create `FINDINGS.md` / `PROGRESS.md` if missing (local, gitignored under `.stillmark/`). Use `DESIGN.md` at project or surface level when the team needs a durable token and pattern spec; it does not replace the four trackers.
+Create `FINDINGS.md` / `PROGRESS.md` if missing (local under `.stillmark/plans/`, always private). Use `DESIGN.md` at project or surface level when the team needs a durable token and pattern spec. When the user enabled sharing via `stillmark config set`, persist team-visible tokens and component notes in `.stillmark/design-system/` (committable); it does not replace the four trackers.
 
 Planning is **optional** for a single quick fix; when design is part of the current delivery, add tasks with `stillmark plan add` (acceptance criteria in the description) or `stillmark roadmap add` for later visual milestones. The same `stillmark classify` / `stillmark add` rules apply to design wording.
 

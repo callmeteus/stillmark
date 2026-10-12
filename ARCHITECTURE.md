@@ -9,7 +9,7 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
 ```
 
 - **Agents** map `/stillmark` (planning, embedded `design`, browser selection + free text), `/coverage`, and natural language to CLI invocations with `--json`.
-- **CLI** (`packages/cli/src/cli/Cli.ts`) dispatches `init`, `roadmap`, `plan`, `coverage`, `add`, `move`, `classify`, `install`, `long-running`.
+- **CLI** (`packages/cli/src/cli/Cli.ts`) dispatches `init`, `config`, `roadmap`, `plan`, `coverage`, `add`, `move`, `classify`, `install`, `long-running`.
 - **Documents** parse `ROADMAP.md` and `TASK_PLAN.md` into line spans and splice edits without full regeneration.
 - **Guards** enforce duplicates, plan scope, and roadmap privacy.
 - **Coverage** (`packages/cli/src/coverage/`) validates checkbox-only `COVERAGE.md`, toggles cases, and surfaces git diff hints for `/coverage update` (aligned with luckymaker-workspace coverage skill).
@@ -25,9 +25,15 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
     "git": {
         "autoCommit": false,
         "autoPush": false
+    },
+    "sharing": {
+        "firstRunPrompted": false,
+        "shareDesignSystem": false
     }
 }
 ```
+
+`.stillmark/plans/` is always gitignored. `.stillmark/design-system/` is gitignored until `stillmark config set --design-system=true` (usually after the first `/stillmark` prompt). Agents check `stillmark config status --json` for `needsFirstRunPrompt`.
 
 When `git.commitMessage` is omitted, auto-commits infer the subject prefix from recent `git log` (`stillmark git commit-style --json` previews the template). Set `commitMessage` with a `{summary}` placeholder to pin a fixed format.
 

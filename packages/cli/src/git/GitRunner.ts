@@ -69,16 +69,15 @@ export class GitRunner {
     }
 
     /**
-     * Returns true if the local `.stillmark` directory is tracked by git.
+     * Returns true if private Stillmark task plans are tracked by git (misconfiguration).
      */
-    public async isStillmarkLocalTracked(cwd: string): Promise<boolean> {
-        const result = await this.run(cwd, [
+    public async areStillmarkPlansTracked(cwd: string): Promise<boolean> {
+        const result = await this.capture(cwd, [
             "ls-files",
-            "--error-unmatch",
-            ".stillmark"
+            ".stillmark/plans"
         ]);
 
-        return result.ok;
+        return result.stdout.trim().length > 0;
     }
 
     public async commitRoadmap(
@@ -86,12 +85,13 @@ export class GitRunner {
         message: string,
         push: boolean
     ): Promise<{ status: "committed" | "pushed" | "failed"; detail?: string }> {
-        const tracked = await this.isStillmarkLocalTracked(cwd);
+        const plansTracked = await this.areStillmarkPlansTracked(cwd);
 
-        if (tracked) {
+        if (plansTracked) {
             return {
                 status: "failed",
-                detail: ".stillmark is tracked by git; refuse to commit roadmap"
+                detail:
+                    ".stillmark/plans is tracked by git; refuse to commit roadmap"
             };
         }
 

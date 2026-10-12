@@ -75,7 +75,7 @@ describe("GitIntegration", () => {
         cleanup();
     });
 
-    it("refuses when .stillmark is tracked", async () => {
+    it("refuses when .stillmark/plans is tracked", async () => {
         const spawner: ProcessSpawner = async (_cmd, args) => {
             if (args[0] === "ls-files") {
                 return { code: 0, stdout: ".stillmark/plans/TASK_PLAN.md\n", stderr: "" };

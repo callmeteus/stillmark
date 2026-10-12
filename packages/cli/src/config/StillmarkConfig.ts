@@ -2,6 +2,17 @@ import fs from "node:fs";
 
 import type { ProjectPaths } from "../paths/ProjectPaths";
 
+export interface SharingConfig {
+    /**
+     * True after the user answered the first-run sharing question (yes or no).
+     */
+    firstRunPrompted: boolean;
+    /**
+     * When true, `.stillmark/design-system/` is not gitignored and may be committed.
+     */
+    shareDesignSystem: boolean;
+}
+
 export interface GitConfig {
     autoCommit: boolean;
     autoPush: boolean;
@@ -13,13 +24,20 @@ export interface GitConfig {
 
 export interface StillmarkConfig {
     git: GitConfig;
+    sharing: SharingConfig;
 }
+
+const DEFAULT_SHARING: SharingConfig = {
+    firstRunPrompted: false,
+    shareDesignSystem: false
+};
 
 const DEFAULT_CONFIG: StillmarkConfig = {
     git: {
         autoCommit: false,
         autoPush: false
-    }
+    },
+    sharing: { ...DEFAULT_SHARING }
 };
 
 /**
@@ -38,8 +56,23 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
             autoCommit: parsed.git?.autoCommit ?? DEFAULT_CONFIG.git.autoCommit,
             autoPush: parsed.git?.autoPush ?? DEFAULT_CONFIG.git.autoPush,
             commitMessage: parsed.git?.commitMessage
+        },
+        sharing: {
+            firstRunPrompted:
+                parsed.sharing?.firstRunPrompted ?? DEFAULT_SHARING.firstRunPrompted,
+            shareDesignSystem:
+                parsed.sharing?.shareDesignSystem ?? DEFAULT_SHARING.shareDesignSystem
         }
     };
+}
+
+/**
+ * Persist stillmark.config.json.
+ */
+export function writeConfig(paths: ProjectPaths, config: StillmarkConfig): void {
+    const content = `${JSON.stringify(config, null, 4)}\n`;
+
+    fs.writeFileSync(paths.config, content, "utf8");
 }
 
 /**

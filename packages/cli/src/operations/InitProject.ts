@@ -34,7 +34,7 @@ export function initProject(paths: ProjectPaths): OperationResult {
         changed: true,
         action: "init",
         summary: gitignoreChanged
-            ? "Initialized ROADMAP.md, .stillmark/plans, stillmark.config.json, and .gitignore"
+            ? "Initialized ROADMAP.md, .stillmark/plans, stillmark.config.json, and Stillmark gitignore rules"
             : "Initialized ROADMAP.md, .stillmark/plans, and stillmark.config.json"
     };
 }

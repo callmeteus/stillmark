@@ -16,7 +16,7 @@ npm install -g https://github.com/callmeteus/stillmark/releases/latest/download/
 stillmark init
 ```
 
-Cria `ROADMAP.md`, `stillmark.config.json` e `.stillmark/plans/` (incluído no `.gitignore`). O plano de tarefas é criado quando você inicia um com `stillmark plan init`.
+Cria `ROADMAP.md`, `stillmark.config.json` e `.stillmark/plans/` (sempre no `.gitignore`). No primeiro `/stillmark`, o agente pode perguntar se você quer versionar `.stillmark/design-system/` no git; os planos de tarefa continuam locais. O plano de tarefas é criado quando você inicia um com `stillmark plan init`.
 
 ## 3. Instalar templates do agente
 

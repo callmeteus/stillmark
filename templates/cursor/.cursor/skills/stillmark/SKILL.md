@@ -12,13 +12,36 @@ Single entry point for **planning**, **coverage**, and **design** in this reposi
 
 Run `stillmark` from the **project root** with `--json` for file-backed planning operations. Design work edits source in the repo and re-checks the running app when possible.
 
+## First run: sharing under `.stillmark`
+
+Before other work, run:
+
+```bash
+stillmark config status --json
+```
+
+When `sharing.needsFirstRunPrompt` is **true**, ask **one** question in the user's language:
+
+- Task plans (`.stillmark/plans/`, including `TASK_PLAN.md`) **always stay local** - do not offer to commit them.
+- Optional: version **design-system** artifacts in git (`.stillmark/design-system/` - tokens, component notes, durable visual decisions).
+
+Example (Portuguese): *"Quer versionar no git só o design-system em `.stillmark/design-system/`? Os planos de tarefa continuam só na sua máquina."*
+
+| User answer | CLI |
+|-------------|-----|
+| Yes / share with team | `stillmark config set --design-system=true --prompted --json` |
+| No / keep local | `stillmark config set --design-system=false --prompted --json` |
+| Not now | Skip `apply`; do not pass `--prompted` (ask again on a later `/stillmark`) |
+
+After sharing is enabled, persist team-facing design specs under `.stillmark/design-system/` (and root `DESIGN.md` when appropriate). Keep `FINDINGS.md` / `PROGRESS.md` under `.stillmark/plans/` unless the user later opts into more shared paths.
+
 ## How `/stillmark` is parsed
 
 The user message is everything after `/stillmark` (trimmed). It may be CLI-shaped or free text.
 
 | Input pattern | Mode | Action |
 |---------------|------|--------|
-| Starts with `roadmap`, `plan`, `coverage`, `move`, `add`, `init`, `install`, `classify`, `long-running` | **CLI** | Run matching `stillmark … --json` |
+| Starts with `roadmap`, `plan`, `coverage`, `move`, `add`, `init`, `install`, `classify`, `config`, `long-running` | **CLI** | Run matching `stillmark … --json` |
 | Starts with `design` (optional rest) | **Design** | Design pipeline below; rest is brief |
 | **Browser element** attached (`browser_element`, selection outline, dom_path, bounds) | **Design** | Map selection to project source; fix what user describes |
 | Vague critique ("ta uma bosta arruma", "melhora isso", "feio", "polish this") with or without selection | **Design** | Treat as targeted visual fix; scale research to scope |

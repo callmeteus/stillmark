@@ -18,10 +18,12 @@ import {
 import {
     addPlanTask,
     addRoadmapItem,
+    configStatus,
     initProject,
     initTaskPlan,
     moveToPlan,
     moveToRoadmap,
+    setConfigSharing,
     updatePlanTask,
     updateRoadmapItem
 } from "../operations";
@@ -83,6 +85,15 @@ function parseFlags(argv: string[]): {
         } else
         if (arg === "--checked") {
             flags.checked = true;
+        } else
+        if (arg === "--prompted") {
+            flags.prompted = true;
+        } else
+        if (arg.startsWith("--design-system=")) {
+            flags.designSystem = arg.slice("--design-system=".length);
+        } else
+        if (arg === "--design-system" && argv[i + 1]) {
+            flags.designSystem = argv[++i];
         } else {
             positional.push(arg);
         }
@@ -341,6 +352,79 @@ export async function runCli(argv: string[]): Promise<number> {
             return 0;
         }
 
+        if (cmd === "config") {
+            const config = loadConfig(paths);
+
+            if (sub === "status" || sub === undefined) {
+                output(configStatus(paths, config), json);
+
+                return 0;
+            }
+
+            if (sub === "set") {
+                const raw = flags.designSystem;
+
+                if (raw === undefined) {
+                    output(
+                        {
+                            ok: false,
+                            changed: false,
+                            summary:
+                                "Usage: stillmark config set --design-system=true|false [--prompted] --json"
+                        },
+                        json
+                    );
+
+                    return 1;
+                }
+
+                const normalized = String(raw).toLowerCase();
+                const shareDesignSystem =
+                    normalized === "true" ||
+                    normalized === "yes" ||
+                    normalized === "1";
+                const shareExplicitNo =
+                    normalized === "false" ||
+                    normalized === "no" ||
+                    normalized === "0";
+
+                if (!shareDesignSystem && !shareExplicitNo) {
+                    output(
+                        {
+                            ok: false,
+                            changed: false,
+                            summary:
+                                "Use --design-system=true or --design-system=false"
+                        },
+                        json
+                    );
+
+                    return 1;
+                }
+
+                output(
+                    setConfigSharing(paths, {
+                        shareDesignSystem,
+                        markPrompted: Boolean(flags.prompted)
+                    }),
+                    json
+                );
+
+                return 0;
+            }
+
+            output(
+                {
+                    ok: false,
+                    changed: false,
+                    summary: "Usage: stillmark config status | set --design-system=…"
+                },
+                json
+            );
+
+            return 1;
+        }
+
         if (cmd === "git") {
             if (sub === "commit-style" || sub === "suggest") {
                 const summary =
@@ -489,7 +573,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | classify | roadmap | plan | git | coverage | add | move | install | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | git | coverage | add | move | install | long-running"
             },
             json
         );
