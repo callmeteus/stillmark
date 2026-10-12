@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
 import type { ProjectPaths } from "../paths/ProjectPaths";
+import { sanitizeDetailConfig, type DetailConfig } from "./DetailLevel";
 
 export interface SharingConfig {
     /**
@@ -37,6 +38,10 @@ export interface StillmarkConfig {
     git: GitConfig;
     sharing: SharingConfig;
     learned: LearnedConfig;
+    /**
+     * Compact (item line only) or extended (item line plus indented details), global or per module.
+     */
+    detail: DetailConfig;
 }
 
 const DEFAULT_LEARNED: LearnedConfig = {
@@ -55,7 +60,8 @@ const DEFAULT_CONFIG: StillmarkConfig = {
         autoPush: false
     },
     sharing: { ...DEFAULT_SHARING },
-    learned: { ...DEFAULT_LEARNED }
+    learned: { ...DEFAULT_LEARNED },
+    detail: {}
 };
 
 /**
@@ -63,7 +69,13 @@ const DEFAULT_CONFIG: StillmarkConfig = {
  */
 export function loadConfig(paths: ProjectPaths): StillmarkConfig {
     if (!fs.existsSync(paths.config)) {
-        return { ...DEFAULT_CONFIG, git: { ...DEFAULT_CONFIG.git } };
+        return {
+            ...DEFAULT_CONFIG,
+            git: { ...DEFAULT_CONFIG.git },
+            sharing: { ...DEFAULT_SHARING },
+            learned: { ...DEFAULT_LEARNED },
+            detail: {}
+        };
     }
 
     const raw = fs.readFileSync(paths.config, "utf8");
@@ -84,7 +96,8 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
         learned: {
             designDir: parsed.learned?.designDir ?? DEFAULT_LEARNED.designDir,
             codeStyleDir: parsed.learned?.codeStyleDir ?? DEFAULT_LEARNED.codeStyleDir
-        }
+        },
+        detail: sanitizeDetailConfig(parsed.detail)
     };
 }
 

@@ -1,3 +1,5 @@
+import type { DetailLevel } from "../config/DetailLevel";
+
 /**
  * Allowed case tags on checkbox lines.
  */
@@ -67,6 +69,21 @@ const LABEL_PATTERN = /^\*\*[^*]+\*\*$/;
 const NOTFIXED_SUFFIX = " - NOTFIXED: ";
 
 /**
+ * Indented detail line under a case (extended detail only).
+ */
+export const COVERAGE_DETAIL_PATTERN = /^ {2}\S/;
+
+/**
+ * Options for coverage validation.
+ */
+export interface CoverageValidationOptions {
+    /**
+     * `extended` allows indented detail lines right under a case; `compact` (default) rejects them.
+     */
+    detail?: DetailLevel;
+}
+
+/**
  * Per-area checkbox counts from validation.
  */
 export interface CoverageAreaStats {
@@ -105,7 +122,11 @@ function headingLevel(line: string): number {
 /**
  * Validates COVERAGE.md lines against the checkbox-only format.
  */
-export function validateCoverage(lines: string[]): CoverageValidationResult {
+export function validateCoverage(
+    lines: string[],
+    options: CoverageValidationOptions = {}
+): CoverageValidationResult {
+    const extended = options.detail === "extended";
     const errors: string[] = [];
     const warnings: string[] = [];
     const areas: CoverageAreaStats[] = [];
@@ -155,13 +176,31 @@ export function validateCoverage(lines: string[]): CoverageValidationResult {
     let currentArea: CoverageAreaStats | null = null;
     let notfixedArea: CoverageAreaStats | null = null;
     const nodes: { index: number; level: number }[] = [];
+    let underCase = false;
 
     for (let index = bodyStart; index < lines.length; index++) {
         const line = lines[index];
 
         if (line.trim() === "") {
+            underCase = false;
             continue;
         }
+
+        if (COVERAGE_DETAIL_PATTERN.test(line)) {
+            if (!underCase) {
+                fail(index, "indented detail lines must sit right under a `- [ ]` / `- [x]` case");
+            } else
+            if (!extended) {
+                fail(
+                    index,
+                    "detail lines under a case need `detail: extended` for coverage (stillmark config set --detail=extended --module=coverage)"
+                );
+            }
+
+            continue;
+        }
+
+        underCase = false;
 
         const level = headingLevel(line);
 
@@ -239,6 +278,8 @@ export function validateCoverage(lines: string[]): CoverageValidationResult {
             );
             continue;
         }
+
+        underCase = true;
 
         if (!currentArea) {
             fail(index, "checkbox outside any `## <N>. <Area>`");
@@ -374,10 +415,13 @@ export function validateCoverage(lines: string[]): CoverageValidationResult {
 /**
  * Validates a COVERAGE.md file on disk.
  */
-export function validateCoverageFile(raw: string): CoverageValidationResult {
+export function validateCoverageFile(
+    raw: string,
+    options: CoverageValidationOptions = {}
+): CoverageValidationResult {
     const lines = raw.replace(/\n$/, "").split("\n");
 
-    return validateCoverage(lines);
+    return validateCoverage(lines, options);
 }
 
 /**

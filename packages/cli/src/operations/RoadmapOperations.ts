@@ -13,7 +13,9 @@ import { scanForSensitiveContent } from "../guards/PrivacyGuard";
 import type { GitResult, OperationResult } from "../results/OperationResult";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import {
+    compactDetailsMessage,
     loadConfig,
+    resolveDetailLevel,
     resolveGitEnabled,
     resolveGitPush,
     type GitOverride
@@ -28,14 +30,21 @@ export interface AddRoadmapOptions {
     gitOverride?: GitOverride;
     privatePlanRaw?: string;
     gitRunner?: GitRunner;
+    /**
+     * Indented detail lines under the item; requires roadmap detail `extended`.
+     */
+    details?: string[];
 }
 
 function formatRoadmapItem(
     id: string,
     title: string,
-    priority: string
+    priority: string,
+    details: string[]
 ): string {
-    return `- [ ] **${id}** ${title}\n  priority: ${priority} · status: planned`;
+    const detailBlock = details.map((line) => `\n  ${line}`).join("");
+
+    return `- [ ] **${id}** ${title}\n  priority: ${priority} · status: planned${detailBlock}`;
 }
 
 /**
@@ -50,6 +59,18 @@ export async function addRoadmapItem(
             ok: false,
             changed: false,
             summary: "ROADMAP.md not found; run stillmark init first"
+        };
+    }
+
+    const config = loadConfig(paths);
+    const details = options.details ?? [];
+
+    if (details.length > 0 && resolveDetailLevel(config.detail, "roadmap") === "compact") {
+        return {
+            ok: false,
+            changed: false,
+            action: "roadmap add",
+            summary: compactDetailsMessage("roadmap")
         };
     }
 
@@ -103,7 +124,7 @@ export async function addRoadmapItem(
     const ids = allRoadmapIds(parseRoadmap(updated));
     const id = nextId("R", ids);
     const priority = options.priority ?? "medium";
-    const block = formatRoadmapItem(id, options.description, priority);
+    const block = formatRoadmapItem(id, options.description, priority, details);
     const insertAt =
         section.items.length > 0
             ? section.items[section.items.length - 1].itemSpan.endLine - 1
@@ -112,7 +133,6 @@ export async function addRoadmapItem(
     updated = insertAfterLine(updated, insertAt, block);
     fs.writeFileSync(paths.roadmap, updated, "utf8");
 
-    const config = loadConfig(paths);
     const gitRunner = options.gitRunner ?? new GitRunner();
     let gitResult: GitResult = { status: "skipped" };
 

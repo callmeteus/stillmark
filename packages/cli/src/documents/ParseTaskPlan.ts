@@ -77,6 +77,7 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
                 const blockedBy: string[] = [];
                 const acceptanceCriteria: string[] = [];
                 const verification: string[] = [];
+                const detailLines: string[] = [];
                 let fieldSection: "acceptance" | "verification" | null = null;
                 i += 1;
 
@@ -135,6 +136,9 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
                         }
 
                         fieldSection = null;
+                    } else
+                    if (fieldSection === null && inner.trim() && !inner.startsWith("#")) {
+                        detailLines.push(inner.trim());
                     }
 
                     i += 1;
@@ -149,6 +153,7 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
                     blockedBy,
                     acceptanceCriteria,
                     verification,
+                    detailLines,
                     blockSpan: { startLine: blockStart, endLine: i },
                     sectionSpan: { startLine: blockStart, endLine: i }
                 });

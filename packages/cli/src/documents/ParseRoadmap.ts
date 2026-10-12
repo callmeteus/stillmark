@@ -2,6 +2,7 @@ import type { RoadmapDocument, RoadmapItem, RoadmapSection } from "./types";
 
 const ITEM_RE = /^- \[([ xX])\] \*\*(R-\d+)\*\* (.+)$/;
 const META_RE = /^\s+priority:/;
+const INDENTED_RE = /^ {2}\S/;
 
 /**
  * Parse ROADMAP.md without mutating content.
@@ -42,16 +43,22 @@ export function parseRoadmap(raw: string): RoadmapDocument {
                 let metaLine = "";
                 const metaStart = i + 1;
                 const acceptance: string[] = [];
+                const details: string[] = [];
                 i += 1;
 
                 if (i < lines.length && META_RE.test(lines[i])) {
                     metaLine = lines[i];
                     i += 1;
+                }
 
-                    while (i < lines.length && lines[i].startsWith("  - ")) {
+                while (i < lines.length && INDENTED_RE.test(lines[i])) {
+                    if (lines[i].startsWith("  - ")) {
                         acceptance.push(lines[i]);
-                        i += 1;
+                    } else {
+                        details.push(lines[i].trim());
                     }
+
+                    i += 1;
                 }
 
                 const item: RoadmapItem = {
@@ -65,7 +72,8 @@ export function parseRoadmap(raw: string): RoadmapDocument {
                     },
                     itemSpan: { startLine: itemStart, endLine: i },
                     sectionTitle: current.title,
-                    acceptanceLines: acceptance
+                    acceptanceLines: acceptance,
+                    detailLines: details
                 };
 
                 current.items.push(item);

@@ -9,6 +9,12 @@ import {
     parseTaskPlan,
     spliceLines
 } from "../documents";
+import {
+    compactDetailsMessage,
+    loadConfig,
+    resolveDetailLevel,
+    type DetailLevel
+} from "../config";
 import { findDuplicatePlan, checkPlanScope } from "../guards";
 import type { OperationResult } from "../results/OperationResult";
 import type { ProjectPaths } from "../paths/ProjectPaths";
@@ -17,17 +23,34 @@ export interface AddPlanOptions {
     description: string;
     acceptScopeChange?: boolean;
     priority?: string;
+    /**
+     * Free-text detail lines under the task fields; requires plan detail `extended`.
+     */
+    details?: string[];
 }
 
+/**
+ * Compact tasks keep only the header and fields; extended tasks add details and the criteria sections.
+ */
 function formatPlanTask(
     id: string,
     title: string,
-    priority: string
+    priority: string,
+    detail: DetailLevel,
+    details: string[]
 ): string {
-    return `### ${id} ${title}
+    const header = `### ${id} ${title}
 status: pending
 priority: ${priority}
+`;
 
+    if (detail === "compact") {
+        return header;
+    }
+
+    const detailBlock = details.length > 0 ? `\n${details.join("\n")}\n` : "";
+
+    return `${header}${detailBlock}
 #### Acceptance criteria
 - (define)
 
@@ -112,6 +135,18 @@ export function addPlanTask(
         };
     }
 
+    const detail = resolveDetailLevel(loadConfig(paths).detail, "plan");
+    const details = options.details ?? [];
+
+    if (details.length > 0 && detail === "compact") {
+        return {
+            ok: false,
+            changed: false,
+            action: "plan add",
+            summary: compactDetailsMessage("plan")
+        };
+    }
+
     const raw = fs.readFileSync(paths.taskPlan, "utf8");
     const doc = parseTaskPlan(raw);
     const duplicateOf = findDuplicatePlan(doc, options.description);
@@ -140,7 +175,7 @@ export function addPlanTask(
 
     const id = nextId("T", allPlanTaskIds(doc));
     const priority = options.priority ?? "medium";
-    const block = formatPlanTask(id, options.description, priority);
+    const block = formatPlanTask(id, options.description, priority, detail, details);
     const lines = raw.split(/\r?\n/);
     let tasksHeader = -1;
 

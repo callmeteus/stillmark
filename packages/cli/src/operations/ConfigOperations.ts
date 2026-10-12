@@ -1,7 +1,8 @@
-import fs from "node:fs";
-
 import {
     loadConfig,
+    resolveAllDetailLevels,
+    type DetailLevel,
+    type DetailModule,
     type SharingConfig,
     type StillmarkConfig,
     writeConfig
@@ -31,7 +32,11 @@ export interface SharingStatusPayload {
 export function configStatus(
     paths: ProjectPaths,
     config?: StillmarkConfig
-): OperationResult & { config: StillmarkConfig; sharing: SharingStatusPayload } {
+): OperationResult & {
+    config: StillmarkConfig;
+    sharing: SharingStatusPayload;
+    detail: Record<DetailModule, DetailLevel>;
+} {
     const resolved = config ?? loadConfig(paths);
 
     const sharing: SharingStatusPayload = {
@@ -58,7 +63,49 @@ export function configStatus(
                 ? "Design learnings under .stillmark/learnings/design may be committed; plans stay local"
                 : "Design learnings stay local; code-style learnings may still be committed",
         config: resolved,
-        sharing
+        sharing,
+        detail: resolveAllDetailLevels(resolved.detail)
+    };
+}
+
+export interface SetConfigDetailOptions {
+    /**
+     * New level, or `inherit` to remove the override so the module (or global) falls back to defaults.
+     */
+    level: DetailLevel | "inherit";
+    /**
+     * Module to override; omit to change the global level.
+     */
+    module?: DetailModule;
+}
+
+/**
+ * Updates the `detail` block of `stillmark.config.json`.
+ */
+export function setConfigDetail(
+    paths: ProjectPaths,
+    options: SetConfigDetailOptions
+): OperationResult & { config: StillmarkConfig; detail: Record<DetailModule, DetailLevel> } {
+    const config = loadConfig(paths);
+    const key = options.module ?? "global";
+
+    if (options.level === "inherit") {
+        delete config.detail[key];
+    } else {
+        config.detail[key] = options.level;
+    }
+
+    writeConfig(paths, config);
+
+    const detail = resolveAllDetailLevels(config.detail);
+
+    return {
+        ok: true,
+        changed: true,
+        action: "config-set",
+        summary: `Detail: coverage ${detail.coverage}, roadmap ${detail.roadmap}, plan ${detail.plan}`,
+        config,
+        detail
     };
 }
 

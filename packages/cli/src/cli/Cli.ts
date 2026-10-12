@@ -1,7 +1,15 @@
 import fs from "node:fs";
 
 import { installAgent, type AgentId } from "../adapters";
-import { loadConfig, type GitOverride } from "../config";
+import {
+    isDetailLevel,
+    isDetailModule,
+    loadConfig,
+    splitDetailLines,
+    type DetailLevel,
+    type DetailModule,
+    type GitOverride
+} from "../config";
 import { parseTaskPlan } from "../documents";
 import { GitRunner, resolveCommitMessage } from "../git";
 import { classifyIntent } from "../intent";
@@ -23,6 +31,7 @@ import {
     initTaskPlan,
     moveToPlan,
     moveToRoadmap,
+    setConfigDetail,
     setConfigSharing,
     updatePlanTask,
     updateRoadmapItem
@@ -94,6 +103,24 @@ function parseFlags(argv: string[]): {
         } else
         if (arg === "--design-system" && argv[i + 1]) {
             flags.designSystem = argv[++i];
+        } else
+        if (arg.startsWith("--details=")) {
+            flags.details = arg.slice("--details=".length);
+        } else
+        if (arg === "--details" && argv[i + 1]) {
+            flags.details = argv[++i];
+        } else
+        if (arg.startsWith("--detail=")) {
+            flags.detail = arg.slice("--detail=".length);
+        } else
+        if (arg === "--detail" && argv[i + 1]) {
+            flags.detail = argv[++i];
+        } else
+        if (arg.startsWith("--module=")) {
+            flags.module = arg.slice("--module=".length);
+        } else
+        if (arg === "--module" && argv[i + 1]) {
+            flags.module = argv[++i];
         } else {
             positional.push(arg);
         }
@@ -138,6 +165,7 @@ export async function runCli(argv: string[]): Promise<number> {
 
     const cmd = positional[0];
     const sub = positional[1];
+    const details = splitDetailLines(flags.details as string | undefined);
 
     try {
         if (cmd === "init") {
@@ -223,7 +251,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         allowSensitive: Boolean(flags.allowSensitive),
                         gitOverride,
                         privatePlanRaw: planRaw,
-                        gitRunner
+                        gitRunner,
+                        details
                     }),
                     json
                 );
@@ -281,7 +310,8 @@ export async function runCli(argv: string[]): Promise<number> {
                 output(
                     addPlanTask(paths, {
                         description: positional.slice(2).join(" "),
-                        acceptScopeChange: Boolean(flags.acceptScopeChange)
+                        acceptScopeChange: Boolean(flags.acceptScopeChange),
+                        details
                     }),
                     json
                 );
@@ -335,7 +365,8 @@ export async function runCli(argv: string[]): Promise<number> {
                     await addRoadmapItem(paths, {
                         description: text,
                         gitOverride,
-                        gitRunner
+                        gitRunner,
+                        details
                     }),
                     json
                 );
@@ -343,7 +374,8 @@ export async function runCli(argv: string[]): Promise<number> {
                 output(
                     addPlanTask(paths, {
                         description: text,
-                        acceptScopeChange: Boolean(flags.acceptScopeChange)
+                        acceptScopeChange: Boolean(flags.acceptScopeChange),
+                        details
                     }),
                     json
                 );
@@ -361,6 +393,38 @@ export async function runCli(argv: string[]): Promise<number> {
                 return 0;
             }
 
+            if (sub === "set" && flags.detail !== undefined) {
+                const level = String(flags.detail).toLowerCase();
+                const module = flags.module === undefined ? undefined : String(flags.module).toLowerCase();
+
+                if (
+                    (level !== "inherit" && !isDetailLevel(level)) ||
+                    (module !== undefined && !isDetailModule(module))
+                ) {
+                    output(
+                        {
+                            ok: false,
+                            changed: false,
+                            summary:
+                                "Usage: stillmark config set --detail=compact|extended|inherit [--module=coverage|roadmap|plan] --json"
+                        },
+                        json
+                    );
+
+                    return 1;
+                }
+
+                output(
+                    setConfigDetail(paths, {
+                        level: level as DetailLevel | "inherit",
+                        module: module as DetailModule | undefined
+                    }),
+                    json
+                );
+
+                return 0;
+            }
+
             if (sub === "set") {
                 const raw = flags.designSystem;
 
@@ -370,7 +434,7 @@ export async function runCli(argv: string[]): Promise<number> {
                             ok: false,
                             changed: false,
                             summary:
-                                "Usage: stillmark config set --design-system=true|false [--prompted] --json"
+                                "Usage: stillmark config set --design-system=true|false [--prompted] | --detail=compact|extended|inherit [--module=coverage|roadmap|plan] --json"
                         },
                         json
                     );
@@ -417,7 +481,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 {
                     ok: false,
                     changed: false,
-                    summary: "Usage: stillmark config status | set --design-system=…"
+                    summary: "Usage: stillmark config status | set --design-system=… | set --detail=… [--module=…]"
                 },
                 json
             );
@@ -522,7 +586,8 @@ export async function runCli(argv: string[]): Promise<number> {
                     positional.slice(3).join(" "),
                     {
                         tag: allowedTag,
-                        checked: Boolean(flags.checked)
+                        checked: Boolean(flags.checked),
+                        details
                     }
                 );
                 output(result, json);

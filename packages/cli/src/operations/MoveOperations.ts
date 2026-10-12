@@ -7,11 +7,19 @@ import {
     parseTaskPlan,
     spliceLines
 } from "../documents";
+import { loadConfig, resolveDetailLevel, type DetailModule } from "../config";
 import { insertAfterLine } from "../documents/Splice";
 import type { OperationResult } from "../results/OperationResult";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import { addPlanTask } from "./PlanOperations";
 import { addRoadmapItem } from "./RoadmapOperations";
+
+/**
+ * Details travel with a moved item only when the destination keeps extended detail.
+ */
+function detailsFor(paths: ProjectPaths, module: DetailModule, lines: string[]): string[] {
+    return resolveDetailLevel(loadConfig(paths).detail, module) === "extended" ? lines : [];
+}
 
 function collectDependents(
     plan: ReturnType<typeof parseTaskPlan>,
@@ -46,7 +54,8 @@ export async function moveToPlan(
 
     const addResult = addPlanTask(paths, {
         description: item.title,
-        acceptScopeChange: confirm
+        acceptScopeChange: confirm,
+        details: detailsFor(paths, "plan", item.detailLines)
     });
 
     if (!addResult.ok || !addResult.itemId) {
@@ -117,7 +126,8 @@ export async function moveToRoadmap(
         description: task.title,
         priority: task.priority,
         privatePlanRaw: planRaw,
-        gitRunner
+        gitRunner,
+        details: detailsFor(paths, "roadmap", task.detailLines)
     });
 
     if (!addResult.ok || !addResult.itemId) {

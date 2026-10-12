@@ -48,6 +48,14 @@ Se perguntar, escolha se `.stillmark/learnings/design/` entra no git. Planos em 
 stillmark config set --design-system=true --prompted --json
 ```
 
+Opcional: os itens são compactos por padrão (o plano de tarefas é extenso). Para escrever detalhes embaixo de cada caso de teste, item do roadmap ou tarefa:
+
+```bash
+stillmark config set --detail=extended --json
+# ou só para o COVERAGE.md:
+stillmark config set --detail=extended --module=coverage --json
+```
+
 ## 5. Opcional: checklist de cobertura de testes
 
 Quando o time quiser um checklist compartilhado de casos de teste no git:

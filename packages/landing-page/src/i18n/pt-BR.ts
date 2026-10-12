@@ -250,6 +250,7 @@ export const ptBR: Messages = {
             ["stillmark install --agent cursor|claude|codex", "Instala skills e instruções do agente"],
             ["stillmark config status", "Estado do primeiro uso e flags de compartilhamento (`--json`)"],
             ["stillmark config set --design-system=…", "Learnings de design locais ou versionar .stillmark/learnings/design no git (`--prompted`)"],
+            ["stillmark config set --detail=…", "Itens compactos ou com detalhes embaixo, para tudo ou para um documento só (`--module=coverage|roadmap|plan`)"],
             ["stillmark classify \"…\"", "Encaminha texto ambíguo para roadmap ou plano"],
             ["stillmark add \"…\"", "Adiciona via classify, no roadmap ou plano"],
             ["stillmark roadmap add \"…\"", "Adiciona item público ao roadmap"],

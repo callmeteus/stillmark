@@ -34,7 +34,22 @@ stillmark coverage check "<case substring>" --json
 stillmark coverage add "<### heading match>" "<case>" --tag=happy --json
 stillmark config status --json
 stillmark config set --design-system=true|false --prompted --json
+stillmark config set --detail=compact|extended|inherit [--module=coverage|roadmap|plan] --json
 ```
+
+## Detail level (compact or extended)
+
+`stillmark config status --json` returns `detail` with the effective level for `coverage`, `roadmap`, and `plan`. Defaults: coverage and roadmap `compact`, plan `extended`. A module override beats `global`, and `global` beats the defaults.
+
+- **compact:** write only the item line (case, roadmap item, or task header with fields). Never add description lines.
+- **extended:** add short indented detail lines under the item with `--details "<text>"` on `coverage add`, `roadmap add`, `plan add`, or `add` (use `\n` for several lines). Coverage example:
+
+```markdown
+- [x] [happy] login with valid password
+  Calls /auth/login with a seeded user and expects a session cookie.
+```
+
+When the user asks for shorter or more detailed entries ("deixa compacto", "quero o coverage extenso"), run `stillmark config set --detail=… [--module=…] --json` instead of reformatting by hand. Passing `--details` while a module is compact fails on purpose; ask before switching the level.
 
 Use **only `/stillmark`** (not `/coverage`). Mirror the CLI: `/stillmark <args>` runs `stillmark <args> --json`. For COVERAGE.md, use `/stillmark coverage …` or free text about the checklist; follow the stillmark skill `reference/coverage.md`. Validate after every change with `stillmark coverage validate --json`.
 

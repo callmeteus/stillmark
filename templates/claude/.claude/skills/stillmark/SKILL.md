@@ -26,4 +26,6 @@ Never use `/coverage`. Playbooks under `reference/` (`.claude/skills/stillmark/r
 
 First run: `stillmark config status --json` when `needsFirstRunPrompt`.
 
+Detail level: `detail` in that payload says `compact` (item line only) or `extended` (indented details via `--details "<text>"`) per `coverage`, `roadmap`, `plan`. Defaults: coverage and roadmap compact, plan extended. "Deixa compacto/extenso" = `stillmark config set --detail=compact|extended [--module=coverage|roadmap|plan] --json`.
+
 Git: never commit without user grant; `stillmark git commit-style` for preview.

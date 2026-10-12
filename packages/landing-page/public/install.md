@@ -48,6 +48,14 @@ If prompted, choose whether `.stillmark/learnings/design/` is versioned in git. 
 stillmark config set --design-system=true --prompted --json
 ```
 
+Optional: entries are compact by default (task plan is extended). To write details under each test case, roadmap item, or task:
+
+```bash
+stillmark config set --detail=extended --json
+# or only for COVERAGE.md:
+stillmark config set --detail=extended --module=coverage --json
+```
+
 ## 5. Optional: test coverage checklist
 
 When the team wants a shared test-case checklist in git:

@@ -32,6 +32,10 @@ stillmark config status --json
 
 When `sharing.needsFirstRunPrompt` is **true**, ask **one** question (task plans **always** stay local; optional `.stillmark/learnings/design/` in git). Record with `stillmark config set --design-system=true|false --prompted --json`. Defer = skip `--prompted`.
 
+## Detail level: compact or extended
+
+The same status payload has `detail` (`coverage`, `roadmap`, `plan`). **compact** = item line only; **extended** = item line plus short indented details, written with `--details "<text>"` on `coverage add`, `roadmap add`, `plan add`, or `add`. Defaults: coverage and roadmap compact, plan extended. Requests like "deixa o coverage extenso" or "tudo compacto" map to `stillmark config set --detail=extended|compact [--module=coverage|roadmap|plan] --json` (omit `--module` for global; `--detail=inherit` removes an override).
+
 ## How `/stillmark` is parsed
 
 Let `text` = message after `/stillmark` (trimmed). Strip optional leading `stillmark ` once.

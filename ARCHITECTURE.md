@@ -35,6 +35,8 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
 
 `.stillmark/plans/` is always gitignored. `.stillmark/learnings/design/` is gitignored until `stillmark config set --design-system=true` (usually after the first `/stillmark` prompt). Code-style learnings live in `.stillmark/learnings/code-style/` as markdown. Agents check `stillmark config status --json` for `needsFirstRunPrompt`.
 
+The `detail` block in `stillmark.config.json` (`global`, `coverage`, `roadmap`, `plan`) picks `compact` (item line only) or `extended` (item line plus indented detail lines written with `--details`). Resolution is module override, then `global`, then the module default: coverage and roadmap compact, plan extended. Parsers keep detail lines inside the item span so moves and splices carry them, and the coverage validator rejects detail lines when coverage is compact.
+
 When `git.commitMessage` is omitted, auto-commits infer the subject prefix from recent `git log` (`stillmark git commit-style --json` previews the template). Set `commitMessage` with a `{summary}` placeholder to pin a fixed format.
 
 Per-call overrides: `--git`, `--no-git`.

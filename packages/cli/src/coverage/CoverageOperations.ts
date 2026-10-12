@@ -1,17 +1,31 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import {
+    compactDetailsMessage,
+    loadConfig,
+    resolveDetailLevel,
+    type DetailLevel
+} from "../config";
 import type { GitRunner } from "../git";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
 import { buildDefaultCoverage, resolveCoverageProjectName } from "./CoverageTemplate";
 import {
+    COVERAGE_DETAIL_PATTERN,
     formatCoverageSummary,
     validateCoverageFile,
     type CoverageValidationResult
 } from "./ValidateCoverage";
 
 const CHECKBOX_PATTERN = /^- \[( |x)\] /;
+
+/**
+ * Effective detail level for COVERAGE.md from stillmark.config.json.
+ */
+function coverageDetail(paths: ProjectPaths): DetailLevel {
+    return resolveDetailLevel(loadConfig(paths).detail, "coverage");
+}
 
 const TEST_PATH_PATTERN =
     /(^|\/)(tests?|__tests__|spec)(\/|$)|\.(test|spec)\.(ts|tsx|js|jsx|mjs|cjs|lua)$|_spec\.lua$/i;
@@ -38,7 +52,7 @@ function validationResult(
     changed: boolean,
     action: string
 ): OperationResult {
-    const validation = validateCoverageFile(raw);
+    const validation = validateCoverageFile(raw, { detail: coverageDetail(paths) });
 
     return {
         ok: validation.valid,
@@ -72,7 +86,7 @@ export function initCoverage(paths: ProjectPaths): OperationResult {
     const content = buildDefaultCoverage(name);
     writeCoverage(paths, content);
 
-    const validation = validateCoverageFile(content);
+    const validation = validateCoverageFile(content, { detail: coverageDetail(paths) });
 
     return {
         ok: validation.valid,
@@ -183,7 +197,7 @@ function toggleCoverageCase(
     const next = lines.join("\n");
     writeCoverage(paths, next);
 
-    const validation = validateCoverageFile(next);
+    const validation = validateCoverageFile(next, { detail: coverageDetail(paths) });
 
     return {
         ok: validation.valid,
@@ -199,12 +213,13 @@ export type CoverageCaseTag = "happy" | "sad" | "edge" | "security";
 
 /**
  * Appends a checkbox under a ### heading that matches headingQuery.
+ * With `details`, writes indented detail lines under the case (coverage detail must be extended).
  */
 export function addCoverageCase(
     paths: ProjectPaths,
     headingQuery: string,
     caseText: string,
-    options?: { tag?: CoverageCaseTag; checked?: boolean }
+    options?: { tag?: CoverageCaseTag; checked?: boolean; details?: string[] }
 ): OperationResult {
     const raw = readCoverage(paths);
 
@@ -213,6 +228,17 @@ export function addCoverageCase(
             ok: false,
             changed: false,
             summary: `Missing ${paths.coverage}`
+        };
+    }
+
+    const details = options?.details ?? [];
+
+    if (details.length > 0 && coverageDetail(paths) === "compact") {
+        return {
+            ok: false,
+            changed: false,
+            action: "coverage-add",
+            summary: compactDetailsMessage("coverage")
         };
     }
 
@@ -260,7 +286,7 @@ export function addCoverageCase(
             break;
         }
 
-        if (CHECKBOX_PATTERN.test(line)) {
+        if (CHECKBOX_PATTERN.test(line) || COVERAGE_DETAIL_PATTERN.test(line)) {
             insertAt++;
             continue;
         }
@@ -273,11 +299,11 @@ export function addCoverageCase(
         break;
     }
 
-    lines.splice(insertAt, 0, newLine);
+    lines.splice(insertAt, 0, newLine, ...details.map((detail) => `  ${detail}`));
     const next = lines.join("\n");
     writeCoverage(paths, next);
 
-    const validation = validateCoverageFile(next);
+    const validation = validateCoverageFile(next, { detail: coverageDetail(paths) });
 
     return {
         ok: validation.valid,

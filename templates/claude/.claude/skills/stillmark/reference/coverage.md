@@ -44,6 +44,7 @@ stillmark coverage validate --json
 - English only (except inside backticks).
 - `## N. <Area>`, `###` / `####`, `- [x]` / `- [ ]`, optional `[happy]` `[sad]` `[edge]` `[security]`.
 - `NOTFIXED` only in last `## N. NOTFIXED` area, always `[x]`, suffix ` - NOTFIXED: <reason>`.
+- Detail level comes from `stillmark config status --json` -> `detail.coverage`. **compact** (default): case lines only. **extended**: optional 2-space indented detail lines right under a case (what the test exercises, inputs, expected result). Never put detail lines under headings.
 
 ## Update workflow
 
@@ -75,10 +76,11 @@ stillmark coverage update --json
 stillmark coverage check "<substring>" --json
 stillmark coverage uncheck "<substring>" --json
 stillmark coverage add "<heading>" "<case>" --tag=happy --json
+stillmark coverage add "<heading>" "<case>" --tag=happy --details "<what the test does>" --json  # extended only
 ```
 
 ## Never
 
 - Check a box without a test that proves the case.
-- Add prose, tables, or percentages.
+- Add prose, tables, or percentages (indented case details are allowed only when `detail.coverage` is extended).
 - Commit without user permission.

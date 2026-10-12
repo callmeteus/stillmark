@@ -14,6 +14,8 @@ export interface RoadmapItem {
     itemSpan: LineSpan;
     sectionTitle: string;
     acceptanceLines: string[];
+    /** Indented free-text lines under the item (extended detail), trimmed. */
+    detailLines: string[];
 }
 
 /** Parsed task plan task block. */
@@ -26,6 +28,8 @@ export interface PlanTask {
     blockedBy: string[];
     acceptanceCriteria: string[];
     verification: string[];
+    /** Free-text lines between the task fields and its `####` sections (extended detail). */
+    detailLines: string[];
     blockSpan: LineSpan;
     sectionSpan: LineSpan;
 }
