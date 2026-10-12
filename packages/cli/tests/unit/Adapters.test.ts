@@ -10,7 +10,7 @@ describe("Adapters", () => {
         expect(text).toContain(".stillmark/plans/TASK_PLAN.md");
         expect(text).toContain("Never run `git commit`");
         expect(text).toContain("long-running");
-        expect(text).toContain("stillmark-design");
+        expect(text).toContain("reference/");
         expect(text).toContain("needsClarification");
     });
 });

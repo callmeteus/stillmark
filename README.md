@@ -22,8 +22,7 @@ Stillmark separates **public strategic planning** (`ROADMAP.md`) from **private 
 |------|------|
 | `packages/cli` | Published `stillmark` npm package (engine + bin) |
 | `packages/landing-page` | Astro marketing site (`en` + `pt-br`) |
-| `templates/` | Cursor, Claude Code, and Codex install templates |
-| `skills/stillmark-design/` | Autonomous UI research and implementation skill (synced into templates on CLI build) |
+| `templates/` | Cursor, Claude Code, and Codex install templates (stillmark skill includes `reference/` design playbooks) |
 
 ## Get started
 

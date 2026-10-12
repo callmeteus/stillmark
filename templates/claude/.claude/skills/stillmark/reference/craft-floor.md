@@ -1,4 +1,4 @@
-# Craft floor (Stillmark Design)
+# Craft floor (Stillmark design)
 
 Read this immediately before editing UI source. Project `DESIGN.md`, `PRODUCT.md`, and surface briefs override generic habits.
 

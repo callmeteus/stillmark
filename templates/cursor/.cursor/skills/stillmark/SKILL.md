@@ -48,7 +48,7 @@ The user message is everything after `/stillmark` (trimmed). It may be CLI-shape
 | Planning-ish add (`stillmark add`, roadmap/plan) mentioning UI/design | **CLI + classify** | Design tasks belong in **plan** (now) or **roadmap** (later); see below |
 | Otherwise ambiguous planning vs design | **Classify** | `stillmark classify "<full user text>" --json`; if still unclear, ask **one** question |
 
-Do **not** require a separate `/stillmark-design` or `/design` skill. Design playbooks live under `skills/stillmark-design/` in the Stillmark repo (reference files only).
+Do **not** require a separate `/stillmark-design` or `/design` skill. Design playbooks live in this skill under `reference/` (installed as `.cursor/skills/stillmark/reference/`).
 
 ## Design mode (embedded)
 
@@ -67,13 +67,13 @@ Scale phases to scope. A one-off "arruma" with a selected node is usually **0 â†
 
 | Phase | What |
 |-------|------|
-| 0 | Read `PRODUCT.md`, `DESIGN.md`, tokens; load `skills/stillmark-design/reference/craft-floor.md` before editing UI |
+| 0 | Read `PRODUCT.md`, `DESIGN.md`, tokens; load `reference/craft-floor.md` before editing UI |
 | 1 | Research (5-8 candidates, 3-5 deep) only for **new surfaces** or explicit redesign |
 | 2 | Note in `.stillmark/plans/FINDINGS.md` / `PROGRESS.md` when useful; `stillmark plan add` or `long-running apply` if scope changes |
 | 3 | Implement in source |
 | 4 | Run app, inspect desktop + mobile once, one fix batch |
 
-Optional external tools: Impeccable, Vercel Web Interface Guidelines (`skills/stillmark-design/reference/external-tools.md`).
+Optional external tools: Impeccable, Vercel Web Interface Guidelines (`reference/external-tools.md`).
 
 ### Examples
 

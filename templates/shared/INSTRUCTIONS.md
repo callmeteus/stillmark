@@ -55,7 +55,7 @@ UI work uses the same **stillmark** skill, not a separate slash command:
 | Strategic visual initiative (later quarter) | `stillmark roadmap add "…" --json` |
 | Ambiguous add | `stillmark classify` or `stillmark add` (design phrases route to plan or roadmap) |
 
-Playbook files ship under `skills/stillmark-design/reference/`. Persist research in `.stillmark/plans/FINDINGS.md`, outcomes in `PROGRESS.md`. Durable team design-system notes belong in `.stillmark/design-system/` when the user chose to share them in git.
+Design playbooks ship inside the installed `stillmark` skill under `reference/`. Persist research in `.stillmark/plans/FINDINGS.md`, outcomes in `PROGRESS.md`. Durable team design-system notes belong in `.stillmark/design-system/` when the user chose to share them in git.
 
 ## First-run sharing (`.stillmark`)
 

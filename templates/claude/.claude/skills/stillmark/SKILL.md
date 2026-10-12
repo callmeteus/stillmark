@@ -15,4 +15,4 @@ Follow the shared Stillmark instructions. Run `stillmark … --json` from the pr
 - Browser element selection + free text (e.g. "ta uma bosta arruma") → map DOM to **this project's** source, fix, run app, inspect once.
 - External sites in the browser are not editable; use the local dev preview of the repo.
 
-Playbooks: `skills/stillmark-design/reference/` in the Stillmark package.
+Playbooks: `reference/` next to this skill (`.claude/skills/stillmark/reference/` after install).

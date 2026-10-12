@@ -28,20 +28,4 @@ if (!fs.existsSync(src)) {
 }
 
 copyRecursive(src, dest);
-
-const designSkillSrc = path.join(repoRoot, "skills", "stillmark-design");
-
-if (fs.existsSync(designSkillSrc)) {
-    const designTargets = [
-        path.join(dest, "cursor", ".cursor", "skills", "stillmark-design"),
-        path.join(dest, "claude", ".claude", "skills", "stillmark-design")
-    ];
-
-    for (const target of designTargets) {
-        copyRecursive(designSkillSrc, target);
-    }
-
-    console.log("Synced stillmark-design skill into template trees");
-}
-
 console.log("Copied templates to", dest);

@@ -41,7 +41,7 @@ Per-call overrides: `--git`, `--no-git`.
 
 ## Templates
 
-Root `templates/` is copied into `packages/cli/dist/templates` at build time. `skills/stillmark-design/` is synced into Cursor and Claude template trees on the same build step. `stillmark install --agent <id>` copies the matching subtree into the target project.
+Root `templates/` is copied into `packages/cli/dist/templates` at build time. Design playbooks live under `stillmark/reference/` inside the Cursor and Claude skill trees. `stillmark install --agent <id>` copies the matching subtree into the target project.
 
 ## Testing
 

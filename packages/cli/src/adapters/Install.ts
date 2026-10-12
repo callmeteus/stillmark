@@ -29,56 +29,6 @@ function copyFile(src: string, dest: string): void {
     fs.copyFileSync(src, dest);
 }
 
-/**
- * Packaged skill under templates, or canonical `skills/stillmark-design` in the repo.
- */
-function resolveDesignSkillSource(templatesDir: string): string | null {
-    const packaged = path.join(
-        templatesDir,
-        "cursor",
-        ".cursor",
-        "skills",
-        "stillmark-design"
-    );
-
-    if (fs.existsSync(packaged)) {
-        return packaged;
-    }
-
-    const repoRoot = path.resolve(templatesDir, "..");
-    const canonical = path.join(repoRoot, "skills", "stillmark-design");
-
-    if (fs.existsSync(canonical)) {
-        return canonical;
-    }
-
-    return null;
-}
-
-function installDesignSkill(
-    projectRoot: string,
-    agent: "cursor" | "claude",
-    templatesDir: string,
-    installed: string[]
-): void {
-    const src = resolveDesignSkillSource(templatesDir);
-
-    if (!src) {
-        return;
-    }
-
-    const destRoot =
-        agent === "cursor"
-            ? path.join(projectRoot, ".cursor", "skills", "stillmark-design")
-            : path.join(projectRoot, ".claude", "skills", "stillmark-design");
-
-    copyTree(src, destRoot, src);
-
-    for (const rel of listFiles(src)) {
-        installed.push(path.join(destRoot, rel));
-    }
-}
-
 function copyTree(srcDir: string, destDir: string, stripPrefix: string): void {
     for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
         const srcPath = path.join(srcDir, entry.name);
@@ -128,10 +78,6 @@ export function installAgent(
 
         for (const rel of listFiles(agentDir)) {
             installed.push(path.join(projectRoot, rel));
-        }
-
-        if (agent === "cursor" || agent === "claude") {
-            installDesignSkill(projectRoot, agent, templates, installed);
         }
     }
 

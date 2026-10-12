@@ -1,10 +1,10 @@
 # External design tools
 
-Use these when the host environment provides them. None are required for Stillmark Design to run.
+Use these when the host environment provides them. None are required for Stillmark design mode to run.
 
 ## Impeccable (optional)
 
-Apache-2.0 skill with deep command playbooks (`critique`, `polish`, `audit`, ...). Install separately if available. Stillmark Design already runs an **automated** pipeline; invoke Impeccable only when the user asks for a specific Impeccable command or you need a playbook this skill does not cover.
+Apache-2.0 skill with deep command playbooks (`critique`, `polish`, `audit`, ...). Install separately if available. `/stillmark` already runs an **automated** pipeline; invoke Impeccable only when the user asks for a specific Impeccable command or you need a playbook this skill does not cover.
 
 ## Vercel Web Interface Guidelines
 
