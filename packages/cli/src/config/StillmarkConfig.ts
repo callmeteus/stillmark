@@ -8,9 +8,20 @@ export interface SharingConfig {
      */
     firstRunPrompted: boolean;
     /**
-     * When true, `.stillmark/design-system/` is not gitignored and may be committed.
+     * When true, `.stillmark/learnings/design/` is not gitignored and may be committed.
      */
     shareDesignSystem: boolean;
+}
+
+export interface LearnedConfig {
+    /**
+     * Folder for design learning markdown (default `.stillmark/learnings/design`).
+     */
+    designDir: string;
+    /**
+     * Folder for code style learning markdown (default `.stillmark/learnings/code-style`).
+     */
+    codeStyleDir: string;
 }
 
 export interface GitConfig {
@@ -25,7 +36,13 @@ export interface GitConfig {
 export interface StillmarkConfig {
     git: GitConfig;
     sharing: SharingConfig;
+    learned: LearnedConfig;
 }
+
+const DEFAULT_LEARNED: LearnedConfig = {
+    designDir: ".stillmark/learnings/design",
+    codeStyleDir: ".stillmark/learnings/code-style"
+};
 
 const DEFAULT_SHARING: SharingConfig = {
     firstRunPrompted: false,
@@ -37,7 +54,8 @@ const DEFAULT_CONFIG: StillmarkConfig = {
         autoCommit: false,
         autoPush: false
     },
-    sharing: { ...DEFAULT_SHARING }
+    sharing: { ...DEFAULT_SHARING },
+    learned: { ...DEFAULT_LEARNED }
 };
 
 /**
@@ -62,6 +80,10 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
                 parsed.sharing?.firstRunPrompted ?? DEFAULT_SHARING.firstRunPrompted,
             shareDesignSystem:
                 parsed.sharing?.shareDesignSystem ?? DEFAULT_SHARING.shareDesignSystem
+        },
+        learned: {
+            designDir: parsed.learned?.designDir ?? DEFAULT_LEARNED.designDir,
+            codeStyleDir: parsed.learned?.codeStyleDir ?? DEFAULT_LEARNED.codeStyleDir
         }
     };
 }

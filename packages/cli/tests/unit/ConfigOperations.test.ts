@@ -6,12 +6,12 @@ import { describe, expect, it } from "vitest";
 import { loadConfig } from "../../src/config";
 import { configStatus, setConfigSharing } from "../../src/operations";
 import {
-    gitignoreIgnoresDesignSystem,
+    gitignoreIgnoresDesignLearnings,
     gitignoreHasStillmarkPlans
 } from "../../src/paths/Gitignore";
 import {
     resolveProjectPaths,
-    STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY,
+    STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY,
     STILLMARK_LEGACY_GITIGNORE_ENTRY,
     STILLMARK_PLANS_GITIGNORE_ENTRY
 } from "../../src/paths/ProjectPaths";
@@ -26,6 +26,8 @@ describe("ConfigOperations", () => {
 
         const before = configStatus(paths);
         expect(before.sharing.needsFirstRunPrompt).toBe(true);
+        expect(before.sharing.learnings.codeStyleHasMarkdown).toBe(true);
+        expect(before.sharing.learnings.designHasMarkdown).toBe(true);
 
         setConfigSharing(paths, { shareDesignSystem: false, markPrompted: true });
 
@@ -36,7 +38,7 @@ describe("ConfigOperations", () => {
         fs.rmSync(root, { recursive: true, force: true });
     });
 
-    it("keeps plans ignored and toggles design-system gitignore", () => {
+    it("keeps plans ignored and toggles design learnings gitignore", () => {
         const root = fs.mkdtempSync(path.join(os.tmpdir(), "stillmark-config-"));
         const paths = resolveProjectPaths(root);
 
@@ -44,21 +46,21 @@ describe("ConfigOperations", () => {
 
         let gitignore = fs.readFileSync(paths.gitignore, "utf8");
         expect(gitignoreHasStillmarkPlans(gitignore)).toBe(true);
-        expect(gitignoreIgnoresDesignSystem(gitignore)).toBe(true);
+        expect(gitignoreIgnoresDesignLearnings(gitignore)).toBe(true);
 
         setConfigSharing(paths, { shareDesignSystem: true, markPrompted: true });
 
         gitignore = fs.readFileSync(paths.gitignore, "utf8");
         expect(gitignore).toContain(STILLMARK_PLANS_GITIGNORE_ENTRY);
-        expect(gitignoreIgnoresDesignSystem(gitignore)).toBe(false);
-        expect(fs.existsSync(path.join(paths.designSystemDir, "README.md"))).toBe(
+        expect(gitignoreIgnoresDesignLearnings(gitignore)).toBe(false);
+        expect(fs.existsSync(path.join(paths.learningsDesignDir, "overview.md"))).toBe(
             true
         );
 
         setConfigSharing(paths, { shareDesignSystem: false, markPrompted: true });
 
         gitignore = fs.readFileSync(paths.gitignore, "utf8");
-        expect(gitignoreIgnoresDesignSystem(gitignore)).toBe(true);
+        expect(gitignoreIgnoresDesignLearnings(gitignore)).toBe(true);
 
         fs.rmSync(root, { recursive: true, force: true });
     });
@@ -78,7 +80,7 @@ describe("ConfigOperations", () => {
         const gitignore = fs.readFileSync(paths.gitignore, "utf8");
         expect(gitignore).not.toMatch(/^\s*\.stillmark\/\s*$/m);
         expect(gitignore).toContain(STILLMARK_PLANS_GITIGNORE_ENTRY);
-        expect(gitignore).toContain(STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY);
+        expect(gitignore).toContain(STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY);
 
         fs.rmSync(root, { recursive: true, force: true });
     });

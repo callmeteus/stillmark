@@ -33,7 +33,7 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
 }
 ```
 
-`.stillmark/plans/` is always gitignored. `.stillmark/design-system/` is gitignored until `stillmark config set --design-system=true` (usually after the first `/stillmark` prompt). Agents check `stillmark config status --json` for `needsFirstRunPrompt`.
+`.stillmark/plans/` is always gitignored. `.stillmark/learnings/design/` is gitignored until `stillmark config set --design-system=true` (usually after the first `/stillmark` prompt). Code-style learnings live in `.stillmark/learnings/code-style/` as markdown. Agents check `stillmark config status --json` for `needsFirstRunPrompt`.
 
 When `git.commitMessage` is omitted, auto-commits infer the subject prefix from recent `git log` (`stillmark git commit-style --json` previews the template). Set `commitMessage` with a `{summary}` placeholder to pin a fixed format.
 

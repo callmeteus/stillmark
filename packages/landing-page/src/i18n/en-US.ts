@@ -148,7 +148,7 @@ export const enUS = {
             },
             {
                 title: "stillmark config",
-                body: "On first use, stillmark config status asks whether design reference files under .stillmark should be versioned with the project."
+                body: "On first use, stillmark config status asks whether `.stillmark/learnings/design/` should be versioned with the project."
             },
             {
                 title: "Optional roadmap git",
@@ -177,7 +177,7 @@ export const enUS = {
             },
             {
                 title: "Learns from you",
-                body: "Commit messages follow your recent git history instead of a fixed roadmap template. Preview with stillmark git commit-style."
+                body: "Commit subjects follow your recent git log (stillmark git commit-style). Design and code habits accumulate as markdown under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/`, like Cursor rules."
             },
             {
                 title: "Optional git for roadmap",
@@ -207,7 +207,7 @@ export const enUS = {
             ["stillmark init", "Create ROADMAP.md, stillmark.config.json, and .stillmark/plans/"],
             ["stillmark install --agent cursor|claude|codex", "Install agent skills and shared instructions"],
             ["stillmark config status", "First-run prompt state and sharing flags (--json)"],
-            ["stillmark config set --design-system=…", "Keep design-system local or version it in git (--prompted)"],
+            ["stillmark config set --design-system=…", "Keep design learnings local or version .stillmark/learnings/design in git (--prompted)"],
             ["stillmark classify \"…\"", "Route ambiguous text to roadmap vs plan"],
             ["stillmark add \"…\"", "Add using classify, then roadmap or plan"],
             ["stillmark roadmap add \"…\"", "Add a public roadmap item"],

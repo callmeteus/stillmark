@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
 import { writeDefaultConfig } from "../config";
+import { ensureLearningScaffolds } from "../learnings";
 import { ensureStillmarkGitignore } from "../paths/Gitignore";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
@@ -28,13 +29,14 @@ export function initProject(paths: ProjectPaths): OperationResult {
     }
 
     const gitignoreChanged = ensureStillmarkGitignore(paths);
+    ensureLearningScaffolds(paths);
 
     return {
         ok: true,
         changed: true,
         action: "init",
         summary: gitignoreChanged
-            ? "Initialized ROADMAP.md, .stillmark/plans, stillmark.config.json, and Stillmark gitignore rules"
-            : "Initialized ROADMAP.md, .stillmark/plans, and stillmark.config.json"
+            ? "Initialized ROADMAP.md, .stillmark/plans, learnings markdown, stillmark.config.json, and Stillmark gitignore rules"
+            : "Initialized ROADMAP.md, .stillmark/plans, learnings markdown, and stillmark.config.json"
     };
 }

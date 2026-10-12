@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { initProject } from "../../src/operations";
 import {
     resolveProjectPaths,
-    STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY,
+    STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY,
     STILLMARK_PLANS_GITIGNORE_ENTRY
 } from "../../src/paths/ProjectPaths";
 
@@ -18,10 +18,20 @@ describe("initProject", () => {
         initProject(paths);
 
         expect(fs.existsSync(paths.planningDir)).toBe(true);
+        expect(fs.existsSync(path.join(paths.learningsDesignDir, "overview.md"))).toBe(
+            true
+        );
+        expect(fs.existsSync(path.join(paths.learningsCodeStyleDir, "overview.md"))).toBe(
+            true
+        );
+
+        const config = JSON.parse(fs.readFileSync(paths.config, "utf8"));
+        expect(config.learned.codeStyleDir).toBe(".stillmark/learnings/code-style");
+        expect(config.learned.designDir).toBe(".stillmark/learnings/design");
         expect(paths.taskPlan).toContain(`${path.sep}.stillmark${path.sep}plans`);
         const gitignore = fs.readFileSync(paths.gitignore, "utf8");
         expect(gitignore).toContain(STILLMARK_PLANS_GITIGNORE_ENTRY);
-        expect(gitignore).toContain(STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY);
+        expect(gitignore).toContain(STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY);
 
         fs.rmSync(root, { recursive: true, force: true });
     });

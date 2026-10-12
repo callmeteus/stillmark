@@ -150,7 +150,7 @@ export const ptBR: Messages = {
             },
             {
                 title: "stillmark config",
-                body: "No primeiro uso, stillmark config status pergunta se arquivos de referência de design em .stillmark entram no controle de versão do projeto."
+                body: "No primeiro uso, stillmark config status pergunta se `.stillmark/learnings/design/` entra no controle de versão do projeto."
             },
             {
                 title: "Git opcional no roadmap",
@@ -179,7 +179,7 @@ export const ptBR: Messages = {
             },
             {
                 title: "Aprende com você",
-                body: "Mensagens de commit seguem o seu git log recente, sem template fixo de roadmap. Pré-visualize com stillmark git commit-style."
+                body: "Assuntos de commit seguem o seu git log (stillmark git commit-style). Hábitos de design e de código viram markdown em `.stillmark/learnings/design/` e `.stillmark/learnings/code-style/`, no estilo de Cursor rules."
             },
             {
                 title: "Git opcional no roadmap",
@@ -209,7 +209,7 @@ export const ptBR: Messages = {
             ["stillmark init", "Cria ROADMAP.md, stillmark.config.json e .stillmark/plans/"],
             ["stillmark install --agent cursor|claude|codex", "Instala skills e instruções do agente"],
             ["stillmark config status", "Estado do primeiro uso e flags de compartilhamento (--json)"],
-            ["stillmark config set --design-system=…", "Design-system local ou versionado no git (--prompted)"],
+            ["stillmark config set --design-system=…", "Learnings de design locais ou versionar .stillmark/learnings/design no git (--prompted)"],
             ["stillmark classify \"…\"", "Encaminha texto ambíguo para roadmap ou plano"],
             ["stillmark add \"…\"", "Adiciona via classify, no roadmap ou plano"],
             ["stillmark roadmap add \"…\"", "Adiciona item público ao roadmap"],

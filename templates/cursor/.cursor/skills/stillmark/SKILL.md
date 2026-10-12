@@ -30,7 +30,7 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 stillmark config status --json
 ```
 
-When `sharing.needsFirstRunPrompt` is **true**, ask **one** question (task plans **always** stay local; optional `.stillmark/design-system/` in git). Record with `stillmark config set --design-system=true|false --prompted --json`. Defer = skip `--prompted`.
+When `sharing.needsFirstRunPrompt` is **true**, ask **one** question (task plans **always** stay local; optional `.stillmark/learnings/design/` in git). Record with `stillmark config set --design-system=true|false --prompted --json`. Defer = skip `--prompted`.
 
 ## How `/stillmark` is parsed
 

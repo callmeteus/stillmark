@@ -16,7 +16,7 @@ npm install -g https://github.com/callmeteus/stillmark/releases/latest/download/
 stillmark init
 ```
 
-Creates `ROADMAP.md`, `stillmark.config.json`, and `.stillmark/plans/` (always in `.gitignore`). On the first `/stillmark`, your agent may ask whether to version `.stillmark/design-system/` in git; task plans stay local. Task plans are created when you start one with `stillmark plan init`.
+Creates `ROADMAP.md`, `stillmark.config.json`, and `.stillmark/plans/` (always in `.gitignore`). On the first `/stillmark`, your agent may ask whether to version `.stillmark/learnings/design/` in git; task plans stay local. Task plans are created when you start one with `stillmark plan init`.
 
 ## 3. Install agent templates
 
@@ -42,7 +42,7 @@ Your agent may run:
 stillmark config status --json
 ```
 
-If prompted, choose whether `.stillmark/design-system/` is versioned in git. Task plans under `.stillmark/plans/` always stay local.
+If prompted, choose whether `.stillmark/learnings/design/` is versioned in git. Task plans under `.stillmark/plans/` always stay local.
 
 ```bash
 stillmark config set --design-system=true --prompted --json

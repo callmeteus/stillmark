@@ -55,11 +55,11 @@ UI work uses the same **stillmark** skill, not a separate slash command:
 | Strategic visual initiative (later quarter) | `stillmark roadmap add "…" --json` |
 | Ambiguous add | `stillmark classify` or `stillmark add` (design phrases route to plan or roadmap) |
 
-Design playbooks ship inside the installed `stillmark` skill under `reference/`. Persist research in `.stillmark/plans/FINDINGS.md`, outcomes in `PROGRESS.md`. Durable team design-system notes belong in `.stillmark/design-system/` when the user chose to share them in git.
+Design playbooks ship inside the installed `stillmark` skill under `reference/`. Persist research in `.stillmark/plans/FINDINGS.md`, outcomes in `PROGRESS.md`. Durable learnings live as markdown under `.stillmark/learnings/` (see `stillmark.config.json` → `learned`): add focused `.md` files in `design/` and `code-style/`, like Cursor rules.
 
 ## First-run sharing (`.stillmark`)
 
-On the first `/stillmark` in a repo, run `stillmark config status --json`. When `needsFirstRunPrompt` is true, ask whether to **version `.stillmark/design-system/` in git**. **Never** offer to commit `.stillmark/plans/`. Record the answer with `stillmark config set --design-system=true|false --prompted --json`. If the user defers, skip `--prompted` so the question can return later.
+On the first `/stillmark` in a repo, run `stillmark config status --json`. When `needsFirstRunPrompt` is true, ask whether to **version `.stillmark/learnings/design/` in git**. **Never** offer to commit `.stillmark/plans/`. Record the answer with `stillmark config set --design-system=true|false --prompted --json`. If the user defers, skip `--prompted` so the question can return later.
 
 Use `--accept-scope-change` only after the user authorizes expanding scope. Use `--allow-sensitive` on roadmap writes only after warning the user about public ROADMAP.md.
 
@@ -72,6 +72,8 @@ After each operation, report what changed, item IDs, and file paths from the JSO
 Never run `git commit` or `git push` yourself. Stillmark git integration follows `stillmark.config.json` (`autoCommit` / `autoPush`, default off). Per-call: `--git` or `--no-git`.
 
 Commit subjects: by default Stillmark **learns the prefix from recent `git log`** (no hardcoded `docs(roadmap):`). Preview with `stillmark git commit-style "<summary>" --json`. Override with `git.commitMessage` and `{summary}` in config when needed.
+
+When UI or code conventions become stable, **capture them in learnings markdown** under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/` (paths in `stillmark.config.json` → `learned`). Prefer new short `.md` files or edits to `overview.md`; do not scatter the same rules only in chat.
 
 ## Long-running mode
 

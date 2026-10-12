@@ -8,7 +8,9 @@ export interface ProjectPaths {
     roadmap: string;
     stillmarkDir: string;
     planningDir: string;
-    designSystemDir: string;
+    learningsDir: string;
+    learningsDesignDir: string;
+    learningsCodeStyleDir: string;
     taskPlan: string;
     state: string;
     config: string;
@@ -17,7 +19,7 @@ export interface ProjectPaths {
 }
 
 /**
- * Local Stillmark directory (plans private; design-system optional in git).
+ * Local Stillmark directory (plans private; design learnings optional in git).
  */
 export const STILLMARK_LOCAL_DIR = ".stillmark";
 
@@ -27,7 +29,13 @@ export const STILLMARK_LOCAL_DIR = ".stillmark";
 export const STILLMARK_PLANS_GITIGNORE_ENTRY = `${STILLMARK_LOCAL_DIR}/plans/`;
 
 /**
- * Design tokens and patterns under Stillmark (gitignored until sharing is enabled).
+ * Design learnings markdown (gitignored until sharing is enabled).
+ */
+export const STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY =
+    `${STILLMARK_LOCAL_DIR}/learnings/design/`;
+
+/**
+ * @deprecated Use STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY. Kept for gitignore migration.
  */
 export const STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY =
     `${STILLMARK_LOCAL_DIR}/design-system/`;
@@ -42,13 +50,16 @@ export const STILLMARK_LEGACY_GITIGNORE_ENTRY = `${STILLMARK_LOCAL_DIR}/`;
  */
 export function resolveProjectPaths(root: string): ProjectPaths {
     const normalized = path.resolve(root);
+    const learningsDir = path.join(normalized, STILLMARK_LOCAL_DIR, "learnings");
 
     return {
         root: normalized,
         roadmap: path.join(normalized, "ROADMAP.md"),
         stillmarkDir: path.join(normalized, STILLMARK_LOCAL_DIR),
         planningDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans"),
-        designSystemDir: path.join(normalized, STILLMARK_LOCAL_DIR, "design-system"),
+        learningsDir,
+        learningsDesignDir: path.join(learningsDir, "design"),
+        learningsCodeStyleDir: path.join(learningsDir, "code-style"),
         taskPlan: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "TASK_PLAN.md"),
         state: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "STATE.json"),
         config: path.join(normalized, "stillmark.config.json"),

@@ -6,17 +6,10 @@ import {
     type StillmarkConfig,
     writeConfig
 } from "../config";
+import { ensureLearningScaffolds, learningsDirHasMarkdown } from "../learnings";
 import { syncStillmarkGitignore } from "../paths/Gitignore";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
-
-const DESIGN_SYSTEM_README = `# Stillmark design system
-
-Team-shared tokens, components notes, and visual decisions for this repo.
-Task plans under \`.stillmark/plans/\` stay local and are never committed.
-
-Update this folder when design-system changes should be visible in git.
-`;
 
 export interface SharingStatusPayload {
     needsFirstRunPrompt: boolean;
@@ -24,6 +17,12 @@ export interface SharingStatusPayload {
     shareDesignSystem: boolean;
     alwaysPrivatePaths: string[];
     optionalSharePaths: string[];
+    learnings: {
+        designDir: string;
+        codeStyleDir: string;
+        designHasMarkdown: boolean;
+        codeStyleHasMarkdown: boolean;
+    };
 }
 
 /**
@@ -40,7 +39,13 @@ export function configStatus(
         firstRunPrompted: resolved.sharing.firstRunPrompted,
         shareDesignSystem: resolved.sharing.shareDesignSystem,
         alwaysPrivatePaths: [".stillmark/plans/"],
-        optionalSharePaths: [".stillmark/design-system/"]
+        optionalSharePaths: [".stillmark/learnings/design/"],
+        learnings: {
+            designDir: resolved.learned.designDir,
+            codeStyleDir: resolved.learned.codeStyleDir,
+            designHasMarkdown: learningsDirHasMarkdown(paths.learningsDesignDir),
+            codeStyleHasMarkdown: learningsDirHasMarkdown(paths.learningsCodeStyleDir)
+        }
     };
 
     return {
@@ -50,8 +55,8 @@ export function configStatus(
         summary: sharing.needsFirstRunPrompt
             ? "First-run sharing choice not recorded yet"
             : resolved.sharing.shareDesignSystem
-                ? "Design system under .stillmark may be committed; plans stay local"
-                : "All of .stillmark except shared paths stays local; plans always private",
+                ? "Design learnings under .stillmark/learnings/design may be committed; plans stay local"
+                : "Design learnings stay local; code-style learnings may still be committed",
         config: resolved,
         sharing
     };
@@ -81,24 +86,15 @@ export function setConfigSharing(
     writeConfig(paths, config);
 
     syncStillmarkGitignore(paths, nextSharing.shareDesignSystem);
-
-    if (nextSharing.shareDesignSystem) {
-        fs.mkdirSync(paths.designSystemDir, { recursive: true });
-
-        const readmePath = `${paths.designSystemDir}/README.md`;
-
-        if (!fs.existsSync(readmePath)) {
-            fs.writeFileSync(readmePath, DESIGN_SYSTEM_README, "utf8");
-        }
-    }
+    ensureLearningScaffolds(paths);
 
     return {
         ok: true,
         changed: true,
         action: "config-set",
         summary: nextSharing.shareDesignSystem
-            ? "Sharing enabled for .stillmark/design-system/; task plans remain local"
-            : "Keeping .stillmark/design-system/ local; task plans remain local",
+            ? "Sharing enabled for .stillmark/learnings/design/; task plans remain local"
+            : "Keeping .stillmark/learnings/design/ local; task plans remain local",
         config
     };
 }

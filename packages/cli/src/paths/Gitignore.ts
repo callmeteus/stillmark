@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 import {
     STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY,
+    STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY,
     STILLMARK_LEGACY_GITIGNORE_ENTRY,
     STILLMARK_PLANS_GITIGNORE_ENTRY,
     type ProjectPaths
@@ -21,7 +22,11 @@ const PLANS_PATTERN = new RegExp(
     `(^|\\n)\\s*${escapeForRegex(STILLMARK_PLANS_GITIGNORE_ENTRY)}\\s*(\\n|$)`
 );
 
-const DESIGN_PATTERN = new RegExp(
+const LEARNINGS_DESIGN_PATTERN = new RegExp(
+    `(^|\\n)\\s*${escapeForRegex(STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY)}\\s*(\\n|$)`
+);
+
+const LEGACY_DESIGN_SYSTEM_PATTERN = new RegExp(
     `(^|\\n)\\s*${escapeForRegex(STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY)}\\s*(\\n|$)`
 );
 
@@ -37,10 +42,14 @@ export function gitignoreHasStillmarkPlans(content: string): boolean {
 }
 
 /**
- * Returns true when design-system under .stillmark is gitignored.
+ * Returns true when design learnings under .stillmark are gitignored.
  */
-export function gitignoreIgnoresDesignSystem(content: string): boolean {
-    if (DESIGN_PATTERN.test(content)) {
+export function gitignoreIgnoresDesignLearnings(content: string): boolean {
+    if (LEARNINGS_DESIGN_PATTERN.test(content)) {
+        return true;
+    }
+
+    if (LEGACY_DESIGN_SYSTEM_PATTERN.test(content)) {
         return true;
     }
 
@@ -48,14 +57,23 @@ export function gitignoreIgnoresDesignSystem(content: string): boolean {
 }
 
 /**
- * Removes legacy `.stillmark/` ignore in favor of granular entries.
+ * @deprecated Use gitignoreIgnoresDesignLearnings.
  */
-export function stripLegacyStillmarkGitignore(content: string): string {
-    return content.replace(LEGACY_PATTERN, "\n");
+export function gitignoreIgnoresDesignSystem(content: string): boolean {
+    return gitignoreIgnoresDesignLearnings(content);
 }
 
 /**
- * Ensures plans are always ignored; design-system ignored when not shared.
+ * Removes legacy `.stillmark/` and old `design-system/` ignore in favor of learnings paths.
+ */
+export function stripLegacyStillmarkGitignore(content: string): string {
+    return content
+        .replace(LEGACY_PATTERN, "\n")
+        .replace(LEGACY_DESIGN_SYSTEM_PATTERN, "\n");
+}
+
+/**
+ * Ensures plans are always ignored; design learnings ignored when not shared.
  *
  * @returns Whether the file was changed.
  */
@@ -82,11 +100,12 @@ export function syncStillmarkGitignore(
     }
 
     if (shareDesignSystem) {
-        next = next.replace(DESIGN_PATTERN, "\n");
+        next = next.replace(LEARNINGS_DESIGN_PATTERN, "\n");
+        next = next.replace(LEGACY_DESIGN_SYSTEM_PATTERN, "\n");
     } else
-    if (!DESIGN_PATTERN.test(next) && !LEGACY_PATTERN.test(next)) {
+    if (!LEARNINGS_DESIGN_PATTERN.test(next) && !LEGACY_PATTERN.test(next)) {
         const suffix = next.endsWith("\n") ? "" : "\n";
-        next = `${next}${suffix}${STILLMARK_DESIGN_SYSTEM_GITIGNORE_ENTRY}\n`;
+        next = `${next}${suffix}${STILLMARK_LEARNINGS_DESIGN_GITIGNORE_ENTRY}\n`;
     }
 
     next = next.replace(/\n{3,}/g, "\n\n");
@@ -101,7 +120,7 @@ export function syncStillmarkGitignore(
 }
 
 /**
- * Appends Stillmark gitignore rules when not already present (init default: plans + local design-system).
+ * Appends Stillmark gitignore rules when not already present (init default: plans + local design learnings).
  *
  * @returns Whether the file was changed.
  */
