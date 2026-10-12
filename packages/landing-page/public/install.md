@@ -4,10 +4,10 @@ Execute these steps in the **project root** where planning files should live.
 
 ## 1. Add the CLI
 
-Use a global install or `npx` for one-off runs:
+Install from the [latest GitHub Release](https://github.com/callmeteus/stillmark/releases/latest) (asset `stillmark.tgz`):
 
 ```bash
-npm install -g stillmark
+npm install -g https://github.com/callmeteus/stillmark/releases/latest/download/stillmark.tgz
 ```
 
 ## 2. Initialize planning files

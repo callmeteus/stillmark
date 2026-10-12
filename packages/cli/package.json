@@ -3,6 +3,15 @@
     "version": "0.1.0",
     "description": "Interactive roadmap and execution plan management for AI agents",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/callmeteus/stillmark.git",
+        "directory": "packages/cli"
+    },
+    "homepage": "https://callmeteus.github.io/stillmark/",
+    "bugs": {
+        "url": "https://github.com/callmeteus/stillmark/issues"
+    },
     "type": "module",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",

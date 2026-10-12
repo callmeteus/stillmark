@@ -1,18 +1,26 @@
 /**
  * External URLs for the marketing site.
- * Set `PUBLIC_STILLMARK_GITHUB` at build time before production deploy.
+ * Set `PUBLIC_STILLMARK_GITHUB` at build time to override the default repo.
  * Override install guide with `PUBLIC_STILLMARK_INSTALL_URL` if needed.
  */
+const DEFAULT_GITHUB_REPO = "https://github.com/callmeteus/stillmark";
+
 const envGithub = import.meta.env.PUBLIC_STILLMARK_GITHUB;
 const envInstallUrl = import.meta.env.PUBLIC_STILLMARK_INSTALL_URL;
-const siteOrigin = (import.meta.env.SITE as string | undefined) ?? "https://stillmark.dev";
+const siteOrigin =
+    (import.meta.env.SITE as string | undefined) ?? "https://callmeteus.github.io/stillmark";
 
-function resolveGithubUrl(): string | null {
+function resolveGithubUrl(): string {
     if (typeof envGithub === "string" && envGithub.trim().length > 0) {
         return envGithub.trim();
     }
 
-    return null;
+    return DEFAULT_GITHUB_REPO;
+}
+
+/** Stable asset name on every GitHub Release (`releases/latest/download/stillmark.tgz`). */
+export function resolveCliTarballInstallUrl(): string {
+    return `${resolveGithubUrl()}/releases/latest/download/stillmark.tgz`;
 }
 
 /**
@@ -32,5 +40,6 @@ export function resolveInstallGuideUrl(lang: "en-US" | "pt-BR"): string {
 
 export const SiteLinks = {
     github: resolveGithubUrl(),
+    cliTarballInstallUrl: resolveCliTarballInstallUrl(),
     resolveInstallGuideUrl
 };

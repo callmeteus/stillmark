@@ -4,10 +4,10 @@ Execute estes passos na **raiz do projeto** onde os arquivos de planejamento dev
 
 ## 1. Adicionar a CLI
 
-Use instalação global ou `npx` para execuções pontuais:
+Instale pela [última release no GitHub](https://github.com/callmeteus/stillmark/releases/latest) (arquivo `stillmark.tgz`):
 
 ```bash
-npm install -g stillmark
+npm install -g https://github.com/callmeteus/stillmark/releases/latest/download/stillmark.tgz
 ```
 
 ## 2. Inicializar os arquivos de planejamento

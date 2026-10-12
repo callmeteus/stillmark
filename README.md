@@ -6,7 +6,7 @@
 
 **A deterministic CLI plus agent adapters so users never hand-edit planning markdown for routine changes.**
 
-[CLI package](packages/cli/README.md) • [Architecture](ARCHITECTURE.md)
+[CLI package](packages/cli/README.md) • [Architecture](ARCHITECTURE.md) • [Site](https://callmeteus.github.io/stillmark/)
 
 </div>
 
@@ -46,6 +46,20 @@ stillmark install --agent cursor
 npm install
 npm run ci
 ```
+
+Local landing preview (served under `/stillmark` like GitHub Pages):
+
+```bash
+npm run build -w @stillmark/landing-page
+npm run preview -w @stillmark/landing-page
+```
+
+## Deploy and releases
+
+| Surface | How |
+|---------|-----|
+| **GitHub Pages** | Push to `master` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml). In the repo, set **Settings → Pages → Build and deployment → GitHub Actions** once. |
+| **CLI download** | Push a tag `vX.Y.Z` matching `packages/cli/package.json` runs [`.github/workflows/release.yml`](.github/workflows/release.yml) and uploads `stillmark.tgz` on the GitHub Release. The landing install guide uses `releases/latest/download/stillmark.tgz`. |
 
 ## License
 

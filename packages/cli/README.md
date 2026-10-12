@@ -8,9 +8,13 @@ Stillmark owns parsing, validating, and patching `ROADMAP.md`, `.stillmark/plans
 
 ## Install
 
+From the latest [GitHub Release](https://github.com/callmeteus/stillmark/releases/latest):
+
 ```bash
-npm install stillmark
+npm install -g https://github.com/callmeteus/stillmark/releases/latest/download/stillmark.tgz
 ```
+
+For local development in this monorepo, build `packages/cli` and use `npx stillmark` from that package.
 
 ## Run
 

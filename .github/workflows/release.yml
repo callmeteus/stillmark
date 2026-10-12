@@ -1,0 +1,68 @@
+name: Release
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        name: Build CLI and publish GitHub Release
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  cache: npm
+
+            - name: Read CLI version
+              id: version
+              run: |
+                  VERSION=$(node -p "require('./packages/cli/package.json').version")
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+                  echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+                  echo "CLI version: $VERSION"
+
+            - name: Verify tag matches package version
+              if: github.event_name == 'push'
+              run: |
+                  if [ "${{ github.ref_name }}" != "${{ steps.version.outputs.tag }}" ]; then
+                      echo "Tag ${{ github.ref_name }} must match packages/cli version (${{ steps.version.outputs.tag }})."
+                      exit 1
+                  fi
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Verify CLI
+              run: npm run lint && npm run typecheck && npm run test -w stillmark
+
+            - name: Build CLI
+              run: npm run build -w stillmark
+
+            - name: Pack CLI tarball
+              run: |
+                  mkdir -p dist-release
+                  cd packages/cli
+                  npm pack --pack-destination ../../dist-release
+                  mv "../../dist-release/stillmark-${VERSION}.tgz" "../../dist-release/stillmark.tgz"
+              env:
+                  VERSION: ${{ steps.version.outputs.version }}
+
+            - name: Publish GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ steps.version.outputs.tag }}
+                  name: Stillmark v${{ steps.version.outputs.version }}
+                  files: dist-release/stillmark.tgz
+                  generate_release_notes: true
+                  draft: false
+                  prerelease: false
