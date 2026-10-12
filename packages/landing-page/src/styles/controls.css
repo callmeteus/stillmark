@@ -1,0 +1,201 @@
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45em;
+    min-height: 2.75rem;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 2px;
+    background: var(--rev);
+    color: var(--on-rev);
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 8px 20px -10px rgba(3, 15, 35, 0.75);
+    transition: background-color 0.15s ease-out, transform 0.15s ease-out;
+}
+
+.btn:hover {
+    background: var(--rev-hover);
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.btn:disabled {
+    cursor: default;
+}
+
+.btn.is-copied {
+    background: var(--ink);
+    color: var(--on-rev);
+}
+
+.btn.is-copied::before {
+    content: "";
+    width: 0.95em;
+    height: 0.95em;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+}
+
+.btn-quiet {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    box-shadow: none;
+}
+
+.btn-quiet:hover {
+    background: transparent;
+    border-color: var(--rev);
+    color: var(--rev-ink);
+}
+
+.segmented {
+    display: inline-flex;
+    border: 1px solid var(--line-soft);
+    flex-shrink: 0;
+}
+
+.segmented-btn {
+    margin: 0;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.9rem;
+    border: none;
+    background: transparent;
+    color: var(--ink-faint);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.15s ease-out, background-color 0.15s ease-out;
+}
+
+.segmented-btn + .segmented-btn {
+    border-left: 1px solid var(--line-soft);
+}
+
+.segmented-btn:hover {
+    color: var(--ink);
+}
+
+.segmented-btn[aria-selected="true"],
+.segmented-btn[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--on-rev);
+}
+
+.copy-status {
+    font-size: 0.8125rem;
+    color: var(--rev-ink);
+    font-weight: 600;
+}
+
+.copy-status:empty {
+    display: none;
+}
+
+.copy-status:not(:empty) {
+    margin-top: 0.5rem;
+}
+
+.install-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.install-code {
+    flex: 1;
+    min-width: 0;
+    padding: 0.65rem 0.8rem;
+    background: var(--well);
+    border: 1px solid var(--line-soft);
+    color: var(--ink);
+    font-size: 0.84rem;
+    line-height: 1.45;
+    transition: border-color 0.25s ease-out;
+}
+
+.install-code.is-copied,
+.prompt-code.is-copied {
+    border-color: var(--rev);
+}
+
+.agent-install-tabs {
+    margin-top: 1.25rem;
+}
+
+.agent-install-tablist {
+    margin-bottom: 0.75rem;
+}
+
+.agent-install-panel[hidden] {
+    display: none;
+}
+
+@media (min-width: 560px) {
+    .install-row {
+        flex-direction: row;
+        align-items: stretch;
+    }
+}
+
+.mobile-install-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    background: var(--well);
+    border-top: 1.5px solid var(--line);
+    box-shadow: 0 -10px 24px -12px rgba(3, 15, 35, 0.8);
+}
+
+.mobile-install-bar[hidden] {
+    display: none;
+}
+
+.mobile-install-bar-label {
+    margin-bottom: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.mobile-install-bar-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.mobile-install-code {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--ink-soft);
+}
+
+@media (min-width: 1024px) {
+    .mobile-install-bar {
+        display: none;
+    }
+}

@@ -1,4 +1,9 @@
 ---
+import "@fontsource/barlow/400.css";
+import "@fontsource/barlow/500.css";
+import "@fontsource/barlow/600.css";
+import "@fontsource/barlow-condensed/500.css";
+import "@fontsource/barlow-condensed/600.css";
 import "../styles/global.css";
 
 interface Props {
@@ -17,6 +22,7 @@ const { title, description, lang, skipToContent } = Astro.props;
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content={description} />
+        <meta name="theme-color" content="#0d3461" />
         <title>{title}</title>
     </head>
     <body>
@@ -26,6 +32,7 @@ const { title, description, lang, skipToContent } = Astro.props;
             import "../scripts/initCopyButtons.ts";
             import "../scripts/initMobileInstallBar.ts";
             import "../scripts/initLocale.ts";
+            import "../scripts/initRevisionDemo.ts";
         </script>
     </body>
 </html>

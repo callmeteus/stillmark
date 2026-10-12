@@ -39,17 +39,21 @@ const agentCommandId = `hero-install-agent-${randomUUID()}`;
 const cliCommandId = `hero-install-cli-${randomUUID()}`;
 ---
 
-<div class="install-panel hero-install-tabs" data-hero-install-tabs data-mode="agent">
-    <div class="hero-install-toolbar">
+<div class="title-block" data-hero-install-tabs data-mode="agent">
+    <div class="title-block-head">
+        <p class="title-block-label">
+            <span class="title-block-label-agent" data-i18n="hero.installLabel">{agentLabel}</span>
+            <span class="title-block-label-cli" data-i18n="hero.installCliLabel">{cliLabel}</span>
+        </p>
         <div
-            class="hero-install-tablist"
+            class="segmented"
             role="tablist"
             aria-label={tabGroupLabel}
             data-i18n-aria-label="hero.installTabGroupLabel"
         >
             <button
                 type="button"
-                class="hero-install-tab"
+                class="segmented-btn"
                 role="tab"
                 id="hero-install-tab-agent"
                 aria-selected="true"
@@ -62,7 +66,7 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
             </button>
             <button
                 type="button"
-                class="hero-install-tab"
+                class="segmented-btn"
                 role="tab"
                 id="hero-install-tab-cli"
                 aria-selected="false"
@@ -76,28 +80,22 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
         </div>
     </div>
 
-    <p class="muted install-card-label" data-hero-install-heading>{agentLabel}</p>
-
     <div
-        class="hero-install-panel"
+        class="title-block-panel"
         id="hero-install-panel-agent"
         role="tabpanel"
         aria-labelledby="hero-install-tab-agent"
         data-hero-install-panel="agent"
         data-copy-root
     >
-        <div class="install-prompt-shell">
-            <code
-                id={agentCommandId}
-                class="install-code break-code"
-                tabindex="0"
-                data-hero-agent-prompt
-            >
-                {agentPrompt}
-            </code>
+        <code id={agentCommandId} class="prompt-code break-code" tabindex="0" data-hero-agent-prompt>
+            {agentPrompt}
+        </code>
+        <div class="title-block-actions">
+            <p class="title-block-hint" data-i18n="copy.manualHint">{agentManualHint}</p>
             <button
                 type="button"
-                class="btn btn-copy btn-copy-embedded"
+                class="btn btn-copy"
                 data-copy-target={agentCommandId}
                 data-copy-label={copyLabel}
                 data-copied-label={copiedLabel}
@@ -108,12 +106,11 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
                 {copyLabel}
             </button>
         </div>
-        <p class="copy-status muted" role="status" aria-live="polite"></p>
-        <p class="copy-manual-hint muted" data-i18n="copy.manualHint">{agentManualHint}</p>
+        <p class="copy-status" role="status" aria-live="polite"></p>
     </div>
 
     <div
-        class="hero-install-panel"
+        class="title-block-panel"
         id="hero-install-panel-cli"
         role="tabpanel"
         aria-labelledby="hero-install-tab-cli"
@@ -121,18 +118,14 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
         data-hero-install-panel="cli"
         data-copy-root
     >
-        <div class="install-prompt-shell install-prompt-shell-cli">
-            <code
-                id={cliCommandId}
-                class="install-code install-code-cli break-code"
-                tabindex="0"
-                data-hero-cli-command
-            >
-                {cliCommand}
-            </code>
+        <code id={cliCommandId} class="prompt-code prompt-code-cli break-code" tabindex="0" data-hero-cli-command>
+            {cliCommand}
+        </code>
+        <div class="title-block-actions">
+            <p class="title-block-hint" data-i18n="hero.cliInstallHint">{cliManualHint}</p>
             <button
                 type="button"
-                class="btn btn-copy btn-copy-embedded"
+                class="btn btn-copy"
                 data-copy-target={cliCommandId}
                 data-copy-label={copyLabel}
                 data-copied-label={copiedLabel}
@@ -143,23 +136,17 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
                 {copyLabel}
             </button>
         </div>
-        <p class="copy-status muted" role="status" aria-live="polite"></p>
-        <p class="copy-manual-hint muted" data-i18n="hero.cliInstallHint">{cliManualHint}</p>
+        <p class="copy-status" role="status" aria-live="polite"></p>
     </div>
 </div>
 
-<script define:vars={{ agentLabel, cliLabel }}>
-    function initHeroInstallTabs(root) {
-        const tabs = root.querySelectorAll("[data-hero-install-mode]");
-        const panels = root.querySelectorAll("[data-hero-install-panel]");
-        const heading = root.querySelector("[data-hero-install-heading]");
+<script>
+    function initHeroInstallTabs(root: HTMLElement) {
+        const tabs = root.querySelectorAll<HTMLButtonElement>("[data-hero-install-mode]");
+        const panels = root.querySelectorAll<HTMLElement>("[data-hero-install-panel]");
 
-        function setMode(mode) {
+        function setMode(mode: "agent" | "cli") {
             root.dataset.mode = mode;
-
-            if (heading) {
-                heading.textContent = mode === "agent" ? agentLabel : cliLabel;
-            }
 
             for (const tab of tabs) {
                 const selected = tab.dataset.heroInstallMode === mode;
@@ -213,7 +200,7 @@ const cliCommandId = `hero-install-cli-${randomUUID()}`;
         }
     }
 
-    for (const root of document.querySelectorAll("[data-hero-install-tabs]")) {
+    for (const root of document.querySelectorAll<HTMLElement>("[data-hero-install-tabs]")) {
         initHeroInstallTabs(root);
     }
 </script>

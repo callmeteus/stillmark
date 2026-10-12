@@ -1,0 +1,28 @@
+:root {
+    --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --font-body: "Barlow", system-ui, sans-serif;
+    --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+    --ground: #0f3a68;
+    --ground-deep: #0c315b;
+    --well: #0a2a4e;
+    --sheet-tint: rgba(8, 34, 66, 0.38);
+
+    --ink: #f3f8ff;
+    --ink-soft: #c3d6ee;
+    --ink-faint: #93b3d8;
+
+    --line: rgba(229, 239, 255, 0.82);
+    --line-soft: rgba(229, 239, 255, 0.3);
+    --line-faint: rgba(229, 239, 255, 0.14);
+    --grid-minor: rgba(229, 239, 255, 0.045);
+    --grid-major: rgba(229, 239, 255, 0.085);
+
+    --rev: #ff7a45;
+    --rev-hover: #ff9466;
+    --rev-ink: #ffab88;
+    --on-rev: #0a2240;
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --section-gap: clamp(4.5rem, 9vw, 7.5rem);
+}

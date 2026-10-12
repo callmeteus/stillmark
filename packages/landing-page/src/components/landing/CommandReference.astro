@@ -1,12 +1,14 @@
 ---
+import { inlineCodeHtml } from "../../utils/InlineCode";
+
 interface Props {
     commandHeader: string;
     descriptionHeader: string;
     modeConsoleLabel: string;
     modeAgentLabel: string;
     modeGroupLabel: string;
-    rows: [string, string][];
-    agentOnlyRows: [string, string][];
+    rows: string[][];
+    agentOnlyRows: string[][];
 }
 
 const {
@@ -32,90 +34,63 @@ function toAgentCommand(cmd: string): string {
 ---
 
 <div class="command-reference" data-command-reference data-mode="agent">
-    <div class="command-reference-toolbar">
-        <div
-            class="command-reference-mode"
-            role="group"
-            aria-label={modeGroupLabel}
-            data-i18n-aria-label="commands.modeGroupLabel"
+    <div
+        class="segmented command-reference-mode"
+        role="group"
+        aria-label={modeGroupLabel}
+        data-i18n-aria-label="commands.modeGroupLabel"
+    >
+        <button
+            type="button"
+            class="segmented-btn"
+            data-command-mode="agent"
+            aria-pressed="true"
+            data-i18n="commands.modeAgentLabel"
         >
-            <button
-                type="button"
-                class="command-reference-mode-btn"
-                data-command-mode="agent"
-                aria-pressed="true"
-                data-i18n="commands.modeAgentLabel"
-            >
-                {modeAgentLabel}
-            </button>
-            <button
-                type="button"
-                class="command-reference-mode-btn"
-                data-command-mode="console"
-                aria-pressed="false"
-                data-i18n="commands.modeConsoleLabel"
-            >
-                {modeConsoleLabel}
-            </button>
-        </div>
+            {modeAgentLabel}
+        </button>
+        <button
+            type="button"
+            class="segmented-btn"
+            data-command-mode="console"
+            aria-pressed="false"
+            data-i18n="commands.modeConsoleLabel"
+        >
+            {modeConsoleLabel}
+        </button>
     </div>
 
-    <div class="card table-card command-reference-table-wrap">
-        <table class="command-reference-table">
-            <thead>
-                <tr>
-                    <th scope="col" data-i18n="commands.tableCommand">{commandHeader}</th>
-                    <th scope="col" data-i18n="commands.tableDescription">{descriptionHeader}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    rows.map(([cmd, desc]) => (
-                        <tr>
-                            <th scope="row" class="command-cell break-code">
-                                <span class="cmd-label cmd-console">{cmd}</span>
-                                <span class="cmd-label cmd-agent">{toAgentCommand(cmd)}</span>
-                            </th>
-                            <td class="muted command-desc">{desc}</td>
-                        </tr>
-                    ))
-                }
-                {
-                    agentOnlyRows.map(([cmd, desc]) => (
-                        <tr class="command-reference-agent-only">
-                            <th scope="row" class="command-cell break-code">
-                                <span class="cmd-label cmd-agent">{cmd}</span>
-                            </th>
-                            <td class="muted command-desc">{desc}</td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
-    </div>
-    <ul class="command-reference-cards">
-        {
-            rows.map(([cmd, desc]) => (
-                <li class="command-reference-card">
-                    <p class="command-reference-card-cmd break-code">
-                        <span class="cmd-label cmd-console">{cmd}</span>
-                        <span class="cmd-label cmd-agent">{toAgentCommand(cmd)}</span>
-                    </p>
-                    <p class="muted command-reference-card-desc">{desc}</p>
-                </li>
-            ))
-        }
-        {
-            agentOnlyRows.map(([cmd, desc]) => (
-                <li class="command-reference-card command-reference-agent-only">
-                    <p class="command-reference-card-cmd break-code">
-                        <span class="cmd-label cmd-agent">{cmd}</span>
-                    </p>
-                    <p class="muted command-reference-card-desc">{desc}</p>
-                </li>
-            ))
-        }
-    </ul>
+    <table class="schedule">
+        <thead>
+            <tr>
+                <th scope="col" data-i18n="commands.tableCommand">{commandHeader}</th>
+                <th scope="col" data-i18n="commands.tableDescription">{descriptionHeader}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                rows.map(([cmd, desc], index) => (
+                    <tr>
+                        <th scope="row" class="schedule-cmd break-code">
+                            <code class="cmd-console" data-i18n={`commands.rows.${index}.0`}>{cmd}</code>
+                            <code class="cmd-agent" data-i18n-agent={`commands.rows.${index}.0`}>{toAgentCommand(cmd)}</code>
+                        </th>
+                        <td data-i18n-rich={`commands.rows.${index}.1`} set:html={inlineCodeHtml(desc)} />
+                    </tr>
+                ))
+            }
+            {
+                agentOnlyRows.map(([cmd, desc], index) => (
+                    <tr class="command-reference-agent-only">
+                        <th scope="row" class="schedule-cmd break-code">
+                            <code class="cmd-agent" data-i18n={`commands.agentOnlyRows.${index}.0`}>{cmd}</code>
+                        </th>
+                        <td data-i18n-rich={`commands.agentOnlyRows.${index}.1`} set:html={inlineCodeHtml(desc)} />
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
 </div>
 
 <script>

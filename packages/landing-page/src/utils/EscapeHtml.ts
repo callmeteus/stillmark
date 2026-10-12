@@ -1,5 +1,5 @@
 /**
- * Escapes text for safe HTML insertion in locale renderers.
+ * Escapes text for safe HTML insertion.
  */
 export function escapeHtml(value: string): string {
     return value

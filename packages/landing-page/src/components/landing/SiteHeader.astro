@@ -1,6 +1,7 @@
 ---
 import { SiteLinks } from "../../config/SiteLinks";
 import type { Messages } from "../../i18n/en-US";
+import DeltaMark from "./DeltaMark.astro";
 
 interface Props {
     nav: Messages["nav"];
@@ -11,33 +12,35 @@ interface Props {
 const { nav, logoHref, navAriaLabel } = Astro.props;
 ---
 
-<header class="container site-header">
-    <a href={logoHref} class="site-logo" aria-label="Stillmark home">
-        <span class="logo-prompt" aria-hidden="true">&gt;_</span>
-        Stillmark
-    </a>
-    <nav class="site-nav muted" aria-label={navAriaLabel}>
-        <a href="#get-started" data-i18n="nav.getStarted">{nav.getStarted}</a>
-        <a href="#coverage" data-i18n="nav.coverage">{nav.coverage}</a>
-        <a href="#design" data-i18n="nav.design">{nav.design}</a>
-        <a href="#planning" data-i18n="nav.planning">{nav.planning}</a>
-        <a href="#commands" data-i18n="nav.commands">{nav.commands}</a>
-        {
-            SiteLinks.github
-                ? (
-                    <a
-                        href={SiteLinks.github}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        data-i18n="nav.github"
-                    >
-                        {nav.github}
-                    </a>
-                )
-                : null
-        }
-        <button type="button" class="locale-toggle" data-locale-toggle lang="pt-BR">
-            PT
-        </button>
-    </nav>
+<header class="site-header">
+    <div class="container site-header-row">
+        <a href={logoHref} class="site-logo" aria-label={nav.home} data-i18n-aria-label="nav.home">
+            <DeltaMark class="site-logo-mark" />
+            <span>Stillmark</span>
+        </a>
+        <nav class="site-nav" aria-label={navAriaLabel}>
+            <a href="#get-started" data-i18n="nav.getStarted">{nav.getStarted}</a>
+            <a href="#planning" data-i18n="nav.planning">{nav.planning}</a>
+            <a href="#coverage" data-i18n="nav.coverage">{nav.coverage}</a>
+            <a href="#design" data-i18n="nav.design">{nav.design}</a>
+            <a href="#commands" data-i18n="nav.commands">{nav.commands}</a>
+            {
+                SiteLinks.github
+                    ? (
+                        <a
+                            href={SiteLinks.github}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            data-i18n="nav.github"
+                        >
+                            {nav.github}
+                        </a>
+                    )
+                    : null
+            }
+            <button type="button" class="locale-toggle" data-locale-toggle lang="pt-BR">
+                PT
+            </button>
+        </nav>
+    </div>
 </header>

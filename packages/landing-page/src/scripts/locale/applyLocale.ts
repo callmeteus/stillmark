@@ -2,7 +2,7 @@ import type { LocaleBundle } from "../../i18n/LocaleBundle";
 import type { LocaleId } from "../../i18n/LocaleIds";
 import type { Messages } from "../../i18n/en-US";
 import { buildInstallPrompt } from "../../utils/BuildInstallPrompt";
-import { escapeHtml } from "./EscapeHtml";
+import { inlineCodeHtml } from "../../utils/InlineCode";
 import { messageAtPath } from "./MessagePath";
 
 /**
@@ -16,211 +16,32 @@ function toAgentCommand(cmd: string): string {
     return cmd;
 }
 
-function renderWorkflowSteps(messages: Messages): string {
-    return messages.quickStart.steps
-        .map((step, index) => {
-            const link =
-                step.linkHref && step.linkLabel
-                    ? `<a class="workflow-step-link" href="${escapeHtml(step.linkHref)}">${escapeHtml(step.linkLabel)}</a>`
-                    : "";
+/**
+ * Runs `apply` for every element carrying `attribute`, passing the resolved message.
+ */
+function forEachMessage(
+    messages: Messages,
+    attribute: string,
+    apply: (element: HTMLElement, message: string) => void
+): void {
+    for (const element of document.querySelectorAll<HTMLElement>(`[${attribute}]`)) {
+        const path = element.getAttribute(attribute);
 
-            return `<li class="workflow-step">
-                <span class="workflow-step-index" aria-hidden="true">${index + 1}</span>
-                <div class="workflow-step-body">
-                    <p class="workflow-step-title">${escapeHtml(step.title)}</p>
-                    <p class="muted workflow-step-text">${escapeHtml(step.body)}</p>
-                    ${link}
-                </div>
-            </li>`;
-        })
-        .join("");
-}
-
-function renderHowItWorks(messages: Messages): string {
-    const cards = messages.howItWorks.items
-        .map(
-            (item) => `<li>
-                <article class="card how-it-works-card">
-                    <div class="how-it-works-card-head">
-                        <h3>${escapeHtml(item.title)}</h3>
-                        <span class="how-it-works-badge">${escapeHtml(item.badge)}</span>
-                    </div>
-                    <p class="muted feature-body">${escapeHtml(item.body)}</p>
-                </article>
-            </li>`
-        )
-        .join("");
-
-    return `<p class="muted section-lead how-it-works-lead">${escapeHtml(messages.howItWorks.lead)}</p>
-    <ul class="how-it-works-grid">${cards}</ul>`;
-}
-
-function renderCompanion(messages: Messages, sectionKey: "coverage" | "design" | "planning" | "workspace"): string {
-    const content = messages[sectionKey];
-    const cards = content.points
-        .map(
-            (point) => `<article class="card companion-point-card">
-                <h3>${escapeHtml(point.title)}</h3>
-                <p class="muted feature-body">${escapeHtml(point.body)}</p>
-            </article>`
-        )
-        .join("");
-
-    return `<h2>${escapeHtml(content.title)}</h2>
-    <p class="muted section-lead">${escapeHtml(content.lead)}</p>
-    <div class="companion-points">${cards}</div>`;
-}
-
-function renderFeatures(messages: Messages): string {
-    return messages.features.items
-        .map(
-            (item) => `<article class="card">
-                <h3>${escapeHtml(item.title)}</h3>
-                <p class="muted feature-body">${escapeHtml(item.body)}</p>
-            </article>`
-        )
-        .join("");
-}
-
-function renderCommandRows(messages: Messages, mode: "agent" | "console"): string {
-    const rows = messages.commands.rows
-        .map(([cmd, desc]) => {
-            const display = mode === "agent" ? toAgentCommand(cmd) : cmd;
-            const consoleClass = mode === "console" ? "cmd-console" : "cmd-console";
-            const agentClass = mode === "agent" ? "cmd-agent" : "cmd-agent";
-
-            return `<tr>
-                <th scope="row" class="command-cell break-code">
-                    <span class="cmd-label ${consoleClass}">${escapeHtml(cmd)}</span>
-                    <span class="cmd-label ${agentClass}">${escapeHtml(toAgentCommand(cmd))}</span>
-                </th>
-                <td class="muted command-desc">${escapeHtml(desc)}</td>
-            </tr>`;
-        })
-        .join("");
-
-    const agentOnly = messages.commands.agentOnlyRows
-        .map(
-            ([cmd, desc]) => `<tr class="command-reference-agent-only">
-                <th scope="row" class="command-cell break-code">
-                    <span class="cmd-label cmd-agent">${escapeHtml(cmd)}</span>
-                </th>
-                <td class="muted command-desc">${escapeHtml(desc)}</td>
-            </tr>`
-        )
-        .join("");
-
-    return rows + agentOnly;
-}
-
-function renderCommandCards(messages: Messages, mode: "agent" | "console"): string {
-    const cliCards = messages.commands.rows
-        .map(([cmd, desc]) => {
-            return `<li class="command-reference-card">
-                <p class="command-reference-card-cmd break-code">
-                    <span class="cmd-label cmd-console">${escapeHtml(cmd)}</span>
-                    <span class="cmd-label cmd-agent">${escapeHtml(toAgentCommand(cmd))}</span>
-                </p>
-                <p class="muted command-reference-card-desc">${escapeHtml(desc)}</p>
-            </li>`;
-        })
-        .join("");
-
-    const agentCards = messages.commands.agentOnlyRows
-        .map(
-            ([cmd, desc]) => `<li class="command-reference-card command-reference-agent-only">
-                <p class="command-reference-card-cmd break-code">
-                    <span class="cmd-label cmd-agent">${escapeHtml(cmd)}</span>
-                </p>
-                <p class="muted command-reference-card-desc">${escapeHtml(desc)}</p>
-            </li>`
-        )
-        .join("");
-
-    return cliCards + agentCards;
-}
-
-function updateCommandReference(messages: Messages): void {
-    const root = document.querySelector<HTMLElement>("[data-command-reference]");
-
-    if (!root) {
-        return;
-    }
-
-    const mode = root.dataset.mode === "console" ? "console" : "agent";
-    const tbody = root.querySelector("tbody");
-    const cardList = root.querySelector(".command-reference-cards");
-
-    if (tbody) {
-        tbody.innerHTML = renderCommandRows(messages, mode);
-    }
-
-    if (cardList) {
-        cardList.innerHTML = renderCommandCards(messages, mode);
-    }
-
-    const commandHeader = root.querySelector<HTMLElement>("[data-i18n='commands.tableCommand']");
-    const descriptionHeader = root.querySelector<HTMLElement>("[data-i18n='commands.tableDescription']");
-
-    if (commandHeader) {
-        commandHeader.textContent = messages.commands.tableCommand;
-    }
-
-    if (descriptionHeader) {
-        descriptionHeader.textContent = messages.commands.tableDescription;
+        if (path) {
+            apply(element, messageAtPath(messages, path));
+        }
     }
 }
 
-function updateHeroInstall(bundle: LocaleBundle, locale: LocaleId, messages: Messages): void {
-    const root = document.querySelector<HTMLElement>("[data-hero-install-tabs]");
+function updateInstallPrompts(bundle: LocaleBundle, locale: LocaleId, messages: Messages): void {
+    const prompt = buildInstallPrompt(messages.hero.installPromptTemplate, bundle.installUrls[locale]);
 
-    if (!root) {
-        return;
+    for (const element of document.querySelectorAll<HTMLElement>("[data-hero-agent-prompt], [data-mobile-install-command]")) {
+        element.textContent = prompt;
     }
 
-    const mode = root.dataset.mode === "cli" ? "cli" : "agent";
-    const heading = root.querySelector<HTMLElement>("[data-hero-install-heading]");
-
-    if (heading) {
-        heading.textContent = mode === "cli" ? messages.hero.installCliLabel : messages.hero.installLabel;
-    }
-
-    const agentCode = root.querySelector<HTMLElement>("[data-hero-agent-prompt]");
-
-    if (agentCode) {
-        agentCode.textContent = buildInstallPrompt(
-            messages.hero.installPromptTemplate,
-            bundle.installUrls[locale]
-        );
-    }
-
-    const cliCode = root.querySelector<HTMLElement>("[data-hero-cli-command]");
-
-    if (cliCode) {
-        cliCode.textContent = messages.hero.cliInstallCommand;
-    }
-}
-
-function updateMobileBar(bundle: LocaleBundle, locale: LocaleId, messages: Messages): void {
-    const bar = document.querySelector<HTMLElement>("[data-mobile-install-bar]");
-
-    if (!bar) {
-        return;
-    }
-
-    const label = bar.querySelector<HTMLElement>("[data-i18n='hero.installLabel']");
-
-    if (label) {
-        label.textContent = messages.hero.installLabel;
-    }
-
-    const code = bar.querySelector<HTMLElement>("[data-mobile-install-command]");
-
-    if (code) {
-        code.textContent = buildInstallPrompt(
-            messages.hero.installPromptTemplate,
-            bundle.installUrls[locale]
-        );
+    for (const element of document.querySelectorAll<HTMLElement>("[data-hero-cli-command]")) {
+        element.textContent = messages.hero.cliInstallCommand;
     }
 }
 
@@ -242,6 +63,26 @@ function updateLangToggle(locale: LocaleId): void {
     );
 }
 
+function updateCopyButtonLabels(messages: Messages): void {
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-label]")) {
+        button.setAttribute("data-copy-label", messages.copy.copyShort);
+        button.setAttribute("data-copied-label", messages.copy.copied);
+        button.setAttribute("data-failed-label", messages.copy.failed);
+        button.setAttribute("data-ready-label", messages.copy.readyInTerminal);
+
+        const targetId = button.getAttribute("data-copy-target");
+        const target = targetId ? document.getElementById(targetId) : null;
+
+        if (target?.textContent) {
+            button.setAttribute("aria-label", `${messages.copy.copyShort}: ${target.textContent.trim()}`);
+        }
+
+        if (!button.classList.contains("is-copied")) {
+            button.textContent = messages.copy.copyShort;
+        }
+    }
+}
+
 /**
  * Applies all landing copy for the given locale.
  */
@@ -257,68 +98,23 @@ export function applyLocale(bundle: LocaleBundle, locale: LocaleId): void {
         metaDescription.content = messages.meta.description;
     }
 
-    for (const element of document.querySelectorAll<HTMLElement>("[data-i18n]")) {
-        const path = element.getAttribute("data-i18n");
+    forEachMessage(messages, "data-i18n", (element, message) => {
+        element.textContent = message;
+    });
 
-        if (!path) {
-            continue;
-        }
+    forEachMessage(messages, "data-i18n-rich", (element, message) => {
+        element.innerHTML = inlineCodeHtml(message);
+    });
 
-        element.textContent = messageAtPath(messages, path);
-    }
+    forEachMessage(messages, "data-i18n-agent", (element, message) => {
+        element.textContent = toAgentCommand(message);
+    });
 
-    for (const element of document.querySelectorAll<HTMLElement>("[data-i18n-aria-label]")) {
-        const path = element.getAttribute("data-i18n-aria-label");
+    forEachMessage(messages, "data-i18n-aria-label", (element, message) => {
+        element.setAttribute("aria-label", message);
+    });
 
-        if (!path) {
-            continue;
-        }
-
-        element.setAttribute("aria-label", messageAtPath(messages, path));
-    }
-
-    const workflowMount = document.querySelector<HTMLElement>('[data-i18n-mount="workflow-steps"]');
-
-    if (workflowMount) {
-        workflowMount.innerHTML = renderWorkflowSteps(messages);
-    }
-
-    const howMount = document.querySelector<HTMLElement>('[data-i18n-mount="how-it-works"]');
-
-    if (howMount) {
-        howMount.innerHTML = renderHowItWorks(messages);
-    }
-
-    for (const key of ["coverage", "design", "planning", "workspace"] as const) {
-        const section = document.querySelector<HTMLElement>(`[data-i18n-mount="companion-${key}"]`);
-
-        if (section) {
-            section.innerHTML = renderCompanion(messages, key);
-        }
-    }
-
-    const featuresMount = document.querySelector<HTMLElement>('[data-i18n-mount="features"]');
-
-    if (featuresMount) {
-        featuresMount.innerHTML = renderFeatures(messages);
-    }
-
-    updateCommandReference(messages);
-    updateHeroInstall(bundle, locale, messages);
-    updateMobileBar(bundle, locale, messages);
+    updateInstallPrompts(bundle, locale, messages);
     updateLangToggle(locale);
     updateCopyButtonLabels(messages);
-}
-
-function updateCopyButtonLabels(messages: Messages): void {
-    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-label]")) {
-        button.setAttribute("data-copy-label", messages.copy.copyShort);
-        button.setAttribute("data-copied-label", messages.copy.copied);
-        button.setAttribute("data-failed-label", messages.copy.failed);
-        button.setAttribute("data-ready-label", messages.copy.readyInTerminal);
-
-        if (!button.classList.contains("is-copied")) {
-            button.textContent = messages.copy.copyShort;
-        }
-    }
 }

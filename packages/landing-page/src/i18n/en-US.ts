@@ -12,7 +12,8 @@ export const enUS = {
         commands: "Commands",
         github: "GitHub",
         githubUnavailable: "Repository link not configured yet",
-        skipToContent: "Skip to main content"
+        skipToContent: "Skip to main content",
+        home: "Stillmark home"
     },
     quickStart: {
         title: "Get started in your repo",
@@ -20,19 +21,16 @@ export const enUS = {
             {
                 title: "Send the install prompt",
                 body:
-                    "Copy the prompt above and paste it into your agent chat. The linked markdown lists every command, including stillmark init."
+                    "Copy the prompt from the top of the page and paste it into your agent chat. The linked guide lists every command, including `stillmark init`."
             },
             {
                 title: "Install agent templates",
-                body:
-                    "Run stillmark install --agent with cursor, claude, or codex to add agent templates.",
-                linkHref: "#agents",
-                linkLabel: "See install commands"
+                body: "Pick your editor and run the matching command to add the stillmark skill."
             },
             {
                 title: "Plan with your agent",
                 body:
-                    "Use /stillmark for everything: planning, /stillmark coverage for the test checklist, and design (browser selection + feedback)."
+                    "Use `/stillmark` for everything: planning, `/stillmark coverage` for the test checklist, and `/stillmark design` for UI feedback."
             }
         ]
     },
@@ -47,7 +45,7 @@ export const enUS = {
     hero: {
         title: "Plan in plain language. Ship with a clear trail.",
         subtitle:
-            "Say what should change. Stillmark updates your roadmap, private task plan, and test checklist - plus embedded UI work through /stillmark, without hand-editing markdown.",
+            "Say what should change. Stillmark updates your roadmap, private task plan, and test checklist - and fixes the design of screens you point at in the browser. No hand-editing markdown.",
         installLabel: "Ask your agent to install",
         installCliLabel: "Run in your terminal",
         installTabGroupLabel: "Install method",
@@ -56,27 +54,64 @@ export const enUS = {
         cliInstallCommand: "npx stillmark@latest init",
         cliInstallHint: "Requires Node.js. Then run stillmark install --agent with your editor.",
         installPromptTemplate:
-            "Read and execute the markdown install guide at {url}. Follow every step in that file to install Stillmark in this repository."
+            "Read and execute the markdown install guide at {url}. Follow every step in that file to install Stillmark in this repository.",
+        demo: {
+            label: "Example revisions",
+            requestLabel: "You say",
+            commandLabel: "Stillmark runs",
+            revisionColumn: "Rev",
+            changeColumn: "Change",
+            sharedTag: "Shared",
+            localTag: "Local only",
+            requests: [
+                {
+                    say: "Push the billing export out of this milestone.",
+                    run: "stillmark roadmap defer \"billing export\""
+                },
+                {
+                    say: "Add a task to retry webhooks on 429.",
+                    run: "stillmark plan add \"Retry on HTTP 429\""
+                },
+                {
+                    say: "The lockout case is tested now.",
+                    run: "stillmark coverage check \"lockout\""
+                }
+            ],
+            roadmap: ["## Milestone A", "- [ ] **R-012** Team invites", "## Deferred", "- [ ] **R-014** Billing export"],
+            plan: ["## Objective", "Webhooks v2", "### T-006 Sign payloads", "### T-007 Retry on HTTP 429"],
+            coverage: [
+                "## Auth",
+                "- [x] [happy] login with valid password",
+                "- [ ] [edge] expired session",
+                "- [x] [sad] lockout after 5 failed tries"
+            ],
+            revisions: ["Roadmap: R-014 deferred", "Plan: T-007 added on your machine", "Coverage: lockout checked"]
+        }
     },
     howItWorks: {
         title: "How it works",
         lead:
             "You describe what should change in chat. Stillmark keeps strategy, current work, and test tracking in three clear buckets.",
+        legendShared: "Solid line: committed with the repo",
+        legendLocal: "Dashed line: stays on your machine",
         items: [
             {
                 title: "Roadmap",
                 badge: "Shared with the team",
-                body: "Long-term goals and priorities everyone can see in the repo."
+                body: "Long-term goals and priorities everyone can see in the repo.",
+                file: "ROADMAP.md"
             },
             {
                 title: "Current plan",
                 badge: "Private on your machine",
-                body: "Concrete tasks for what you are building right now, without publishing half-baked plans."
+                body: "Concrete tasks for what you are building right now, without publishing half-baked plans.",
+                file: ".stillmark/plans/TASK_PLAN.md"
             },
             {
                 title: "Test checklist",
                 badge: "Shared with the team",
-                body: "A simple list of what is already covered by tests, so nothing important is forgotten."
+                body: "A simple list of what is already covered by tests, so nothing important is forgotten.",
+                file: "COVERAGE.md"
             }
         ]
     },
@@ -87,16 +122,24 @@ export const enUS = {
         points: [
             {
                 title: "Via /stillmark coverage",
-                body: "/stillmark coverage shows help, /stillmark coverage update reconciles with git changes, and free text after /stillmark coverage edits the checklist in plain language."
+                body: "`/stillmark coverage` shows help, `/stillmark coverage update` reconciles with git changes, and free text after `/stillmark coverage` edits the checklist in plain language."
             },
             {
                 title: "Strict format",
-                body: "stillmark coverage validate catches legacy prose, wrong tags, and empty headings before you commit."
+                body: "`stillmark coverage validate` catches legacy prose, wrong tags, and empty headings before you commit."
             },
             {
                 title: "Git-aware updates",
-                body: "stillmark coverage update lists source and test files that changed since the last COVERAGE.md commit so the agent knows what to reconcile."
+                body: "`stillmark coverage update` lists source and test files that changed since the last COVERAGE.md commit so the agent knows what to reconcile."
             }
+        ],
+        sample: [
+            "## Auth",
+            "- [x] [happy] login with valid password",
+            "- [x] [sad] lockout after 5 failed tries",
+            "- [ ] [security] reset link expires after use",
+            "## Billing",
+            "- [ ] [edge] invoice with zero items"
         ]
     },
     design: {
@@ -110,7 +153,7 @@ export const enUS = {
             },
             {
                 title: "Via /stillmark design",
-                body: "Ask for spacing, type, color, or layout in plain language, or open with /stillmark design and a short brief."
+                body: "Ask for spacing, type, color, or layout in plain language, or open with `/stillmark design` and a short brief."
             },
             {
                 title: "Consistent polish",
@@ -125,7 +168,7 @@ export const enUS = {
         points: [
             {
                 title: "Natural language",
-                body: "/stillmark handles adds, deferrals, priorities, and moves. The CLI keeps sections, IDs, and history intact."
+                body: "`/stillmark` handles adds, deferrals, priorities, and moves. The CLI keeps sections, IDs, and history intact."
             },
             {
                 title: "Scope and privacy",
@@ -135,6 +178,14 @@ export const enUS = {
                 title: "Long-running work",
                 body: "When a task spans many agent turns, approved plan updates are saved so execution can continue safely."
             }
+        ],
+        sample: [
+            "### T-007 Retry on HTTP 429",
+            "status: in-progress",
+            "priority: high",
+            "depends: T-006",
+            "#### Acceptance criteria",
+            "- Retries three times with backoff"
         ]
     },
     workspace: {
@@ -148,47 +199,26 @@ export const enUS = {
             },
             {
                 title: "stillmark config",
-                body: "On first use, stillmark config status asks whether `.stillmark/learnings/design/` should be versioned with the project."
+                body: "On first use, `stillmark config status` asks whether `.stillmark/learnings/design/` should be versioned with the project."
             },
             {
                 title: "Optional roadmap git",
                 body: "When you enable it in config, Stillmark can commit or push ROADMAP.md for you - never the private plan folder."
-            }
-        ]
-    },
-    features: {
-        title: "Features",
-        items: [
-            {
-                title: "Natural language and commands",
-                body: "Add, defer, reprioritize, and move items without hand-editing markdown."
-            },
-            {
-                title: "Safe incremental writes",
-                body: "Parsers preserve unrelated sections, IDs, and history."
-            },
-            {
-                title: "Scope and privacy guards",
-                body: "Out-of-scope work and sensitive roadmap content are blocked by default."
-            },
-            {
-                title: "Long-running mode",
-                body: "Authorized plan changes persist before the agent continues execution."
             },
             {
                 title: "Learns from you",
-                body: "Commit subjects follow your recent git log (stillmark git commit-style). Design and code habits accumulate as markdown under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/`, like Cursor rules."
-            },
-            {
-                title: "Optional git for roadmap",
-                body: "Auto-commit or push ROADMAP.md only when you enable it in config."
+                body: "Commit subjects follow your recent git log (`stillmark git commit-style`). Design and code habits accumulate as markdown under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/`, like Cursor rules."
             }
+        ],
+        tree: [
+            { path: "ROADMAP.md", note: "shared", local: false },
+            { path: "COVERAGE.md", note: "shared", local: false },
+            { path: "stillmark.config.json", note: "shared", local: false },
+            { path: ".stillmark/plans/", note: "on your machine", local: true },
+            { path: ".stillmark/learnings/design/", note: "local until you opt in", local: true }
         ]
     },
     agents: {
-        stepLabel: "Step 2",
-        title: "Install agent templates",
-        intro: "One stillmark skill handles planning, coverage, and design through /stillmark.",
         tabGroupLabel: "Installation agent",
         items: [
             { label: "Cursor", command: "stillmark install --agent cursor" },
@@ -198,6 +228,7 @@ export const enUS = {
     },
     commands: {
         title: "Command reference",
+        lead: "Every terminal command also works through your agent. Switch the view to see either form.",
         modeAgentLabel: "Agent (/stillmark)",
         modeConsoleLabel: "Terminal",
         modeGroupLabel: "Command reference view",
@@ -206,8 +237,8 @@ export const enUS = {
         rows: [
             ["stillmark init", "Create ROADMAP.md, stillmark.config.json, and .stillmark/plans/"],
             ["stillmark install --agent cursor|claude|codex", "Install agent skills and shared instructions"],
-            ["stillmark config status", "First-run prompt state and sharing flags (--json)"],
-            ["stillmark config set --design-system=…", "Keep design learnings local or version .stillmark/learnings/design in git (--prompted)"],
+            ["stillmark config status", "First-run prompt state and sharing flags (`--json`)"],
+            ["stillmark config set --design-system=…", "Keep design learnings local or version .stillmark/learnings/design in git (`--prompted`)"],
             ["stillmark classify \"…\"", "Route ambiguous text to roadmap vs plan"],
             ["stillmark add \"…\"", "Add using classify, then roadmap or plan"],
             ["stillmark roadmap add \"…\"", "Add a public roadmap item"],
@@ -216,8 +247,8 @@ export const enUS = {
             ["stillmark plan init [objective]", "Start TASK_PLAN.md for the current objective"],
             ["stillmark plan add \"…\"", "Add a task to the active plan"],
             ["stillmark plan blocked \"…\" <reason>", "Mark a plan task blocked"],
-            ["stillmark move \"…\" to plan", "Promote roadmap work into the plan (--confirm)"],
-            ["stillmark move \"…\" to roadmap", "Move work back to the roadmap (--confirm)"],
+            ["stillmark move \"…\" to plan", "Promote roadmap work into the plan (`--confirm`)"],
+            ["stillmark move \"…\" to roadmap", "Move work back to the roadmap (`--confirm`)"],
             ["stillmark long-running apply \"…\"", "Persist an authorized in-scope plan change"],
             ["stillmark git commit-style \"…\"", "Preview commit subject learned from git log"],
             ["stillmark coverage init", "Create a starter COVERAGE.md"],
@@ -234,8 +265,15 @@ export const enUS = {
             ["/stillmark design …", "UI fixes; browser selection on your local dev preview"]
         ]
     },
+    close: {
+        title: "Add Stillmark to your repo",
+        body: "One command creates ROADMAP.md, the private plan folder, and the config. Then install the skill for your editor.",
+        agentLink: "Prefer to let your agent do it? Copy the install prompt"
+    },
     footer: {
-        tagline: "Stillmark - roadmap, plan, and coverage companion for agentic development."
+        tagline: "Stillmark - roadmap, plan, and coverage companion for agentic development.",
+        license: "MIT License",
+        backToInstall: "Back to install"
     }
 };
 

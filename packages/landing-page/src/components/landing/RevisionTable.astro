@@ -1,0 +1,33 @@
+---
+import type { Messages } from "../../i18n/en-US";
+import DeltaMark from "./DeltaMark.astro";
+
+interface Props {
+    demo: Messages["hero"]["demo"];
+}
+
+const { demo } = Astro.props;
+---
+
+<table class="rev-table">
+    <caption data-i18n="hero.demo.label">{demo.label}</caption>
+    <thead>
+        <tr>
+            <th scope="col" data-i18n="hero.demo.revisionColumn">{demo.revisionColumn}</th>
+            <th scope="col" data-i18n="hero.demo.changeColumn">{demo.changeColumn}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {
+            demo.revisions.map((revision, index) => (
+                <tr data-rev-row={index + 1}>
+                    <td>
+                        <DeltaMark class="rev-table-delta" label={String(index + 1)} />
+                        <span class="sr-only">{index + 1}</span>
+                    </td>
+                    <td data-i18n={`hero.demo.revisions.${index}`}>{revision}</td>
+                </tr>
+            ))
+        }
+    </tbody>
+</table>

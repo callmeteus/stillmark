@@ -1,5 +1,8 @@
 /**
  * Clipboard copy with fallback for non-secure contexts and older browsers.
+ * 
+ * @param text - The text to copy to the clipboard.
+ * @returns void
  */
 function fallbackCopy(text: string): void {
     const textarea = document.createElement("textarea");
@@ -20,6 +23,12 @@ function fallbackCopy(text: string): void {
     }
 }
 
+/**
+ * Copy text to the clipboard.
+ * 
+ * @param text - The text to copy to the clipboard.
+ * @returns void
+ */
 async function copyText(text: string): Promise<void> {
     if (navigator.clipboard?.writeText) {
         try {
@@ -36,6 +45,14 @@ async function copyText(text: string): Promise<void> {
     fallbackCopy(text);
 }
 
+/**
+ * Clear the copied state of a button.
+ * 
+ * @param button - The button to clear the copied state of.
+ * @param codeEl - The code element to clear the copied state of.
+ * @param status - The status element to clear the copied state of.
+ * @param copyLabel - The label to display when the button is not copied.
+ */
 function clearCopiedState(
     button: HTMLButtonElement,
     codeEl: HTMLElement | null,
@@ -56,6 +73,11 @@ function clearCopiedState(
     }
 }
 
+/**
+ * Bind copy buttons to the clipboard.
+ * 
+ * @returns void
+ */
 function bindCopyButtons(): void {
     document.querySelectorAll<HTMLButtonElement>("[data-copy-target]").forEach((button) => {
         if (button.dataset.copyBound === "true") {

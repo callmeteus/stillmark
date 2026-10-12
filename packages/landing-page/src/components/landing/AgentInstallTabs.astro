@@ -31,9 +31,9 @@ const panels = items.map((item) => ({
 }));
 ---
 
-<div class="agent-install-tabs card" data-agent-install-tabs>
+<div class="agent-install-tabs" data-agent-install-tabs>
     <div
-        class="agent-install-tablist"
+        class="segmented agent-install-tablist"
         role="tablist"
         aria-label={tabGroupLabel}
         data-i18n-aria-label="agents.tabGroupLabel"
@@ -42,7 +42,7 @@ const panels = items.map((item) => ({
             panels.map((panel, index) => (
                 <button
                     type="button"
-                    class="agent-install-tab"
+                    class="segmented-btn"
                     role="tab"
                     id={`agent-tab-${panel.id}`}
                     aria-selected={index === 0 ? "true" : "false"}
@@ -70,7 +70,7 @@ const panels = items.map((item) => ({
                     <code id={panel.commandId} class="install-code break-code" tabindex="0">{panel.command}</code>
                     <button
                         type="button"
-                        class="btn btn-copy"
+                        class="btn btn-copy btn-quiet"
                         data-copy-target={panel.commandId}
                         data-copy-label={copyLabel}
                         data-copied-label={copiedLabel}
@@ -81,7 +81,7 @@ const panels = items.map((item) => ({
                         {copyLabel}
                     </button>
                 </div>
-                <p class="copy-status muted" role="status" aria-live="polite"></p>
+                <p class="copy-status" role="status" aria-live="polite"></p>
             </div>
         ))
     }
