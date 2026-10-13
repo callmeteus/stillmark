@@ -41,13 +41,13 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark config set --strip-attribution=true|false"
     ],
     git: [
-        "stillmark git commit-style [\"<summary>\"]",
+        "stillmark git message-style [\"<summary>\"]",
         "stillmark git hook [status|install|remove]",
         "stillmark git setup-files",
-        "stillmark git commit-setup [--message \"<msg>\"]"
+        "stillmark git setup-commit [--message \"<msg>\"]"
     ],
     install: [
-        "stillmark install --agent cursor|claude|codex [--global]",
+        "stillmark install --agent cursor|claude|codex [--global] [--force]   (project copy is skipped when already installed globally; --force keeps one)",
         "stillmark install --agent cursor|claude|codex [--global] --link   (dev: link the source templates)"
     ],
     update: ["stillmark update [--force]", "stillmark update apply"],

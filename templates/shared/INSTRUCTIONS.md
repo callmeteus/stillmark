@@ -2,6 +2,8 @@
 
 You manage project planning and test-coverage checklists through the Stillmark CLI. Users must never edit `ROADMAP.md`, `.stillmark/plans/TASK_PLAN.md`, or `COVERAGE.md` by hand for routine changes.
 
+If you are reading these instructions, Stillmark is already installed for your agent. Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
+
 ## Destinations
 
 - **ROADMAP.md** (version-controlled): strategic goals, initiatives, milestones, future capabilities, deferred work.
@@ -28,7 +30,7 @@ stillmark config set --roadmap-dates=true|false --json
 stillmark config set --strip-attribution=true|false --json
 stillmark git hook [status|install|remove] --json
 stillmark git setup-files --json
-stillmark git commit-setup [--message "<msg>"] --json
+stillmark git setup-commit [--message "<msg>"] --json
 stillmark plan init "<objective>" [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] --json
 stillmark plan scope [--objective "<text>"] [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] [--replace] --json
 stillmark plan add "<description>" [--priority=critical|high|medium|low] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
@@ -37,7 +39,7 @@ stillmark add "<description>" [--priority=critical|high|medium|low] --json
 stillmark move "<item>" to plan --json
 stillmark move "<item>" to roadmap --json
 stillmark long-running apply "<description>" --json [--accept-scope-change]
-stillmark install --agent cursor|claude|codex [--global]
+stillmark install --agent cursor|claude|codex [--global]   # only when the user explicitly asks to install
 stillmark coverage init
 stillmark coverage validate --json
 stillmark coverage update --json
@@ -105,7 +107,7 @@ On the first `/stillmark` in a repo, run `stillmark config status --json`. When 
 1. Ask together: whether to **version `.stillmark/learnings/design/` in git** (single choice; **never** offer to commit `.stillmark/plans/`), and **what to generate now** (multiple choice: **All**, then `DESIGN.md` when the repo has a UI, `PRODUCT.md`, `COVERAGE.md` from existing tests, roadmap history from `git log` dated with `--commit=<sha>`, code style learnings, and **Nothing for now**).
 2. Record sharing with `stillmark config set --design-system=true|false --prompted --json`. If the user defers, skip `--prompted` so the setup can return later.
 3. Generate each picked item from the real code and history, never inventing; unknowns become open questions in the file.
-4. Then ask whether to commit **only the Stillmark files just created**, showing the list from `stillmark git setup-files --json`. On yes run `stillmark git commit-setup --json`: it commits exactly those paths (config, `ROADMAP.md`, `COVERAGE.md`, `.gitignore`, `DESIGN.md`, `PRODUCT.md`, shared learnings), leaves any other staged or unstaged work untouched, and never pushes.
+4. Then ask whether to commit **only the Stillmark files just created**, showing the file list and the exact `proposedMessage` from `stillmark git setup-files --json`, with options to commit with it, commit with a message the user types, or skip. On yes run `stillmark git setup-commit [--message "<msg>"] --json`: it commits exactly those paths (config, `ROADMAP.md`, `COVERAGE.md`, `.gitignore`, `DESIGN.md`, `PRODUCT.md`, shared learnings), leaves any other staged or unstaged work untouched, and never pushes.
 
 Use `--accept-scope-change` only after the user authorizes expanding scope. Use `--allow-sensitive` on roadmap writes only after warning the user about public ROADMAP.md.
 
@@ -119,7 +121,9 @@ After each operation, report what changed, item IDs, and file paths from the JSO
 
 Never run `git commit` or `git push` yourself. Stillmark git integration follows `stillmark.config.json` (`autoCommit` / `autoPush`, default off). Per-call: `--git` or `--no-git`.
 
-Commit subjects: by default Stillmark **learns the prefix from recent `git log`** (no hardcoded `docs(roadmap):`). Preview with `stillmark git commit-style "<summary>" --json`. Override with `git.commitMessage` and `{summary}` in config when needed.
+Commit subjects: Stillmark checks recent `git log` only to see whether the repo uses conventional commits; if so it writes `docs: …` for planning documents and `chore: …` for setup, otherwise the plain summary. It never copies a scope from history (such as `(t)` or `(auth)`). Preview with `stillmark git message-style "<summary>" --json`. Override with `git.commitMessage` and `{summary}` in config when needed.
+
+Never add markers, scopes, or sign-offs from your own agent rules (for example a `(t)` suffix for agent commits) to a Stillmark commit message. When such a rule would change the message, show both versions to the user and let them choose before committing.
 
 Agent attribution: `git.stripAgentAttribution` (default on) installs a `commit-msg` hook that removes `Co-authored-by: Cursor`, `Made-with: Cursor`, `Co-Authored-By: Claude …`, and "Generated with Claude Code" from every commit. `stillmark init` installs it; before any commit the user asked for, run `stillmark git hook install --json` (safe to repeat). It never replaces a `commit-msg` hook it did not write; tell the user when `attributionHook.foreign` is true. Turn it off with `stillmark config set --strip-attribution=false` (removes the hook). Cursor Cloud Agents commit on Cursor's servers, where local hooks do not run.
 

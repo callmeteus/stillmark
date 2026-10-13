@@ -1,8 +1,10 @@
+import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
 import {
     AgentIds,
+    agentTemplateFiles,
     installAgent,
     linkAgent,
     resolveSourceTemplatesDir,
@@ -28,6 +30,17 @@ export interface InstallTemplatesOptions {
     link?: boolean;
     homeDir?: string;
     currentVersion?: string;
+    /**
+     * Copy into the project even when the agent already has a global install.
+     */
+    force?: boolean;
+}
+
+/**
+ * True when the agent has any Stillmark file (copied or linked) in that scope.
+ */
+function hasAgentFiles(root: string, agent: AgentId, scope: InstallScope): boolean {
+    return agentTemplateFiles(root, agent, scope).some((file) => fs.existsSync(file.dest));
 }
 
 /**
@@ -53,6 +66,18 @@ export function installTemplates(
     const homeDir = options.homeDir ?? os.homedir();
     const root = scope === "global" ? homeDir : paths.root;
     const where = scope === "global" ? ` globally (${homeDir})` : "";
+
+    if (scope === "project" && !options.force && hasAgentFiles(homeDir, agent as AgentId, "global")) {
+        return {
+            ok: true,
+            changed: false,
+            action: "install",
+            summary: `${agent} already has Stillmark installed globally (${homeDir}); nothing copied into this repo. To set up this repo run stillmark init. Use --force only to keep a project copy`,
+            scope,
+            installed: [],
+            linked: []
+        };
+    }
 
     if (options.link) {
         const entries = linkAgent(root, agent as AgentId, scope);

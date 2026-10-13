@@ -8,7 +8,9 @@ description: >-
 
 # Stillmark
 
-**Only entry point:** `/stillmark` (not `/coverage`, not `/stillmark-design`). Read `templates/shared/INSTRUCTIONS.md` after `stillmark install`.
+**Only entry point:** `/stillmark` (not `/coverage`, not `/stillmark-design`).
+
+**You are reading this skill, so Stillmark is already installed.** Never run `stillmark install` and never copy skill, command, or prompt files into the repo unless the user explicitly asks to install. Setting a repo up is only `stillmark init --json`.
 
 All file-backed operations run `stillmark … --json` from the **project root**. The text after `/stillmark` is the instruction.
 
@@ -46,7 +48,7 @@ User controls: "para de atualizar sozinho" = `stillmark config set --auto-update
 
 ## Repo without Stillmark files (global install)
 
-When the skill was installed with `--global`, a repository may have no `stillmark.config.json` or `ROADMAP.md` yet. Before the first file-backed command there, ask once whether to set Stillmark up in this repo; on yes run `stillmark init --json`, on no answer without touching files.
+When the skill was installed with `--global`, a repository may have no `stillmark.config.json` or `ROADMAP.md` yet. Before the first file-backed command there, ask once whether to set Stillmark up in this repo; on yes run `stillmark init --json` (it creates the planning files only, no skill copy), on no answer without touching files.
 
 ## First run: setup
 
@@ -66,7 +68,9 @@ When `sharing.needsFirstRunPrompt` is **true**, run the setup once, in the user'
      - Code style learnings: conventions in `.stillmark/learnings/code-style/`.
 2. Record sharing with `stillmark config set --design-system=true|false --prompted --json` (dismissed = skip `--prompted` so the setup can return).
 3. Generate what was picked, one item at a time, from the real code and history. Never invent: list unknowns as open questions inside the file. Link every file you write.
-4. **Then ask (single choice)** whether to commit **only** the Stillmark files just created. Show the list from `stillmark git setup-files --json` in the question. Yes runs `stillmark git commit-setup --json` (commits exactly those paths, leaves other staged or unstaged work alone, never pushes; add `--message "<msg>"` to use a custom subject, otherwise it follows `git commit-style`). No changes nothing.
+4. **Then ask (single choice)** whether to commit **only** the Stillmark files just created. Show the file list **and the exact commit message** (`proposedMessage`) from `stillmark git setup-files --json` in the question. Options: commit with that message, commit with another message (the user types it), don't commit. Commit runs `stillmark git setup-commit --json` (exactly those paths, other staged or unstaged work untouched, never pushes), with `--message "<msg>"` when the user typed one. No changes nothing.
+
+**Commit messages are the user's call.** Use `proposedMessage` (or `git message-style`) as is: never add markers, scopes, or sign-offs that come from your own agent rules (for example a `(t)` suffix for agent commits). If a rule you follow would change the message, put both versions in the question and let the user pick.
 
 ## Detail level: compact or extended
 
@@ -133,7 +137,7 @@ Triggered by `design …`, browser selection, or obvious UI critique. Load `refe
 
 ## Git
 
-Never commit or push unless the user grants it. Preview subjects: `stillmark git commit-style "<summary>" --json`.
+Never commit or push unless the user grants it. Preview subjects: `stillmark git message-style "<summary>" --json`.
 
 Before a commit the user asked for, run `stillmark git hook install --json` (idempotent) so the `commit-msg` hook strips `Co-authored-by: Cursor`, `Made-with: Cursor`, and Claude attribution. On by default (`git.stripAgentAttribution`); off with `stillmark config set --strip-attribution=false`. If `attributionHook.foreign` is true, tell the user an existing hook was left alone.
 
@@ -141,11 +145,10 @@ Before a commit the user asked for, run `stillmark git hook install --json` (ide
 
 ```text
 /stillmark init
-/stillmark install --agent cursor
 /stillmark config status --json
 /stillmark roadmap add "Observability"
 /stillmark plan init "Ship billing" --in-scope "Invoices\nRefunds" --out-of-scope "Tax reports"
 /stillmark plan add "Refund webhook" --priority=high
 /stillmark move "API keys" to plan --confirm --json
-/stillmark git commit-style "Add WAF rules" --json
+/stillmark git message-style "Add WAF rules" --json
 ```

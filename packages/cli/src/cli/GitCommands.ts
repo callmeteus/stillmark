@@ -91,7 +91,7 @@ export async function runGitHook(
 }
 
 /**
- * `stillmark git <sub> ...`: `hook [status|install|remove]` or `commit-style [summary]` (alias `suggest`).
+ * `stillmark git <sub> ...`: `hook [status|install|remove]` or `message-style [summary]` (alias `suggest`).
  */
 export async function runGitCommand(
     paths: ProjectPaths,
@@ -107,6 +107,9 @@ export async function runGitCommand(
 
     if (sub === "setup-files") {
         const listed = await listSetupFiles(paths, runner);
+        const proposedMessage = listed.gitRepo
+            ? (await resolveCommitMessage(paths.root, "configura o Stillmark", loadConfig(paths).git.commitMessage, runner, "chore")).message
+            : undefined;
 
         return {
             ok: listed.gitRepo,
@@ -114,14 +117,15 @@ export async function runGitCommand(
             action: "git setup-files",
             summary: listed.gitRepo
                 ? listed.files.length > 0
-                    ? `Stillmark files to commit: ${listed.files.join(", ")}`
+                    ? `Stillmark files to commit: ${listed.files.join(", ")}; proposed message: ${proposedMessage}`
                     : "No Stillmark files with pending changes"
                 : "Not a git repository",
-            setupFiles: listed
+            setupFiles: listed,
+            proposedMessage
         } as OperationResult;
     }
 
-    if (sub === "commit-setup") {
+    if (sub === "setup-commit") {
         const config = loadConfig(paths);
 
         if (config.git.stripAgentAttribution) {
@@ -130,13 +134,13 @@ export async function runGitCommand(
 
         const message = typeof flags.message === "string" && flags.message.trim()
             ? flags.message.trim()
-            : (await resolveCommitMessage(paths.root, "configura o Stillmark", config.git.commitMessage, runner)).message;
+            : (await resolveCommitMessage(paths.root, "configura o Stillmark", config.git.commitMessage, runner, "chore")).message;
         const result = await commitSetupFiles(paths, runner, message);
 
         return {
             ok: result.committed || result.detail === "Nothing to commit",
             changed: result.committed,
-            action: "git commit-setup",
+            action: "git setup-commit",
             summary: result.committed
                 ? `Committed ${result.files.length} Stillmark file(s): ${message}`
                 : result.detail,
@@ -144,14 +148,14 @@ export async function runGitCommand(
         } as OperationResult;
     }
 
-    if (sub === "commit-style" || sub === "suggest") {
+    if (sub === "message-style" || sub === "suggest") {
         const summary = rest.join(" ") || "Atualização do Stillmark";
         const resolved = await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner);
 
         return {
             ok: true,
             changed: false,
-            action: "git-commit-style",
+            action: "git-message-style",
             summary: resolved.message,
             commitMessage: resolved
         };
@@ -160,7 +164,7 @@ export async function runGitCommand(
     return {
         ok: false,
         changed: false,
-        summary: "Usage: stillmark git commit-style [summary] | git hook [status|install|remove] | git setup-files | git commit-setup [--message \"<msg>\"]"
+        summary: "Usage: stillmark git message-style [summary] | git hook [status|install|remove] | git setup-files | git setup-commit [--message \"<msg>\"]"
     };
 }
 

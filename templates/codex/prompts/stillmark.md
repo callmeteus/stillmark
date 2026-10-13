@@ -6,9 +6,9 @@ Run `stillmark` from the project root with `--json` for all planning operations.
 
 **Auto-update:** start each `/stillmark` with `stillmark update --json` (npm is checked at most once per `update.intervalHours`, default 24h). When `updateAvailable` is true, run `recommended`, tell the user in one line, then continue. Ignore `error`.
 
-**First run:** when `stillmark config status --json` reports `needsFirstRunPrompt`, ask whether to version design learnings and what to generate now (numbered multiple choice: All, `DESIGN.md`, `PRODUCT.md`, `COVERAGE.md`, roadmap history from `git log`, code style learnings, Nothing). Record with `stillmark config set --design-system=true|false --prompted --json`, generate the picks, then ask whether to commit only those files (`stillmark git setup-files --json` lists them; yes = `stillmark git commit-setup --json`).
+**First run:** when `stillmark config status --json` reports `needsFirstRunPrompt`, ask whether to version design learnings and what to generate now (numbered multiple choice: All, `DESIGN.md`, `PRODUCT.md`, `COVERAGE.md`, roadmap history from `git log`, code style learnings, Nothing). Record with `stillmark config set --design-system=true|false --prompted --json`, generate the picks, then ask whether to commit only those files, showing the list and the exact `proposedMessage` from `stillmark git setup-files --json` (yes = `stillmark git setup-commit [--message "<msg>"] --json`). Never add scopes or markers from your own rules (like `(t)`) to Stillmark commit messages without asking.
 
-**Global install:** if this repo has no `stillmark.config.json` / `ROADMAP.md`, ask once before running `stillmark init --json`.
+**Global install:** if this repo has no `stillmark.config.json` / `ROADMAP.md`, ask once before running `stillmark init --json` (planning files only). This prompt being loaded means Stillmark is installed: never run `stillmark install` or copy prompt files into the repo unless the user explicitly asks.
 
 **Agent entry:** `/stillmark <args>` mirrors `stillmark <args> --json`. Do not use `/coverage`; use `/stillmark coverage …` for COVERAGE.md (help, update workflow, or free text). Playbook: stillmark skill `reference/coverage.md`.
 

@@ -283,6 +283,29 @@ describe("agent template refresh", () => {
         }
     });
 
+    it("skips the project copy when the agent is already installed globally", () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+        const projectSkill = path.join(root, ".cursor", "skills", "stillmark", "SKILL.md");
+
+        try {
+            installTemplates(paths, "cursor", { global: true, homeDir: home });
+
+            const skipped = installTemplates(paths, "cursor", { homeDir: home });
+
+            expect(skipped).toMatchObject({ ok: true, changed: false, installed: [] });
+            expect(skipped.summary).toContain("stillmark init");
+            expect(fs.existsSync(projectSkill)).toBe(false);
+
+            const forced = installTemplates(paths, "cursor", { homeDir: home, force: true });
+
+            expect(forced.installed).toContain(projectSkill);
+            expect(installTemplates(paths, "claude", { homeDir: home }).installed.length).toBeGreaterThan(0);
+        } finally {
+            cleanup();
+        }
+    });
+
     it("refuses an unknown agent", () => {
         const { paths, cleanup } = createTempProject();
 

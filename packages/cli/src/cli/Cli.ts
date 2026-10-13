@@ -165,7 +165,8 @@ export async function runCli(argv: string[]): Promise<number> {
         if (cmd === "install") {
             const result = installTemplates(paths, (flags.agent as string | undefined) ?? sub, {
                 global: Boolean(flags.global),
-                link: Boolean(flags.link)
+                link: Boolean(flags.link),
+                force: Boolean(flags.force)
             });
             output(result, json);
 

@@ -7,7 +7,7 @@ import {
 import { GitRunner, type ProcessSpawner } from "../../src/git";
 
 describe("CommitMessageStyle", () => {
-    it("infers the dominant conventional prefix", () => {
+    it("learns the conventional format but never copies a scope", () => {
         const template = inferCommitMessageTemplateFromSubjects([
             "feat(t): adiciona coverage ao CLI",
             "feat(t): corrige classificação",
@@ -15,13 +15,18 @@ describe("CommitMessageStyle", () => {
             "docs: atualiza README"
         ]);
 
-        expect(template).toBe("feat(t): {summary}");
+        expect(template).toBe("docs: {summary}");
     });
 
-    it("falls back to summary only without colon subjects", () => {
+    it("uses the type of what Stillmark commits", () => {
+        expect(inferCommitMessageTemplateFromSubjects(["feat(auth)!: troca login"], "chore")).toBe("chore: {summary}");
+    });
+
+    it("falls back to summary only without a conventional history", () => {
         const template = inferCommitMessageTemplateFromSubjects([
             "WIP",
-            "save"
+            "save",
+            "Merge stuff"
         ]);
 
         expect(template).toBe("{summary}");
@@ -64,6 +69,6 @@ describe("CommitMessageStyle", () => {
         );
 
         expect(resolved.learned).toBe(true);
-        expect(resolved.message).toBe("refactor(t): Roadmap item");
+        expect(resolved.message).toBe("docs: Roadmap item");
     });
 });

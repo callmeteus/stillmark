@@ -56,12 +56,14 @@ describe("first-run setup commit", () => {
 
             const files = (lastJson().setupFiles as { files: string[] }).files;
 
+            expect(lastJson().proposedMessage).toBe("configura o Stillmark");
+
             expect(files).toEqual(expect.arrayContaining([".gitignore", "DESIGN.md", "ROADMAP.md", "stillmark.config.json"]));
             expect(files).not.toContain("app.ts");
             expect(files).not.toContain("notes.txt");
             expect(files.some((f) => f.startsWith(".stillmark/plans/"))).toBe(false);
 
-            expect(await cli(root, "git", "commit-setup", "--message", "chore: configura o Stillmark")).toBe(0);
+            expect(await cli(root, "git", "setup-commit", "--message", "chore: configura o Stillmark")).toBe(0);
 
             const committed = git(root, "show", "--name-only", "--format=%s", "HEAD").trim().split("\n");
 
@@ -83,8 +85,8 @@ describe("first-run setup commit", () => {
 
             git(root, "init", "-q");
             await cli(root, "init");
-            await cli(root, "git", "commit-setup");
-            await cli(root, "git", "commit-setup");
+            await cli(root, "git", "setup-commit");
+            await cli(root, "git", "setup-commit");
 
             expect(lastJson()).toMatchObject({ ok: true, changed: false, summary: "Nothing to commit" });
         } finally {

@@ -70,7 +70,7 @@ describe("GitIntegration", () => {
         );
 
         const commitCall = calls.find((a) => a[0] === "commit");
-        expect(commitCall?.[2]).toBe("feat(t): Metrics");
+        expect(commitCall?.[2]).toBe("docs: Metrics");
 
         cleanup();
     });

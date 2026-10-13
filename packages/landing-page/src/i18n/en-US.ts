@@ -214,7 +214,7 @@ export const enUS = {
             },
             {
                 title: "Learns from you",
-                body: "Commit subjects follow your recent git log (`/stillmark git commit-style`). Design and code habits accumulate as markdown under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/`, like Cursor rules."
+                body: "Commit subjects follow your recent git log (`/stillmark git message-style`). Design and code habits accumulate as markdown under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/`, like Cursor rules."
             }
         ],
         tree: [
@@ -266,7 +266,7 @@ export const enUS = {
             ["stillmark move \"…\" to plan", "Promote roadmap work into the plan (`--confirm`)"],
             ["stillmark move \"…\" to roadmap", "Move work back to the roadmap (`--confirm`)"],
             ["stillmark long-running apply \"…\"", "Persist an authorized in-scope plan change"],
-            ["stillmark git commit-style \"…\"", "Preview commit subject learned from git log"],
+            ["stillmark git message-style \"…\"", "Preview commit subject learned from git log"],
             ["stillmark coverage init", "Create a starter COVERAGE.md"],
             ["stillmark coverage validate", "Validate checkbox format (exit 1 on errors)"],
             ["stillmark coverage summary", "Print checklist stats without full validation noise"],

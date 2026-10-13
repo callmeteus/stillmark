@@ -18,7 +18,7 @@ Stable coding conventions for this repo. Add more \`.md\` files in this folder (
 
 ## Commits
 
-Stillmark infers commit subject prefixes from recent \`git log\` unless \`git.commitMessage\` is set in \`stillmark.config.json\`. Preview with \`stillmark git commit-style\`.
+Stillmark checks recent \`git log\` for conventional commits (\`docs:\` / \`chore:\` for its own commits, never copying scopes) unless \`git.commitMessage\` is set in \`stillmark.config.json\`. Preview with \`stillmark git message-style\`.
 
 ## How to use
 

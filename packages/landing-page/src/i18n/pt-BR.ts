@@ -225,7 +225,7 @@ export const ptBR: Messages = {
             },
             {
                 title: "Aprende com você",
-                body: "Assuntos de commit seguem o seu git log (`/stillmark git commit-style`). Hábitos de design e de código viram markdown em `.stillmark/learnings/design/` e `.stillmark/learnings/code-style/`, no estilo de Cursor rules."
+                body: "Assuntos de commit seguem o seu git log (`/stillmark git message-style`). Hábitos de design e de código viram markdown em `.stillmark/learnings/design/` e `.stillmark/learnings/code-style/`, no estilo de Cursor rules."
             }
         ],
         tree: [
@@ -277,7 +277,7 @@ export const ptBR: Messages = {
             ["stillmark move \"…\" to plan", "Promove trabalho do roadmap para o plano (`--confirm`)"],
             ["stillmark move \"…\" to roadmap", "Devolve trabalho ao roadmap (`--confirm`)"],
             ["stillmark long-running apply \"…\"", "Persiste mudança autorizada no plano em execução"],
-            ["stillmark git commit-style \"…\"", "Pré-visualiza assunto de commit a partir do git log"],
+            ["stillmark git message-style \"…\"", "Pré-visualiza assunto de commit a partir do git log"],
             ["stillmark coverage init", "Cria um COVERAGE.md inicial"],
             ["stillmark coverage validate", "Valida formato de checkboxes (exit 1 se houver erro)"],
             ["stillmark coverage summary", "Resumo do checklist sem ruído de validação completa"],
