@@ -77,3 +77,5 @@
   - Generates a README from the real project (scripts, packages, setup) or restructures an existing one
   - Several templates the user picks from (for example app or monorepo root, package, open source library)
   - Keeps accurate existing facts (ports, env vars, URLs) and never invents commands
+- [x] **R-026** Push right after every commit by default, configurable with config set --auto-push
+  priority: medium · status: done · done: 2026-10-13
