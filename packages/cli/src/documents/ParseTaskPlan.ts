@@ -2,7 +2,7 @@ import type { PlanTask, TaskPlanDocument } from "./types";
 
 const TASK_HEADER_RE = /^### (T-\d+) (.+)$/;
 const FIELD_RE =
-    /^(status|priority|depends|blocked-by):\s*(.+)$/i;
+    /^(status|priority|phase|depends|blocked-by):\s*(.+)$/i;
 /**
  * Template placeholders from `plan init`; they mean "empty", not real scope.
  */
@@ -34,6 +34,10 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
         const line = lines[i];
 
         if (line.startsWith("## ")) {
+            if (historySpan && section === "history") {
+                historySpan.endLine = i;
+            }
+
             section = line.slice(3).trim().toLowerCase();
             scopeMode = null;
 
@@ -87,6 +91,7 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
                 const title = header[2].trim();
                 let status = "pending";
                 let priority = "medium";
+                let phase: string | undefined;
                 const depends: string[] = [];
                 const blockedBy: string[] = [];
                 const acceptanceCriteria: string[] = [];
@@ -138,6 +143,9 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
                         if (key === "priority") {
                             priority = value;
                         } else
+                        if (key === "phase") {
+                            phase = value;
+                        } else
                         if (key === "depends") {
                             depends.push(
                                 ...value.split(/[,·]/).map((s) => s.trim()).filter(Boolean)
@@ -163,6 +171,7 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
                     title,
                     status,
                     priority,
+                    phase,
                     depends,
                     blockedBy,
                     acceptanceCriteria,
@@ -178,7 +187,7 @@ export function parseTaskPlan(raw: string): TaskPlanDocument {
         i += 1;
     }
 
-    if (historySpan) {
+    if (historySpan && section === "history") {
         historySpan.endLine = lines.length;
     }
 

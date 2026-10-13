@@ -261,6 +261,8 @@ export const enUS = {
             ["stillmark plan init [objective]", "Start TASK_PLAN.md for the current objective"],
             ["stillmark plan scope --in-scope \"…\"", "Set the objective, what is in, and what stays out of the current plan (`--out-of-scope`, `--replace`)"],
             ["stillmark plan add \"…\" --priority=high", "Add a task to the active plan, with optional priority"],
+            ["stillmark plan done \"…\"", "Finish a task and check it in the checklist at the end of the plan"],
+            ["stillmark plan phase \"…\" <phase>", "Group a task under a phase in the plan checklist"],
             ["stillmark plan priority \"…\" <level>", "Change a plan task priority"],
             ["stillmark plan blocked \"…\" <reason>", "Mark a plan task blocked"],
             ["stillmark move \"…\" to plan", "Promote roadmap work into the plan (`--confirm`)"],

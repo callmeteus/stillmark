@@ -42,6 +42,7 @@ const VALUE_FLAGS: Record<string, string> = {
     "--acceptance": "acceptance",
     "--verification": "verification",
     "--priority": "priority",
+    "--phase": "phase",
     "--objective": "objective",
     "--in-scope": "inScope",
     "--out-of-scope": "outOfScope",

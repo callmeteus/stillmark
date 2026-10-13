@@ -24,6 +24,8 @@ export interface PlanTask {
     title: string;
     status: string;
     priority: string;
+    /** Optional phase label (e.g. `PHASE-1`) used to group the checklist. */
+    phase?: string;
     depends: string[];
     blockedBy: string[];
     acceptanceCriteria: string[];

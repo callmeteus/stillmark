@@ -33,7 +33,10 @@ stillmark git setup-files --json
 stillmark git setup-commit [--message "<msg>"] --json
 stillmark plan init "<objective>" [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] --json
 stillmark plan scope [--objective "<text>"] [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] [--replace] --json
-stillmark plan add "<description>" [--priority=critical|high|medium|low] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
+stillmark plan add "<description>" [--priority=critical|high|medium|low] [--phase=PHASE-1] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
+stillmark plan done <task> --json
+stillmark plan status <task> pending|pending-approval|in-progress|blocked|done|cancelled --json
+stillmark plan phase <task> <phase> --json
 stillmark plan priority <task> critical|high|medium|low --json
 stillmark add "<description>" [--priority=critical|high|medium|low] --json
 stillmark move "<item>" to plan --json
@@ -56,6 +59,8 @@ stillmark update apply --json
 Run `stillmark <command> --help` to see the options; unknown options are refused, never written as text. Pass acceptance criteria and verification through `--acceptance` / `--verification` (split lines with `\n`) instead of editing `(define)` by hand. A fresh plan with `(Not set)` / `(define)` scope does not block `plan add`.
 
 Each new plan gets its own scope: set objective, in scope, and out of scope with `plan init ... --in-scope/--out-of-scope` or `plan scope` (appends; `--replace` overwrites; no flags shows the current scope). Never reuse the scope of a previous plan.
+
+TASK_PLAN.md ends with a generated `## Checklist`: one checkbox per task (`- [ ] T-001 - Title`, or `- [ ] PHASE-1 / T-001 - Title` grouped under `### PHASE-1` when tasks have phases). The CLI rebuilds it on every plan write, so never edit it by hand. As work progresses, run `plan status <task> in-progress` when starting a task and `plan done <task>` as soon as it is finished, so the checklist always shows real progress. When the plan has phases, pass `--phase=PHASE-1` on `plan add` (or `plan phase <task> <phase>` later).
 
 Finished work goes to `## Done` as a checked item with `status: done`: `roadmap done "<item>"` for an existing item, `roadmap add "<description>" --done` for work that was never on the roadmap. To backfill history ("add everything already done"), read `git log --date=short --format="%h %ad %s"` and the code, group commits into user-visible features, mark matching items with `roadmap done`, and add the rest with `--done` (one command per feature, no secrets or internal details). Pass `--commit=<sha>` of the commit that finished each feature (usually the last one in the group) so the delivery date is the real one; the CLI reads the date from git.
 

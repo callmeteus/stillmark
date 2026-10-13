@@ -19,7 +19,10 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark plan",
         "stillmark plan init [\"<objective>\"] [--in-scope \"<a>\\n<b>\"] [--out-of-scope \"<c>\"]",
         "stillmark plan scope [--objective \"<text>\"] [--in-scope \"<a>\\n<b>\"] [--out-of-scope \"<c>\"] [--replace]",
-        "stillmark plan add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<criterion>\\n<criterion>\"] [--verification \"<check>\\n<check>\"] [--accept-scope-change]",
+        "stillmark plan add \"<description>\" [--priority=critical|high|medium|low] [--phase=PHASE-1] [--details \"<text>\"] [--acceptance \"<criterion>\\n<criterion>\"] [--verification \"<check>\\n<check>\"] [--accept-scope-change]",
+        "stillmark plan done <task>",
+        "stillmark plan status <task> pending|pending-approval|in-progress|blocked|done|cancelled",
+        "stillmark plan phase <task> <phase>",
         "stillmark plan priority <task> critical|high|medium|low",
         "stillmark plan blocked <task> <blocker>"
     ],

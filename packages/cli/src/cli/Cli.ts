@@ -27,12 +27,10 @@ import {
     addRoadmapItem,
     configStatus,
     initProject,
-    initTaskPlan,
     moveToPlan,
     moveToRoadmap,
     setConfigDetail,
     setConfigSharing,
-    updatePlanTask,
     updateRoadmapItem
 } from "../operations";
 import { resolveProjectPaths } from "../paths/ProjectPaths";
@@ -40,7 +38,7 @@ import { withFileLink } from "../results/FileLink";
 import type { OperationResult } from "../results/OperationResult";
 import { installTemplates } from "../update";
 import { helpResult, unknownOptionsResult } from "./Help";
-import { hasScopeFlags, priorityFlag, runPlanScope } from "./PlanCommands";
+import { priorityFlag, runPlanCommand } from "./PlanCommands";
 import { roadmapDateFlag, runConfigSetRoadmapDates } from "./RoadmapCommands";
 import { runConfigSetStripAttribution, runGitCommand, syncAttributionHook } from "./GitCommands";
 import { parseFlags } from "./ParseFlags";
@@ -282,79 +280,10 @@ export async function runCli(argv: string[]): Promise<number> {
         }
 
         if (cmd === "plan") {
-            if (sub === "init") {
-                const objective = positional.slice(2).join(" ") || undefined;
-                const init = initTaskPlan(paths, objective);
+            const result = runPlanCommand(paths, positional, flags);
+            output(result, json, paths.taskPlan);
 
-                output(init.ok && hasScopeFlags(flags) ? runPlanScope(paths, flags) : init, json, paths.taskPlan);
-
-                return init.ok ? 0 : 1;
-            }
-
-            if (sub === "scope") {
-                const result = runPlanScope(paths, flags);
-                output(result, json, paths.taskPlan);
-
-                return result.ok ? 0 : 1;
-            }
-
-            if (sub === "priority" && positional[2] && positional[3]) {
-                const value = positional[3].toLowerCase();
-
-                if (!isPriority(value)) {
-                    output(priorityFlag({ priority: value }).error as OperationResult, json);
-
-                    return 1;
-                }
-
-                output(updatePlanTask(paths, { query: positional[2], priority: value }), json, paths.taskPlan);
-
-                return 0;
-            }
-
-            if (sub === "add" && positional[2]) {
-                output(
-                    addPlanTask(paths, {
-                        description: positional.slice(2).join(" "),
-                        acceptScopeChange: Boolean(flags.acceptScopeChange),
-                        details,
-                        acceptance,
-                        verification,
-                        priority
-                    }),
-                    json,
-                    paths.taskPlan
-                );
-
-                return 0;
-            }
-
-            if (sub === "blocked" && positional[2] && positional[3]) {
-                output(
-                    updatePlanTask(paths, {
-                        query: positional[2],
-                        blockedBy: positional.slice(3).join(" ")
-                    }),
-                    json,
-                    paths.taskPlan
-                );
-
-                return 0;
-            }
-
-            output(
-                {
-                    ok: true,
-                    changed: false,
-                    summary: fs.existsSync(paths.taskPlan)
-                        ? fs.readFileSync(paths.taskPlan, "utf8").slice(0, 2000)
-                        : "No TASK_PLAN.md"
-                },
-                json,
-                paths.taskPlan
-            );
-
-            return 0;
+            return result.ok ? 0 : 1;
         }
 
         if (cmd === "add" && positional[1]) {
@@ -408,7 +337,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         details,
                         acceptance,
                         verification,
-                        priority
+                        priority,
+                        phase: flags.phase === undefined ? undefined : String(flags.phase)
                     }),
                     json
                 );

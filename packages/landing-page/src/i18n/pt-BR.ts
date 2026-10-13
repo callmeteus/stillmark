@@ -272,6 +272,8 @@ export const ptBR: Messages = {
             ["stillmark plan init [objetivo]", "Inicia TASK_PLAN.md para o objetivo atual"],
             ["stillmark plan scope --in-scope \"…\"", "Define objetivo, o que entra e o que fica fora do plano atual (`--out-of-scope`, `--replace`)"],
             ["stillmark plan add \"…\" --priority=high", "Adiciona tarefa ao plano ativo, com prioridade opcional"],
+            ["stillmark plan done \"…\"", "Conclui uma tarefa e marca o item no checklist do fim do plano"],
+            ["stillmark plan phase \"…\" <fase>", "Agrupa a tarefa em uma fase no checklist do plano"],
             ["stillmark plan priority \"…\" <nível>", "Altera a prioridade de uma tarefa do plano"],
             ["stillmark plan blocked \"…\" <motivo>", "Marca tarefa do plano como bloqueada"],
             ["stillmark move \"…\" to plan", "Promove trabalho do roadmap para o plano (`--confirm`)"],

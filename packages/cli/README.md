@@ -28,8 +28,10 @@ stillmark git setup-files --json
 stillmark git setup-commit --json
 stillmark plan init "Billing export" --in-scope "CSV\nPDF" --out-of-scope "Excel" --json
 stillmark plan scope --in-scope "Refunds" --json
-stillmark plan add "Integration tests" --priority=high --json --accept-scope-change
+stillmark plan add "Integration tests" --priority=high --phase=PHASE-1 --json --accept-scope-change
 stillmark plan priority T-001 critical --json
+stillmark plan status T-001 in-progress --json
+stillmark plan done T-001 --json
 stillmark classify "Add observability as a future milestone" --json
 stillmark move "Dashboard" to plan --json --confirm
 stillmark install --agent cursor
@@ -42,7 +44,7 @@ stillmark coverage update --json
 | File | Purpose |
 |------|---------|
 | `ROADMAP.md` | Public roadmap (git) |
-| `.stillmark/plans/TASK_PLAN.md` | Private execution plan (local) |
+| `.stillmark/plans/TASK_PLAN.md` | Private execution plan (local); ends with a generated `## Checklist` of tasks, grouped by phase, checked by `plan done` |
 | `.stillmark/plans/STATE.json` | Long-running recovery state (local) |
 | `COVERAGE.md` | Checkbox test coverage checklist (public in git) |
 | `stillmark.config.json` | Optional git integration; when `git log` uses conventional commits, Stillmark writes `docs:` (planning) or `chore:` (setup) subjects and never copies scopes like `(t)`, unless `git.commitMessage` is set; `detail` block picks compact or extended entries globally or per module (`stillmark config set --detail=compact\|extended\|inherit [--module=coverage\|roadmap\|plan]`); `update` block (`auto`, `intervalHours`, default on every 24h) controls how often `stillmark update` checks npm; `roadmap.dates` (default on) writes `added:` / `done:` dates on roadmap items, with `--date` or `--commit=<sha>` to set them from git (`stillmark config set --roadmap-dates=true\|false`); `git.stripAgentAttribution` (default on) installs a `commit-msg` hook that removes Cursor and Claude Code attribution trailers from commits, never replacing a hook it did not write (`stillmark config set --strip-attribution=true\|false`, `stillmark git hook [status\|install\|remove]`) |

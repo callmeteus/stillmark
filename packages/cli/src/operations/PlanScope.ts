@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { isPlanPlaceholder, parseTaskPlan } from "../documents";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
+import { writeTaskPlan } from "./PlanOperations";
 
 /**
  * Inputs for `stillmark plan scope`.
@@ -133,7 +134,7 @@ export function setPlanScope(
     const changed = updated !== raw;
 
     if (changed) {
-        fs.writeFileSync(paths.taskPlan, updated, "utf8");
+        writeTaskPlan(paths, updated);
     }
 
     const scope = readPlanScope(updated);

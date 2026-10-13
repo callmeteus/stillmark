@@ -11,7 +11,7 @@ import { loadConfig, resolveDetailLevel, type DetailModule } from "../config";
 import { insertAfterLine } from "../documents/Splice";
 import type { OperationResult } from "../results/OperationResult";
 import type { ProjectPaths } from "../paths/ProjectPaths";
-import { addPlanTask } from "./PlanOperations";
+import { addPlanTask, writeTaskPlan } from "./PlanOperations";
 import { addRoadmapItem } from "./RoadmapOperations";
 
 /**
@@ -78,7 +78,7 @@ export async function moveToPlan(
         new RegExp(`(### ${addResult.itemId}[^\n]*\n)status: pending`, "m"),
         `$1status: pending-approval`
     );
-    fs.writeFileSync(paths.taskPlan, statusUpdated, "utf8");
+    writeTaskPlan(paths, statusUpdated);
 
     const reference = `- _Moved to plan as ${addResult.itemId}_`;
     const removed = spliceLines(raw, item.itemSpan, reference);
@@ -159,7 +159,7 @@ export async function moveToRoadmap(
         removed = `${removed.trimEnd()}\n\n## History\n${reference}\n`;
     }
 
-    fs.writeFileSync(paths.taskPlan, removed, "utf8");
+    writeTaskPlan(paths, removed);
 
     return {
         ok: true,

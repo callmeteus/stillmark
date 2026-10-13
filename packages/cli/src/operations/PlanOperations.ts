@@ -7,7 +7,8 @@ import {
     insertAfterLine,
     nextId,
     parseTaskPlan,
-    spliceLines
+    spliceLines,
+    withPlanChecklist
 } from "../documents";
 import {
     compactDetailsMessage,
@@ -19,10 +20,33 @@ import { findDuplicatePlan, checkPlanScope } from "../guards";
 import type { OperationResult } from "../results/OperationResult";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 
+/**
+ * Statuses accepted by `stillmark plan status`.
+ */
+export const PlanStatuses = ["pending", "pending-approval", "in-progress", "blocked", "done", "cancelled"] as const;
+
+/**
+ * True when the value is a status accepted by `stillmark plan status`.
+ */
+export function isPlanStatus(value: string): boolean {
+    return (PlanStatuses as readonly string[]).includes(value);
+}
+
+/**
+ * Write TASK_PLAN.md with the generated checklist rebuilt from the current tasks.
+ */
+export function writeTaskPlan(paths: ProjectPaths, raw: string): void {
+    fs.writeFileSync(paths.taskPlan, withPlanChecklist(raw), "utf8");
+}
+
 export interface AddPlanOptions {
     description: string;
     acceptScopeChange?: boolean;
     priority?: string;
+    /**
+     * Phase label (e.g. `PHASE-1`); groups the task in the checklist.
+     */
+    phase?: string;
     /**
      * Free-text detail lines under the task fields; requires plan detail `extended`.
      */
@@ -50,15 +74,16 @@ function formatPlanTask(
     title: string,
     priority: string,
     detail: DetailLevel,
-    options: Pick<AddPlanOptions, "details" | "acceptance" | "verification">
+    options: Pick<AddPlanOptions, "details" | "acceptance" | "verification" | "phase">
 ): string {
     const details = options.details ?? [];
     const acceptance = options.acceptance ?? [];
     const verification = options.verification ?? [];
+    const phaseLine = options.phase ? `phase: ${options.phase}\n` : "";
     const header = `### ${id} ${title}
 status: pending
 priority: ${priority}
-`;
+${phaseLine}`;
 
     if (detail === "compact" && acceptance.length === 0 && verification.length === 0) {
         return header;
@@ -126,7 +151,7 @@ export function initTaskPlan(
         content = content.replace("(Not set)", objective);
     }
 
-    fs.writeFileSync(paths.taskPlan, content, "utf8");
+    writeTaskPlan(paths, content);
 
     return {
         ok: true,
@@ -213,7 +238,7 @@ export function addPlanTask(
     }
 
     const updated = insertAfterLine(raw, insertAt, block);
-    fs.writeFileSync(paths.taskPlan, updated, "utf8");
+    writeTaskPlan(paths, updated);
 
     return {
         ok: true,
@@ -230,6 +255,7 @@ export interface UpdatePlanOptions {
     priority?: string;
     status?: string;
     blockedBy?: string;
+    phase?: string;
 }
 
 /**
@@ -269,15 +295,28 @@ export function updatePlanTask(
         }
     }
 
+    if (options.phase) {
+        const phaseIndex = blockLines.findIndex((line) => line.startsWith("phase:"));
+        const priorityIndex = blockLines.findIndex((line) => line.startsWith("priority:"));
+        const anchor = priorityIndex >= 0 ? priorityIndex : blockLines.findIndex((line) => line.startsWith("status:"));
+
+        if (phaseIndex >= 0) {
+            blockLines[phaseIndex] = `phase: ${options.phase}`;
+        } else {
+            blockLines.splice(anchor >= 0 ? anchor + 1 : 1, 0, `phase: ${options.phase}`);
+        }
+    }
+
     const replacement = blockLines.join("\n");
     const updated = spliceLines(raw, task.blockSpan, replacement);
-    fs.writeFileSync(paths.taskPlan, updated, "utf8");
+    writeTaskPlan(paths, updated);
 
     return {
         ok: true,
         changed: true,
         action: "plan update",
         itemId: task.id,
-        summary: `Updated ${task.id}`
+        location: paths.taskPlan,
+        summary: options.status ? `${task.id} is now ${options.status}` : `Updated ${task.id}`
     };
 }
