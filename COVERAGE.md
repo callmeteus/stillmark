@@ -179,7 +179,23 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [sad] Refuses verify and restore before compress, missing files, and other formats
 - [x] [happy] Turns on or off for the conversation only without touching the config
 - [x] [happy] Saves the level with --save
-## 10. Landing page
+## 10. Notifications
+
+### `packages/cli/src/notify`
+
+- [x] [security] Stores channels in the user home and masks tokens and webhook URLs in output
+- [x] [sad] Refuses wrong Discord or Slack addresses, plain http, invalid URLs, and unknown types
+- [x] [happy] Finds the Telegram chat from the last message sent to the bot
+- [x] [sad] Explains what to do when the bot has no messages or the token is wrong
+- [x] [happy] Sends the right payload to Telegram, Discord, Slack, and webhooks in the project language
+- [x] [edge] Keeps sending to the other channels when one fails
+- [x] [happy] Pauses without losing channels; test still sends while paused; remove works
+- [x] [happy] Installs the Cursor stop hook once, keeping other hooks, and removes it
+- [x] [happy] Installs the Claude Code Stop and Notification hooks, keeping other settings
+- [x] [happy] Reads finished, failed, stopped, and waiting from the hook payload with a short summary
+- [x] [edge] The hook sends without channels or offline without ever throwing
+- [x] [edge] Keeps notifications short and skips code blocks in the summary
+## 11. Landing page
 
 ### `packages/landing-page`
 

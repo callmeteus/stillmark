@@ -56,6 +56,11 @@ const VALUE_FLAGS: Record<string, string> = {
     "--auto-push": "autoPush",
     "--language": "language",
     "--caveman": "caveman",
+    "--token": "token",
+    "--chat-id": "chatId",
+    "--url": "url",
+    "--name": "name",
+    "--status": "status",
     "--message": "message"
 };
 

@@ -43,6 +43,7 @@ import { roadmapDateFlag, runConfigSetRoadmapDates } from "./RoadmapCommands";
 import { runConfigSetAutoPush, runConfigSetStripAttribution, runGitCommand, syncAttributionHook } from "./GitCommands";
 import { runCavemanCommand, runConfigSetCaveman } from "./CavemanCommands";
 import { runConfigSetLanguage } from "./LanguageCommands";
+import { runNotifyCommand, runNotifyHookCommand } from "./NotifyCommands";
 import { parseFlags } from "./ParseFlags";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
@@ -496,6 +497,17 @@ export async function runCli(argv: string[]): Promise<number> {
             return 1;
         }
 
+        if (cmd === "notify") {
+            if (sub === "run-hook") {
+                return runNotifyHookCommand(paths, flags);
+            }
+
+            const result = await runNotifyCommand(paths, positional, flags);
+            output(result, json);
+
+            return result.ok ? 0 : 1;
+        }
+
         if (cmd === "caveman") {
             const result = runCavemanCommand(paths, positional, flags);
             output(result, json);
@@ -622,7 +634,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | config | classify | roadmap | plan | git | caveman | coverage | add | move | install | update | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | git | notify | caveman | coverage | add | move | install | update | long-running"
             },
             json
         );

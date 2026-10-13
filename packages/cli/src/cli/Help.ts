@@ -46,6 +46,14 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark config set --language=<en|pt-BR|...>|inherit [--module=roadmap|plan|coverage|changelog|docs|commits]",
         "stillmark config set --caveman=off|lite|full|ultra|on"
     ],
+    notify: [
+        "stillmark notify [list]",
+        "stillmark notify add telegram --token=<bot token> [--chat-id=<id>] [--name=<name>]   (chat found by itself after you message the bot)",
+        "stillmark notify add discord|slack|webhook --url=<webhook url> [--name=<name>]",
+        "stillmark notify test [<name>] | notify remove <name> | notify on|off",
+        "stillmark notify send \"<text>\" [--status=done|failed|waiting|stopped]",
+        "stillmark notify hook install|remove|status --agent=cursor|claude   (notifies every time the agent finishes)"
+    ],
     caveman: [
         "stillmark caveman [stats]",
         "stillmark caveman on|off|lite|full|ultra [--save]   (this conversation only; --save keeps it in stillmark.config.json)",

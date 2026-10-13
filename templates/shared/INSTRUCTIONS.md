@@ -8,6 +8,8 @@ You manage project planning and test-coverage checklists through the Stillmark C
 
 **Caveman replies (optional, off by default).** `stillmark config status --json` also returns `caveman` (`level`, `rules`, `ruleTokens`). When `rules` is not empty, follow every rule in every reply: terse, still in the user's language, with commands, code, file links, IDs, and errors exact. `stillmark caveman on|off|lite|full|ultra --json` switches it for the current conversation only (`temporary: true`, config untouched; after `off`, drop the rules even if the saved setting is on); add `--save` or use `stillmark config set --caveman=<level> --json` to keep it for every conversation. To shrink agent context files (rules, `AGENTS.md`, skills, learnings; never ROADMAP, COVERAGE, plans, or CHANGELOG): `stillmark caveman compress <file> --json` keeps the readable original and returns `instructions`; rewrite the file, then `stillmark caveman verify <file> --json` until it passes, or `stillmark caveman restore <file> --json`. `stillmark caveman --json` reports the rule cost per turn and the tokens saved per load.
 
+**Notifications when the agent finishes.** Channels live per user in `~/.stillmark/notify.json`, never in the repository; never write tokens or webhook URLs into repo files. Telegram: the user creates a bot with @BotFather and messages it once, then `stillmark notify add telegram --token=<token> --json` finds the chat. Discord and Slack channel webhooks: `stillmark notify add discord|slack --url=<webhook> --json`; any JSON endpoint: `notify add webhook --url=<https url>`. For every finish (done, failed, stopped, waiting for the user), install the agent hook: `stillmark notify hook install --agent=cursor|claude --json`; with the hook in place do not also run `notify send`. Without a hook (Codex), run `stillmark notify send "<one-line outcome>" --status=done|failed|waiting --json` as the last step of a run. Confirm with `stillmark notify test --json`.
+
 If you are reading these instructions, Stillmark is already installed for your agent. Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
 
 ## Destinations
@@ -38,6 +40,8 @@ stillmark git hook [status|install|remove] --json
 stillmark git setup-files --json
 stillmark git setup-commit [--message "<msg>"] --json
 stillmark git push --json
+stillmark notify [list] | add telegram|discord|slack|webhook | test [<name>] | send "<text>" | on|off | remove <name> --json
+stillmark notify hook install|remove|status --agent=cursor|claude --json
 stillmark plan init "<objective>" [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] --json
 stillmark plan scope [--objective "<text>"] [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] [--replace] --json
 stillmark plan add "<description>" [--priority=critical|high|medium|low] [--phase=PHASE-1] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json

@@ -19,7 +19,9 @@ description: >-
 
 ## CLI mirror
 
-`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `caveman`, `long-running`.
+`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `long-running`.
+
+**Notifications.** Per user in `~/.stillmark/notify.json`, never in the repo. Telegram: bot from @BotFather, user messages it once, then `stillmark notify add telegram --token=<t> --json` (chat found by itself). Discord/Slack channel webhooks: `notify add discord|slack --url=<webhook>`; generic JSON: `notify add webhook --url=<https>`. Every finish: `stillmark notify hook install --agent=claude --json` (Stop and Notification hooks in `~/.claude/settings.json`; then do not also run `notify send`). Check with `notify test [<name>]`; `notify off|on`, `notify remove <name>`, `notify` lists (masked).
 
 ## Modes
 

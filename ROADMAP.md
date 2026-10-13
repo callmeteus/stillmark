@@ -2,11 +2,6 @@
 
 ## Backlog
 
-- [ ] **R-018** Notify the user when the agent finishes working (Telegram, Discord, webhooks)
-  priority: medium · status: planned · added: 2026-10-13
-  - Fires on every finish: success, failure, blocked, or waiting for input
-  - Channels: Telegram and Discord bots, generic webhooks, and local delivery from the user's own computer
-  - Channels and credentials configured per user, never committed
 - [ ] **R-019** Landing site that explains everything the agent does, like impeccable.style
   priority: medium · status: planned · added: 2026-10-13
   - Every agent capability explained with a concrete example (what you say, what Stillmark does, what changes)
@@ -24,6 +19,8 @@
   - Backfills past releases from git history, tags, and roadmap Done items, dated by commit
   - User-visible changes only, in plain language, no internal details or secrets
   - Updates incrementally without rewriting existing entries
+- [ ] **R-025** Desktop toast notifications and an automatic Codex finish hook
+  priority: low · status: planned · added: 2026-10-13
 ## Deferred
 
 ## Done
@@ -75,3 +72,8 @@
   - Measure the savings, since the extra rules also cost input tokens
 - [x] **R-024** Push local commits with stillmark git push, listing uncommitted work instead of committing it
   priority: medium · status: done · done: 2026-10-13
+- [x] **R-018** Notify the user when the agent finishes working (Telegram, Discord, webhooks)
+  priority: medium · status: done · added: 2026-10-13 · done: 2026-10-13
+  - Fires on every finish: success, failure, blocked, or waiting for input
+  - Channels: Telegram and Discord bots, generic webhooks, and local delivery from the user's own computer
+  - Channels and credentials configured per user, never committed

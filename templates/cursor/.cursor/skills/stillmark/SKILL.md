@@ -35,7 +35,7 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 - Priority: `--priority=critical|high|medium|low` on `plan add`, `roadmap add`, and `add`; change later with `plan priority <task> <level>` or `roadmap priority "<item>" <level>`. Default is `medium`.
 - Finished work: `roadmap done "<item>"` moves an existing item to `## Done` (checked, `status: done`); `roadmap add "<description>" --done` records work that was never listed. To backfill the past, read `git log --date=short --format="%h %ad %s"`, group commits into user-visible features, and run one command per feature with `--commit=<sha>` of the commit that finished it, so the `done:` date is the real delivery date.
 - Dates: on by default, items get `added:` / `done:` (`YYYY-MM-DD`). `--date=YYYY-MM-DD` sets one by hand; `roadmap done` on an item already done with `--date`/`--commit` fixes its date. Off with `config set --roadmap-dates=false`.
-- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `caveman`, `update`, `long-running`.
+- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `update`, `long-running`.
 
 ## Auto-update (start of every `/stillmark`)
 
@@ -96,13 +96,24 @@ The same status payload has `detail` (`coverage`, `roadmap`, `plan`). **compact*
 
 Compressing agent context (rules, `AGENTS.md`, skills, learnings; never ROADMAP, COVERAGE, plans, or CHANGELOG): `stillmark caveman compress <file> --json` keeps the readable original under `.stillmark/plans/caveman/` and returns `instructions`; rewrite the file following them, then `stillmark caveman verify <file> --json` and fix every listed issue (or `caveman restore <file>`). `stillmark caveman --json` reports the rule cost per turn and the tokens saved per load; quote both when the user asks whether it pays off.
 
+## Notifications when the agent finishes
+
+Channels are per user, stored in `~/.stillmark/notify.json` (never in the repo); sending goes out from the user's own computer. Never paste tokens or webhook URLs into repo files, roadmap items, or commit messages.
+
+- **Telegram (bot):** the user creates a bot with @BotFather, sends any message to it, then `stillmark notify add telegram --token=<token> --json` (the chat is found by itself; `--chat-id` when it is a group or channel).
+- **Discord / Slack (channel webhook):** `stillmark notify add discord --url=<webhook> --json` (channel settings, Integrations, Webhooks) or `stillmark notify add slack --url=https://hooks.slack.com/services/... --json`. Generic JSON: `notify add webhook --url=<https url>`. `--name=<name>` keeps several of the same type.
+- **Every finish, automatically:** `stillmark notify hook install --agent=cursor --json` adds a `stop` hook to `~/.cursor/hooks.json` (Claude Code: `--agent=claude`, `Stop` and `Notification`). It sends finished, failed, stopped, or waiting for you (final reply ending in a question), with the first lines of the final reply. Do not also run `notify send` at the end when the hook is installed.
+- After adding a channel, run `stillmark notify test [<name>] --json` and report what arrived. "pausa as notificações" = `notify off`, "volta" = `notify on`; `notify` lists channels (masked) and hooks; `notify remove <name>`.
+
+When the user asks for notifications, ask (`AskQuestion`) which channels to set up and whether to notify on every finish (hook), then ask for each secret in chat.
+
 ## How `/stillmark` is parsed
 
 Let `text` = message after `/stillmark` (trimmed). Strip optional leading `stillmark ` once.
 
 | Input pattern | Mode | Action |
 |---------------|------|--------|
-| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `config`, `git`, `caveman`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
+| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `config`, `git`, `notify`, `caveman`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
 | Starts with `coverage` | **Coverage** | See [Coverage mode](#coverage-mode-embedded) and `reference/coverage.md` |
 | Starts with `design` | **Design** | Design pipeline; rest is brief |
 | Browser element attached | **Design** | Map selection to project source |
