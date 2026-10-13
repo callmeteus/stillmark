@@ -6,7 +6,7 @@
 
 **A deterministic CLI plus agent adapters so users never hand-edit planning markdown for routine changes.**
 
-[CLI package](packages/cli/README.md) • [Architecture](ARCHITECTURE.md) • [Site](https://callmeteus.github.io/stillmark/)
+[CLI package](packages/cli/README.md) • [Architecture](ARCHITECTURE.md) • [Site](https://stillmark.dev/)
 
 </div>
 

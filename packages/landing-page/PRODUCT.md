@@ -35,7 +35,7 @@ Stillmark is not another static roadmap template. A **deterministic CLI** perfor
 - Visitors may read in **English** (`/`) or **Portuguese** (`/pt-br/`).
 - Primary call to action on the page: copy `npx stillmark init`.
 - Secondary paths: command reference table, agent install commands, link to documentation (nav label present; final docs URL not fixed in product record).
-- Production site: GitHub Pages at `https://callmeteus.github.io/stillmark/` (`base: /stillmark` in `astro.config.mjs`). CLI installs from GitHub Releases (`stillmark.tgz`).
+- Production site: GitHub Pages at the custom domain `https://stillmark.dev/`, served from the site root (no `base` in `astro.config.mjs`). CLI installs from GitHub Releases (`stillmark.tgz`).
 
 ## Capabilities and Constraints
 

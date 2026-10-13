@@ -8,7 +8,7 @@
         "url": "git+https://github.com/callmeteus/stillmark.git",
         "directory": "packages/cli"
     },
-    "homepage": "https://callmeteus.github.io/stillmark/",
+    "homepage": "https://stillmark.dev/",
     "bugs": {
         "url": "https://github.com/callmeteus/stillmark/issues"
     },

@@ -30,9 +30,11 @@ export function assertLandingDist(distDir) {
 
     const indexHtml = fs.readFileSync(path.join(resolved, "index.html"), "utf8");
 
-    if (!indexHtml.includes("/stillmark/_astro/")) {
+    // The site is served from the root of https://stillmark.dev, so assets
+    // must not carry a repository sub-path like /stillmark/.
+    if (!indexHtml.includes("\"/_astro/")) {
         throw new Error(
-            "index.html must reference assets under /stillmark/ (check astro base config)"
+            "index.html must reference assets under /_astro/ at the site root (check astro base config)"
         );
     }
 

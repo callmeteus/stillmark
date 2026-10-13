@@ -36,7 +36,7 @@ It also carries a design mode (`/stillmark design`, browser selections on the lo
 
 ## Distribution
 
-- Landing page on GitHub Pages: [callmeteus.github.io/stillmark](https://callmeteus.github.io/stillmark/).
+- Landing page on GitHub Pages: [stillmark.dev](https://stillmark.dev/).
 - CLI tarball on GitHub Releases (`stillmark.tgz`); install guide for agents at `install.md` on the site.
 
 ## Related documents

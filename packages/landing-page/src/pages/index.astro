@@ -36,7 +36,7 @@ const globalInstallPrompt = buildInstallPrompt(t.hero.installPromptGlobalTemplat
     lang={lang}
     skipToContent={t.nav.skipToContent}
 >
-    <SiteHeader nav={t.nav} logoHref="/stillmark/" navAriaLabel="Primary" />
+    <SiteHeader nav={t.nav} logoHref={import.meta.env.BASE_URL} navAriaLabel="Primary" />
 
     <main id="main-content" class="page-main" tabindex="-1">
         <div class="container">

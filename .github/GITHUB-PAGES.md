@@ -10,7 +10,7 @@ Workflow: [`.github/workflows/pages.yml`](workflows/pages.yml)
 2. `npm run verify -w @stillmark/landing-page` (includes `.nojekyll` in `dist`)
 3. `actions/upload-pages-artifact` + `actions/deploy-pages`
 
-Site URL: `https://callmeteus.github.io/stillmark/` (`base: /stillmark` in `astro.config.mjs`).
+Site URL: [stillmark.dev](https://stillmark.dev/), a custom domain served from the site root (`site` in `astro.config.mjs`, no `base`).
 
 ## One-time repository setting
 
