@@ -1,0 +1,81 @@
+---
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+import { buildInstallPrompt } from "../../utils/BuildInstallPrompt";
+import InstallField from "../site/InstallField.astro";
+
+/**
+ * Numbered install: set up the project, add /stillmark to the editor, make the first request.
+ * The one-paste agent prompt closes the section as a shortcut.
+ */
+interface Props {
+    install: SiteMessages["home"]["install"];
+    ui: SiteMessages["ui"];
+}
+
+const { install, ui } = Astro.props;
+const prompt = buildInstallPrompt(ui.install.promptTemplate, SiteLinks.resolveInstallGuideUrl("en-US"));
+
+const Editors = [
+    { id: "cursor", name: "Cursor" },
+    { id: "claude", name: "Claude Code" },
+    { id: "codex", name: "Codex" }
+];
+---
+
+<section id="install" class="home-section install" aria-labelledby="install-title">
+    <h2 id="install-title" class="section-title" data-i18n="page.install.title">{install.title}</h2>
+    <p class="section-lead" data-i18n="page.install.lead">{install.lead}</p>
+
+    <ol class="install-steps">
+        <li class="install-step">
+            <h3 class="install-step-title" data-i18n="page.install.steps.0.title">{install.steps[0].title}</h3>
+            <p class="install-step-body" data-i18n="page.install.steps.0.body">{install.steps[0].body}</p>
+            <InstallField id="install-init" text="npx stillmark@latest init" copy={ui.copy} shell />
+        </li>
+
+        <li class="install-step">
+            <h3 class="install-step-title" data-i18n="page.install.steps.1.title">{install.steps[1].title}</h3>
+            <p class="install-step-body" data-i18n="page.install.steps.1.body">{install.steps[1].body}</p>
+
+            <div data-tabs>
+                <div class="editor-tabs" role="tablist" aria-label={install.agentsLabel} data-i18n-aria-label="page.install.agentsLabel">
+                    {
+                        Editors.map((editor, index) => (
+                            <button
+                                type="button"
+                                role="tab"
+                                id={`editor-tab-${editor.id}`}
+                                class="editor-tab"
+                                aria-selected={index === 0 ? "true" : "false"}
+                                aria-controls={`editor-panel-${editor.id}`}
+                                tabindex={index === 0 ? 0 : -1}
+                            >
+                                {editor.name}
+                            </button>
+                        ))
+                    }
+                </div>
+
+                {
+                    Editors.map((editor, index) => (
+                        <div role="tabpanel" id={`editor-panel-${editor.id}`} aria-labelledby={`editor-tab-${editor.id}`} hidden={index !== 0}>
+                            <InstallField id={`install-agent-${editor.id}`} text={`stillmark install --agent ${editor.id}`} copy={ui.copy} shell />
+                        </div>
+                    ))
+                }
+            </div>
+        </li>
+
+        <li class="install-step">
+            <h3 class="install-step-title" data-i18n="page.install.steps.2.title">{install.steps[2].title}</h3>
+            <p class="install-step-body" data-i18n="page.install.steps.2.body">{install.steps[2].body}</p>
+            <InstallField id="install-first" text={install.example} textPath="page.install.example" copy={ui.copy} />
+        </li>
+    </ol>
+
+    <div class="install-shortcut">
+        <p class="install-shortcut-text" data-i18n="page.install.shortcut">{install.shortcut}</p>
+        <InstallField id="install-prompt" text={prompt} copy={ui.copy} prompt />
+    </div>
+</section>

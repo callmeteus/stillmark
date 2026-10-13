@@ -1,0 +1,44 @@
+---
+import type { SiteMessages } from "../../i18n/en-US";
+
+/**
+ * Sample session: each request as a dated row, refused ones struck through in red pen.
+ */
+interface Props {
+    log: SiteMessages["home"]["log"];
+}
+
+const { log } = Astro.props;
+---
+
+<section class="home-section" aria-labelledby="log-title">
+    <h2 id="log-title" class="section-title" data-i18n="page.log.title">{log.title}</h2>
+    <p class="section-lead" data-i18n="page.log.lead">{log.lead}</p>
+
+    <div class="table-scroll">
+        <table class="data-table log-table">
+            <thead>
+                <tr>
+                    <th scope="col" data-i18n="page.log.columns.time">{log.columns.time}</th>
+                    <th scope="col" data-i18n="page.log.columns.said">{log.columns.said}</th>
+                    <th scope="col" data-i18n="page.log.columns.entry">{log.columns.entry}</th>
+                    <th scope="col" data-i18n="page.log.columns.result">{log.columns.result}</th>
+                    <th scope="col" data-i18n="page.log.columns.file">{log.columns.file}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    log.rows.map((row, index) => (
+                        <tr class:list={{ "is-refused": row.refused }}>
+                            <td class="log-time">{row.time}</td>
+                            <td class="log-said" data-i18n={`page.log.rows.${index}.said`}>{row.said}</td>
+                            <td class="log-entry">{row.entry}</td>
+                            <td class="log-result" data-i18n={`page.log.rows.${index}.result`}>{row.result}</td>
+                            <td class="log-file">{row.file}</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

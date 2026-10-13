@@ -1,9 +1,7 @@
-import type { Messages } from "../../i18n/en-US";
-
 /**
- * Reads a dotted path from the messages object (e.g. `hero.title`).
+ * Reads a dotted path from the messages object (e.g. `ui.copy.copy`, `page.examples.0.say`).
  */
-export function messageAtPath(messages: Messages, path: string): string {
+export function messageAtPath(messages: object, path: string): string {
     const parts = path.split(".");
     let current: unknown = messages;
 

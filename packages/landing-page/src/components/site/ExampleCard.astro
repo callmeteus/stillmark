@@ -1,0 +1,45 @@
+---
+import type { SiteMessages } from "../../i18n/en-US";
+import type { TopicExample } from "../../i18n/topics";
+import FileExcerpt from "./FileExcerpt.astro";
+
+/**
+ * One capability: the chat request, the command it runs, the file excerpt with the red-pen mark,
+ * and the plain result. Copy resolves from `path` (for example `page.examples.0`).
+ * The optional `title` slot heads the card on docs pages; the home picker labels it with its tab instead.
+ */
+interface Props {
+    example: TopicExample;
+    path: string;
+    ui: SiteMessages["ui"];
+}
+
+const { example, path, ui } = Astro.props;
+---
+
+<div class="example-card">
+    <slot name="title" />
+
+    <div class="example-grid">
+        <div class="example-request">
+            <div>
+                <p class="example-label" data-i18n="ui.entry.youSay">{ui.entry.youSay}</p>
+                <p class="example-say">
+                    <span class="example-slash">/stillmark</span>
+                    <span data-i18n={`${path}.say`}>{example.say}</span>
+                </p>
+            </div>
+
+            <div>
+                <p class="example-label" data-i18n="ui.entry.runs">{ui.entry.runs}</p>
+                <pre class="example-run"><code data-i18n={`${path}.run`}>{example.run}</code></pre>
+            </div>
+        </div>
+
+        <div class="example-change">
+            <FileExcerpt example={example} path={path} ui={ui} />
+            <p class="example-label" data-i18n="ui.entry.changes">{ui.entry.changes}</p>
+            <p class="example-result" data-i18n={`${path}.result`}>{example.result}</p>
+        </div>
+    </div>
+</div>

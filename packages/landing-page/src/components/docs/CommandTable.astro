@@ -1,0 +1,42 @@
+---
+import type { SiteMessages } from "../../i18n/en-US";
+import type { TopicCommand } from "../../i18n/topics";
+
+/**
+ * Every command of a topic with what it does. Descriptions resolve from `page.commands.N.description`.
+ */
+interface Props {
+    commands: TopicCommand[];
+    ui: SiteMessages["ui"];
+}
+
+const { commands, ui } = Astro.props;
+---
+
+<section class="doc-section" aria-labelledby="commands">
+    <h2 id="commands" class="doc-heading" data-i18n="ui.commands.title">{ui.commands.title}</h2>
+    <p class="doc-text" data-i18n="ui.commands.chatHint">{ui.commands.chatHint}</p>
+
+    <div class="table-scroll">
+        <table class="data-table command-table">
+            <thead>
+                <tr>
+                    <th scope="col" data-i18n="ui.commands.command">{ui.commands.command}</th>
+                    <th scope="col" data-i18n="ui.commands.description">{ui.commands.description}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    commands.map((row, index) => (
+                        <tr>
+                            <td class="command-cell">
+                                <code data-i18n={`page.commands.${index}.command`}>{row.command}</code>
+                            </td>
+                            <td data-i18n={`page.commands.${index}.description`}>{row.description}</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

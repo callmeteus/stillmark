@@ -1,0 +1,25 @@
+---
+import DocsSidebar from "../components/docs/DocsSidebar.astro";
+import type { LocaleBundle } from "../i18n/LocaleBundle";
+import { enUS } from "../i18n/en-US";
+import SiteLayout from "./SiteLayout.astro";
+
+/**
+ * Docs pages: the topic sidebar on the left, the article on the right.
+ */
+interface Props {
+    bundle: LocaleBundle;
+    current?: string;
+}
+
+const { bundle, current } = Astro.props;
+---
+
+<SiteLayout bundle={bundle} active="docs">
+    <div class="docs-shell">
+        <DocsSidebar ui={enUS.ui} current={current} />
+        <main id="main-content" class="docs-main" tabindex="-1">
+            <slot />
+        </main>
+    </div>
+</SiteLayout>

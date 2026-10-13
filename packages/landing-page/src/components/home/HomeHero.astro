@@ -1,0 +1,36 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+
+/**
+ * Home opening: headline, one-sentence promise, the two main actions, and the supported editors.
+ */
+interface Props {
+    hero: SiteMessages["home"]["hero"];
+}
+
+const { hero } = Astro.props;
+const Editors = ["Cursor", "Claude Code", "Codex"];
+---
+
+<section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title" class="hero-title">
+        <span data-i18n="page.hero.headlineFirst">{hero.headlineFirst}</span>
+        <span class="hero-title-second" data-i18n="page.hero.headlineSecond">{hero.headlineSecond}</span>
+    </h1>
+    <p class="hero-lead" data-i18n="page.hero.lead">{hero.lead}</p>
+
+    <div class="hero-actions">
+        <a class="button button-primary" href="#install" data-i18n="page.hero.primary">{hero.primary}</a>
+        <a class="button button-ghost" href={SiteLinks.docsUrl()}>
+            <span data-i18n="page.hero.secondary">{hero.secondary}</span>
+            <ArrowRight size={16} stroke-width={1.8} aria-hidden="true" />
+        </a>
+    </div>
+
+    <p class="hero-editors">
+        <span data-i18n="page.hero.worksWith">{hero.worksWith}</span>
+        {Editors.map((name) => <span class="hero-editor">{name}</span>)}
+    </p>
+</section>

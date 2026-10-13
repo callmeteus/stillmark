@@ -1,0 +1,49 @@
+---
+import ArrowLeft from "@lucide/astro/icons/arrow-left";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+import type { TopicDefinition } from "../../i18n/topics";
+
+/**
+ * Links to the previous and next docs topics, in sidebar order.
+ * Neighbour labels resolve from `page.previous` and `page.next`.
+ */
+interface Props {
+    previous?: TopicDefinition;
+    next?: TopicDefinition;
+    ui: SiteMessages["ui"];
+}
+
+const { previous, next, ui } = Astro.props;
+---
+
+<nav class="pager" aria-label={ui.pager.label} data-i18n-aria-label="ui.pager.label">
+    {
+        previous ? (
+            <a class="pager-link" href={SiteLinks.topicUrl(previous.slug)} rel="prev">
+                <span class="pager-hint">
+                    <ArrowLeft size={14} stroke-width={1.8} aria-hidden="true" />
+                    <span data-i18n="ui.pager.previous">{ui.pager.previous}</span>
+                </span>
+                <span class="pager-name" data-i18n="page.previous">{previous.copy["en-US"].label}</span>
+            </a>
+        ) : (
+            <span aria-hidden="true" />
+        )
+    }
+
+    {
+        next ? (
+            <a class="pager-link is-next" href={SiteLinks.topicUrl(next.slug)} rel="next">
+                <span class="pager-hint">
+                    <span data-i18n="ui.pager.next">{ui.pager.next}</span>
+                    <ArrowRight size={14} stroke-width={1.8} aria-hidden="true" />
+                </span>
+                <span class="pager-name" data-i18n="page.next">{next.copy["en-US"].label}</span>
+            </a>
+        ) : (
+            <span aria-hidden="true" />
+        )
+    }
+</nav>

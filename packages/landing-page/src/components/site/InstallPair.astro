@@ -1,0 +1,23 @@
+---
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+import { buildInstallPrompt } from "../../utils/BuildInstallPrompt";
+import InstallField from "./InstallField.astro";
+
+/**
+ * Both ways to install: the prompt to paste in an agent chat, then the terminal command.
+ * `idPrefix` keeps field ids unique when a page shows the pair more than once.
+ */
+interface Props {
+    ui: SiteMessages["ui"];
+    idPrefix: string;
+}
+
+const { ui, idPrefix } = Astro.props;
+const prompt = buildInstallPrompt(ui.install.promptTemplate, SiteLinks.resolveInstallGuideUrl("en-US"));
+---
+
+<div class="install-pair">
+    <InstallField id={`${idPrefix}-prompt`} text={prompt} copy={ui.copy} prompt label={ui.install.agentLabel} labelPath="ui.install.agentLabel" />
+    <InstallField id={`${idPrefix}-cli`} text="npx stillmark@latest init" copy={ui.copy} shell label={ui.install.cliLabel} labelPath="ui.install.cliLabel" />
+</div>

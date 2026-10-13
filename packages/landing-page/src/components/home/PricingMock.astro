@@ -1,0 +1,34 @@
+---
+import type { SiteMessages } from "../../i18n/en-US";
+
+/**
+ * A small pricing screen drawn in HTML for the design demo. The same content renders twice:
+ * `before` is the cramped, generic first draft; `after` is the fixed version.
+ */
+interface Props {
+    mock: SiteMessages["home"]["design"]["mock"];
+    variant: "before" | "after";
+}
+
+const { mock, variant } = Astro.props;
+---
+
+<div class:list={["mock", `mock-${variant}`]} aria-hidden={variant === "before" ? "true" : undefined}>
+    <p class="mock-heading" data-i18n="page.design.mock.heading">{mock.heading}</p>
+    <ul class="mock-cards">
+        {
+            mock.plans.map((plan, index) => (
+                <li class:list={["mock-card", { "is-featured": index === 1 }]}>
+                    {index === 1 ? <span class="mock-badge" data-i18n="page.design.mock.badge">{mock.badge}</span> : null}
+                    <span class="mock-name">{plan.name}</span>
+                    <span class="mock-price">
+                        <span data-i18n={`page.design.mock.plans.${index}.price`}>{plan.price}</span>
+                        <span class="mock-period" data-i18n="page.design.mock.period">{mock.period}</span>
+                    </span>
+                    <span class="mock-feature" data-i18n={`page.design.mock.plans.${index}.feature`}>{plan.feature}</span>
+                    <span class="mock-button" data-i18n="page.design.mock.cta">{mock.cta}</span>
+                </li>
+            ))
+        }
+    </ul>
+</div>

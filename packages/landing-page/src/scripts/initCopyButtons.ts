@@ -46,6 +46,16 @@ async function copyText(text: string): Promise<void> {
 }
 
 /**
+ * The element holding the button's visible label: `[data-copy-text]` when the button also holds an icon.
+ *
+ * @param button - The copy button.
+ * @returns The label element.
+ */
+function buttonLabel(button: HTMLButtonElement): HTMLElement {
+    return button.querySelector<HTMLElement>("[data-copy-text]") ?? button;
+}
+
+/**
  * Clear the copied state of a button.
  * 
  * @param button - The button to clear the copied state of.
@@ -59,7 +69,7 @@ function clearCopiedState(
     status: Element | null,
     copyLabel: string
 ): void {
-    button.textContent = copyLabel;
+    buttonLabel(button).textContent = copyLabel;
     button.disabled = false;
     button.classList.remove("is-copied");
     button.removeAttribute("data-copied");
@@ -113,7 +123,7 @@ function bindCopyButtons(): void {
 
             try {
                 await copyText(text);
-                button.textContent = copiedLabel;
+                buttonLabel(button).textContent = copiedLabel;
                 button.classList.add("is-copied");
                 button.setAttribute("data-copied", "true");
 

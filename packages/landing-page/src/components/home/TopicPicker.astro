@@ -1,0 +1,76 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+import type { TopicDefinition } from "../../i18n/topics";
+import ContrastSlider from "../site/ContrastSlider.astro";
+import TopicIcon from "../site/TopicIcon.astro";
+
+/**
+ * "Start with what you want to change": one tab per topic, each comparing work without Stillmark and with it,
+ * then one thing to say to get there. Copy resolves from `page.picks.N` (`contrast`, `say`).
+ * Every picker topic must have a `contrast`.
+ */
+interface Props {
+    topics: TopicDefinition[];
+    picker: SiteMessages["home"]["picker"];
+    ui: SiteMessages["ui"];
+}
+
+const { topics, picker, ui } = Astro.props;
+---
+
+<section class="home-section picker" aria-labelledby="picker-title">
+    <h2 id="picker-title" class="section-title" data-i18n="page.picker.title">{picker.title}</h2>
+    <p class="section-lead" data-i18n="page.picker.lead">{picker.lead}</p>
+
+    <div class="picker-body" data-tabs>
+        <div class="picker-tabs" role="tablist" aria-label={picker.tabsLabel} data-i18n-aria-label="page.picker.tabsLabel">
+            {
+                topics.map((topic, index) => (
+                    <button
+                        type="button"
+                        role="tab"
+                        id={`pick-tab-${topic.slug}`}
+                        class="picker-tab"
+                        aria-selected={index === 0 ? "true" : "false"}
+                        aria-controls={`pick-panel-${topic.slug}`}
+                        tabindex={index === 0 ? 0 : -1}
+                    >
+                        <TopicIcon id={topic.id} size={16} />
+                        <span data-i18n={`toc.${topic.slug}`}>{topic.copy["en-US"].label}</span>
+                    </button>
+                ))
+            }
+        </div>
+
+        {
+            topics.map((topic, index) => {
+                const copy = topic.copy["en-US"];
+
+                return (
+                    <div
+                        role="tabpanel"
+                        id={`pick-panel-${topic.slug}`}
+                        class="picker-panel"
+                        aria-labelledby={`pick-tab-${topic.slug}`}
+                        hidden={index !== 0}
+                    >
+                        {copy.contrast && <ContrastSlider contrast={copy.contrast} path={`page.picks.${index}.contrast`} ui={ui} />}
+                        <div class="picker-foot">
+                            <p class="picker-say">
+                                <span class="example-slash">/stillmark</span>
+                                <span data-i18n={`page.picks.${index}.say`}>{copy.examples[0].say}</span>
+                            </p>
+                            <a class="text-link" href={SiteLinks.topicUrl(topic.slug)}>
+                                <span data-i18n="page.picker.openDocs">{picker.openDocs}</span>
+                                <span data-i18n={`toc.${topic.slug}`}>{copy.label}</span>
+                                <ArrowRight size={16} stroke-width={1.8} aria-hidden="true" />
+                            </a>
+                        </div>
+                    </div>
+                );
+            })
+        }
+    </div>
+</section>

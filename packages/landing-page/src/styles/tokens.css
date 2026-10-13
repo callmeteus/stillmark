@@ -1,28 +1,41 @@
 :root {
-    --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
-    --font-body: "Barlow", system-ui, sans-serif;
-    --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --font-print: "Yaldevi", "Helvetica Neue", Arial, sans-serif;
+    --font-hand: "Edu SA Beginner", "Segoe Print", "Bradley Hand", cursive;
+    --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --font-hand-weight: 400;
 
-    --ground: #0f3a68;
-    --ground-deep: #0c315b;
-    --well: #0a2a4e;
-    --sheet-tint: rgba(8, 34, 66, 0.38);
+    --paper: #fbfbfa;
+    --surface: #ffffff;
+    --sunk: #f3f3f1;
+    --ink: #111111;
+    --ink-soft: #3b3b3b;
+    --ink-muted: #6a6a6a;
+    --rule: #e3e3e0;
+    --rule-strong: #c8c8c3;
 
-    --ink: #f3f8ff;
-    --ink-soft: #c3d6ee;
-    --ink-faint: #93b3d8;
+    --ink-hover: #2b2b2b;
+    --well: #17181a;
+    --well-ink: #f2f2ee;
+    --well-muted: #8d8d88;
 
-    --line: rgba(229, 239, 255, 0.82);
-    --line-soft: rgba(229, 239, 255, 0.3);
-    --line-faint: rgba(229, 239, 255, 0.14);
-    --grid-minor: rgba(229, 239, 255, 0.045);
-    --grid-major: rgba(229, 239, 255, 0.085);
+    --pen: #b50b0e;
 
-    --rev: #ff7a45;
-    --rev-hover: #ff9466;
-    --rev-ink: #ffab88;
-    --on-rev: #0a2240;
+    --page-width: 1120px;
+    --page-pad: 32px;
+    --header-height: 64px;
+    --radius: 10px;
 
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --section-gap: clamp(4.5rem, 9vw, 7.5rem);
+}
+
+/* Edu SA Beginner has no accented letters, so Portuguese pages write by hand in Kalam Light. */
+:root:lang(pt-BR) {
+    --font-hand: "Kalam", "Segoe Print", "Bradley Hand", cursive;
+    --font-hand-weight: 300;
+}
+
+@media (max-width: 640px) {
+    :root {
+        --page-pad: 18px;
+    }
 }

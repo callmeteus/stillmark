@@ -1,9 +1,13 @@
 ---
-import "@fontsource/barlow/400.css";
-import "@fontsource/barlow/500.css";
-import "@fontsource/barlow/600.css";
-import "@fontsource/barlow-condensed/500.css";
-import "@fontsource/barlow-condensed/600.css";
+import "@fontsource/yaldevi/latin-400.css";
+import "@fontsource/yaldevi/latin-500.css";
+import "@fontsource/yaldevi/latin-700.css";
+import "@fontsource/yaldevi/latin-ext-400.css";
+import "@fontsource/yaldevi/latin-ext-700.css";
+import "@fontsource/edu-sa-beginner/latin-400.css";
+import "@fontsource/kalam/latin-300.css";
+import "@fontsource/jetbrains-mono/latin-400.css";
+import "@fontsource/jetbrains-mono/latin-700.css";
 import "../styles/global.css";
 
 interface Props {
@@ -22,17 +26,21 @@ const { title, description, lang, skipToContent } = Astro.props;
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content={description} />
-        <meta name="theme-color" content="#0d3461" />
+        <meta name="theme-color" content="#fbfbfa" />
         <title>{title}</title>
+        <script is:inline>
+            document.documentElement.classList.add("js");
+        </script>
     </head>
     <body>
-        <a class="skip-link" href="#main-content" data-i18n="nav.skipToContent">{skipToContent}</a>
+        <a class="skip-link" href="#main-content" data-i18n="ui.skipToContent">{skipToContent}</a>
         <slot />
         <script>
             import "../scripts/initCopyButtons.ts";
-            import "../scripts/initMobileInstallBar.ts";
             import "../scripts/initLocale.ts";
-            import "../scripts/initRevisionDemo.ts";
+            import "../scripts/initTabs.ts";
+            import "../scripts/initDocsNav.ts";
+            import "../scripts/initCompare.ts";
         </script>
     </body>
 </html>

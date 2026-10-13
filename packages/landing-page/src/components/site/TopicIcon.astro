@@ -1,0 +1,38 @@
+---
+import Bell from "@lucide/astro/icons/bell";
+import ClipboardCheck from "@lucide/astro/icons/clipboard-check";
+import Download from "@lucide/astro/icons/download";
+import FileText from "@lucide/astro/icons/file-text";
+import GitBranch from "@lucide/astro/icons/git-branch";
+import MapPin from "@lucide/astro/icons/map-pin";
+import PenLine from "@lucide/astro/icons/pen-line";
+import Settings from "@lucide/astro/icons/settings";
+import ShieldCheck from "@lucide/astro/icons/shield-check";
+import { TopicId } from "../../i18n/topics";
+
+/**
+ * Line icon of a guide topic, as drawn in the table of contents.
+ */
+interface Props {
+    id: TopicId;
+    size?: number;
+}
+
+const { id, size = 22 } = Astro.props;
+
+const Icons = {
+    [TopicId.INSTALL]: Download,
+    [TopicId.ROADMAP]: MapPin,
+    [TopicId.PLAN]: ClipboardCheck,
+    [TopicId.COVERAGE]: ShieldCheck,
+    [TopicId.DESIGN]: PenLine,
+    [TopicId.GIT]: GitBranch,
+    [TopicId.NOTIFY]: Bell,
+    [TopicId.README]: FileText,
+    [TopicId.SETTINGS]: Settings
+};
+
+const Icon = Icons[id];
+---
+
+<Icon size={size} stroke-width={1.6} aria-hidden="true" class="topic-icon" />

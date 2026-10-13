@@ -40,7 +40,7 @@ function resolveInitialLocale(): LocaleId {
 }
 
 /**
- * Redirects legacy /pt-br/ URLs to the single-page locale query.
+ * Redirects legacy /pt-br/ URLs to the same page with the locale query.
  */
 function redirectLegacyPtBrPath(): void {
     const path = window.location.pathname;
@@ -49,30 +49,24 @@ function redirectLegacyPtBrPath(): void {
         return;
     }
 
-    const base = path.split("/pt-br")[0].replace(/\/$/, "") || "";
-    const prefix = base.length > 0 ? base : "";
-    const next = `${prefix}/?lang=pt-BR${window.location.hash}`;
+    const next = path.replace(/\/pt-br(\/|$)/, "/") || "/";
 
-    window.location.replace(next);
+    window.location.replace(`${next}?lang=pt-BR${window.location.hash}`);
 }
 
-function initLocaleToggle(bundle: LocaleBundle, getLocale: () => LocaleId, setLocale: (id: LocaleId) => void): void {
-    const toggle = document.querySelector<HTMLButtonElement>("[data-locale-toggle]");
+function initLocaleSwitch(setLocale: (id: LocaleId) => void): void {
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-locale-option]")) {
+        button.addEventListener("click", () => {
+            const next = button.dataset.localeOption === LocaleIds.PT ? LocaleIds.PT : LocaleIds.EN;
 
-    if (!toggle) {
-        return;
+            setLocale(next);
+            window.localStorage.setItem(LOCALE_STORAGE_KEY, next);
+
+            const url = new URL(window.location.href);
+            url.searchParams.set("lang", next);
+            window.history.replaceState(null, "", url);
+        });
     }
-
-    toggle.addEventListener("click", () => {
-        const next: LocaleId = getLocale() === LocaleIds.EN ? LocaleIds.PT : LocaleIds.EN;
-
-        setLocale(next);
-        window.localStorage.setItem(LOCALE_STORAGE_KEY, next);
-
-        const url = new URL(window.location.href);
-        url.searchParams.set("lang", next);
-        window.history.replaceState(null, "", url);
-    });
 }
 
 redirectLegacyPtBrPath();
@@ -82,14 +76,13 @@ const bundle = window.__STILLMARK_LOCALE__;
 if (!bundle) {
     console.warn("[stillmark] locale bundle missing");
 } else {
-    let currentLocale = resolveInitialLocale();
-
     const setLocale = (locale: LocaleId) => {
-        currentLocale = locale;
         applyLocale(bundle, locale);
     };
 
-    setLocale(currentLocale);
-    window.localStorage.setItem(LOCALE_STORAGE_KEY, currentLocale);
-    initLocaleToggle(bundle, () => currentLocale, setLocale);
+    const initial = resolveInitialLocale();
+
+    setLocale(initial);
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, initial);
+    initLocaleSwitch(setLocale);
 }

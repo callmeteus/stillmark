@@ -1,0 +1,34 @@
+---
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+import LogoMark from "./LogoMark.astro";
+
+/**
+ * Footer: brand line, tagline, and the links worth repeating at the end of every page.
+ */
+interface Props {
+    ui: SiteMessages["ui"];
+}
+
+const { ui } = Astro.props;
+---
+
+<footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <p class="site-footer-name">
+                <LogoMark class="site-footer-mark" />
+                <span>Stillmark</span>
+            </p>
+            <p class="site-footer-tagline" data-i18n="ui.footer.tagline">{ui.footer.tagline}</p>
+        </div>
+
+        <ul class="site-footer-links">
+            <li><a href={SiteLinks.docsUrl()} data-i18n="ui.nav.docs">{ui.nav.docs}</a></li>
+            <li><a href={SiteLinks.docsUrl("reference")} data-i18n="ui.nav.commands">{ui.nav.commands}</a></li>
+            <li><a href={SiteLinks.installGuide} data-i18n="ui.footer.installGuide">{ui.footer.installGuide}</a></li>
+            <li><a href={SiteLinks.github} rel="noopener noreferrer" target="_blank">GitHub</a></li>
+            <li data-i18n="ui.footer.license">{ui.footer.license}</li>
+        </ul>
+    </div>
+</footer>

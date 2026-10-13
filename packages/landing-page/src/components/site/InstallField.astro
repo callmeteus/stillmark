@@ -1,0 +1,46 @@
+---
+import Copy from "@lucide/astro/icons/copy";
+import type { SiteMessages } from "../../i18n/en-US";
+
+/**
+ * Bordered field holding one line to copy, with the copy action.
+ * `prompt` marks the text as the agent install prompt, rewritten when the language changes.
+ * `textPath` makes the text itself translatable.
+ */
+interface Props {
+    id: string;
+    text: string;
+    copy: SiteMessages["ui"]["copy"];
+    shell?: boolean;
+    prompt?: boolean;
+    label?: string;
+    labelPath?: string;
+    textPath?: string;
+}
+
+const { id, text, copy, shell = false, prompt = false, label, labelPath, textPath } = Astro.props;
+---
+
+<div class:list={["install-field", { "is-prompt": prompt }]} data-copy-root>
+    {label ? <p class="install-label" data-i18n={labelPath}>{label}</p> : null}
+    <div class="install-row">
+        <code class="install-text">
+            {shell ? <span class="install-shell" aria-hidden="true">$ </span> : null}
+            <span id={id} data-install-prompt={prompt ? "" : undefined} data-i18n={textPath}>{text}</span>
+        </code>
+        <button
+            type="button"
+            class="install-copy"
+            data-copy-target={id}
+            data-copy-label={copy.copy}
+            data-copied-label={copy.copied}
+            data-failed-label={copy.failed}
+            data-ready-label={copy.ready}
+            aria-label={`${copy.copy}: ${text}`}
+        >
+            <Copy size={16} stroke-width={1.8} aria-hidden="true" />
+            <span data-copy-text>{copy.copy}</span>
+        </button>
+    </div>
+    <p class="copy-status" role="status" aria-live="polite"></p>
+</div>

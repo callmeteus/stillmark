@@ -1,0 +1,317 @@
+.install-field {
+    position: relative;
+}
+
+.install-label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-soft);
+}
+
+.install-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 54px;
+    padding: 8px 8px 8px 18px;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.install-text {
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.install-field.is-prompt .install-text {
+    font-family: var(--font-print);
+    font-size: 15.5px;
+}
+
+.install-shell {
+    color: var(--ink-muted);
+}
+
+.install-copy {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--rule);
+    border-radius: 7px;
+    background: var(--sunk);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s var(--ease-out);
+}
+
+.install-copy:hover,
+.install-copy.is-copied {
+    border-color: var(--ink);
+}
+
+.install-pair {
+    display: grid;
+    gap: 20px;
+}
+
+/* Example: chat request and command on the left, the changed file on the right. */
+.example-card {
+    container-type: inline-size;
+    padding: 28px;
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    background: var(--surface);
+}
+
+.example-title {
+    margin-bottom: 20px;
+    font-size: 20px;
+    line-height: 1.3;
+}
+
+/* Request and command side by side on wide cards; the file always spans the full width. */
+.example-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.example-request {
+    display: grid;
+    gap: 20px;
+}
+
+@container (min-width: 640px) {
+    .example-request {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 24px;
+    }
+}
+
+.example-label {
+    margin: 20px 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+}
+
+.example-label:first-child,
+.example-request .example-label {
+    margin-top: 0;
+}
+
+.example-say {
+    padding: 14px 16px;
+    border-radius: 12px 12px 12px 4px;
+    background: var(--sunk);
+    font-size: 17px;
+    line-height: 1.45;
+}
+
+.example-slash {
+    margin-right: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    font-weight: 700;
+    color: var(--ink-soft);
+}
+
+.example-run {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: var(--well);
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--well-ink);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.example-run code::before {
+    content: "$ ";
+    color: var(--well-muted);
+}
+
+.example-result {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+
+/* File excerpt with the red-pen mark: the one notebook touch kept on the clean site. */
+.excerpt-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin-bottom: 8px;
+}
+
+.excerpt-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+.excerpt-label {
+    font-size: 12.5px;
+    color: var(--pen);
+}
+
+.excerpt-lines {
+    padding: 12px 16px 12px 22px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--ink-soft);
+    overflow-x: auto;
+}
+
+.excerpt-line {
+    min-height: 20px;
+    white-space: pre;
+}
+
+.excerpt-line.is-marked {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 0;
+    margin: 12px 0;
+    white-space: normal;
+}
+
+.excerpt-mark {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    color: var(--ink);
+}
+
+.excerpt-mark > span {
+    white-space: pre;
+}
+
+/* The circle plate is 810px wide: the loop fills x 0-690, the arrow x 690-810. */
+.is-circle .excerpt-mark::before {
+    position: absolute;
+    top: -12px;
+    left: -16px;
+    right: -18px;
+    height: calc(100% + 24px);
+    background: var(--circle-plate) left center / 117.4% 100% no-repeat;
+    content: "";
+    pointer-events: none;
+}
+
+.excerpt-line.is-strike .excerpt-mark {
+    text-decoration: line-through;
+    text-decoration-color: var(--pen);
+    text-decoration-thickness: 2px;
+}
+
+.excerpt-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 26px;
+    font-family: var(--font-hand);
+    font-weight: var(--font-hand-weight);
+    font-size: 17px;
+    line-height: 1.15;
+    color: var(--pen);
+    white-space: normal;
+}
+
+.is-circle .excerpt-note::before {
+    flex: none;
+    width: 28px;
+    height: 32px;
+    background: var(--circle-plate) right center / 189px 32px no-repeat;
+    content: "";
+}
+
+.excerpt-line.is-strike .excerpt-note {
+    margin-left: 14px;
+}
+
+.table-scroll {
+    margin-top: 20px;
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.data-table th {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--sunk);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+}
+
+.data-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.data-table code {
+    font-size: 13.5px;
+}
+
+@media (max-width: 640px) {
+    .example-card {
+        padding: 18px;
+    }
+
+    .install-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 14px;
+    }
+
+    .install-copy {
+        align-self: flex-end;
+    }
+
+    .excerpt-note {
+        margin-left: 0;
+    }
+}

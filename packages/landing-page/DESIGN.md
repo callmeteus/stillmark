@@ -1,304 +1,375 @@
 ---
 name: Stillmark Landing
-description: Cyanotype construction drawing set where every agent change lands as a marked, numbered revision
+description: A clean light documentation site where the only notebook touch is the red ballpoint that marks the changed line inside each demo
 colors:
-  ground: "#0f3a68"
-  ground-deep: "#0c315b"
-  well: "#0a2a4e"
-  sheet-tint: "rgba(8, 34, 66, 0.38)"
-  ink: "#f3f8ff"
-  ink-soft: "#c3d6ee"
-  ink-faint: "#93b3d8"
-  line: "rgba(229, 239, 255, 0.82)"
-  line-soft: "rgba(229, 239, 255, 0.3)"
-  line-faint: "rgba(229, 239, 255, 0.14)"
-  grid-minor: "rgba(229, 239, 255, 0.045)"
-  grid-major: "rgba(229, 239, 255, 0.085)"
-  rev: "#ff7a45"
-  rev-hover: "#ff9466"
-  rev-ink: "#ffab88"
-  on-rev: "#0a2240"
+  pen: "#b50b0e"
+  paper: "#fbfbfa"
+  surface: "#ffffff"
+  sunk: "#f3f3f1"
+  ink: "#111111"
+  ink-soft: "#3b3b3b"
+  ink-muted: "#6a6a6a"
+  rule: "#e3e3e0"
+  rule-strong: "#c8c8c3"
+  terminal: "#17181a"
+  terminal-text: "#f2f2ee"
 typography:
   display:
-    fontFamily: "\"Barlow Condensed\", \"Arial Narrow\", sans-serif"
-    fontSize: "clamp(2.6rem, 5.6vw, 5.4rem)"
-    fontWeight: 600
-    lineHeight: 0.94
-    letterSpacing: "-0.005em"
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "clamp(38px, 6vw, 68px)"
+    fontWeight: 700
+    lineHeight: 1.04
+    letterSpacing: "-0.025em"
   headline:
-    fontFamily: "\"Barlow Condensed\", \"Arial Narrow\", sans-serif"
-    fontSize: "clamp(2.1rem, 3.8vw, 3.25rem)"
-    fontWeight: 600
-    lineHeight: 1
-    letterSpacing: "-0.005em"
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "clamp(28px, 3.6vw, 40px)"
+    fontWeight: 700
+    lineHeight: 1.12
+    letterSpacing: "-0.02em"
+  doc-title:
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "clamp(34px, 4.6vw, 48px)"
+    fontWeight: 700
+    lineHeight: 1.08
+    letterSpacing: "-0.02em"
   title:
-    fontFamily: "\"Barlow Condensed\", \"Arial Narrow\", sans-serif"
-    fontSize: "1.4rem"
-    fontWeight: 600
-    lineHeight: 1.15
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "26px"
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: "-0.01em"
+  title-small:
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "21px"
+    fontWeight: 700
+    lineHeight: 1.25
+  lead:
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "18px"
+    fontWeight: 400
+    lineHeight: 1.55
   body:
-    fontFamily: "\"Barlow\", system-ui, sans-serif"
-    fontSize: "1.0625rem"
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "1rem"
     fontWeight: 400
-    lineHeight: 1.6
-  label:
-    fontFamily: "\"Barlow Condensed\", \"Arial Narrow\", sans-serif"
-    fontSize: "0.85rem"
+    lineHeight: 1.55
+  nav:
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "15.5px"
     fontWeight: 500
-    letterSpacing: "0.06em"
+  label:
+    fontFamily: "\"Yaldevi\", \"Helvetica Neue\", Arial, sans-serif"
+    fontSize: "13px"
+    fontWeight: 700
+    letterSpacing: "0.02em"
   mono:
-    fontFamily: "ui-monospace, \"Cascadia Mono\", Consolas, monospace"
-    fontSize: "0.84rem"
+    fontFamily: "\"JetBrains Mono\", ui-monospace, \"Cascadia Mono\", Consolas, monospace"
+    fontSize: "13.5px"
     fontWeight: 400
-    lineHeight: 1.45
+    lineHeight: 1.55
+  hand:
+    fontFamily: "\"Edu SA Beginner\", \"Segoe Print\", \"Bradley Hand\", cursive"
+    fontSize: "17px"
+    fontWeight: 400
+    lineHeight: 1.15
+  hand-pt:
+    fontFamily: "\"Kalam\", \"Segoe Print\", \"Bradley Hand\", cursive"
+    fontSize: "17px"
+    fontWeight: 300
+    lineHeight: 1.15
 rounded:
-  none: "0"
-  button: "2px"
+  small: "7px"
+  inset: "8px"
+  control: "10px"
+  panel: "12px"
+  card: "14px"
+  pill: "999px"
 spacing:
-  container-max: "80rem"
-  container-x: "clamp(1rem, 3vw, 2rem)"
-  section-gap: "clamp(4.5rem, 9vw, 7.5rem)"
-  sheet-cell: "clamp(1.25rem, 2.6vw, 2rem)"
-  sheet-offset: "5px"
-  column-gutter: "1.75rem"
-  split-gap: "3.5rem"
+  page-width: "1120px"
+  page-pad: "32px"
+  page-pad-mobile: "18px"
+  header-height: "64px"
+  section-gap: "112px"
+  section-gap-mobile: "80px"
+  card-pad: "28px"
+  grid-gap: "16px"
+  docs-sidebar: "228px"
+  docs-gap: "56px"
 components:
   button-primary:
-    backgroundColor: "{colors.rev}"
-    textColor: "{colors.on-rev}"
-    typography: "{typography.label}"
-    rounded: "{rounded.button}"
-    padding: "0.6rem 1.5rem"
-    height: "2.75rem"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+    typography: "{typography.body}"
+    rounded: "{rounded.control}"
+    padding: "0 22px"
+    height: "46px"
   button-primary-hover:
-    backgroundColor: "{colors.rev-hover}"
-    textColor: "{colors.on-rev}"
-    rounded: "{rounded.button}"
-    padding: "0.6rem 1.5rem"
-  button-primary-copied:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.on-rev}"
-    rounded: "{rounded.button}"
-    padding: "0.6rem 1.5rem"
-  button-quiet:
-    backgroundColor: "transparent"
+    backgroundColor: "#2b2b2b"
+    textColor: "{colors.paper}"
+    rounded: "{rounded.control}"
+    padding: "0 22px"
+    height: "46px"
+  button-ghost:
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.button}"
-    padding: "0.6rem 1.5rem"
-    height: "2.75rem"
-  segmented-option:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-faint}"
-    typography: "{typography.label}"
-    rounded: "{rounded.none}"
-    padding: "0.35rem 0.9rem"
-    height: "2.5rem"
-  segmented-option-selected:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.on-rev}"
-    rounded: "{rounded.none}"
-    padding: "0.35rem 0.9rem"
-  locale-toggle:
+    rounded: "{rounded.control}"
+    padding: "0 22px"
+    height: "46px"
+  nav-link:
     backgroundColor: "transparent"
     textColor: "{colors.ink-soft}"
-    rounded: "{rounded.none}"
-    padding: "0 0.65rem"
-    height: "2.25rem"
-  command-well:
-    backgroundColor: "{colors.well}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.inset}"
+    padding: "8px 12px"
+  nav-link-active:
+    backgroundColor: "{colors.sunk}"
+    textColor: "{colors.ink}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.inset}"
+    padding: "8px 12px"
+  picker-tab:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink-soft}"
+    rounded: "{rounded.pill}"
+    padding: "0 14px"
+    height: "40px"
+  picker-tab-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+    rounded: "{rounded.pill}"
+    padding: "0 14px"
+    height: "40px"
+  install-row:
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
     typography: "{typography.mono}"
-    rounded: "{rounded.none}"
-    padding: "1rem 1.1rem"
-  sheet-frame:
-    backgroundColor: "{colors.sheet-tint}"
+    rounded: "{rounded.control}"
+    padding: "8px 8px 8px 18px"
+  install-copy:
+    backgroundColor: "{colors.sunk}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.sheet-cell}"
-  sheet-number:
+    rounded: "{rounded.small}"
+    padding: "0 12px"
+    height: "36px"
+  example-card:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.card}"
+    padding: "28px"
+  request-bubble:
+    backgroundColor: "{colors.sunk}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.panel}"
+    padding: "14px 16px"
+  command-well:
+    backgroundColor: "{colors.terminal}"
+    textColor: "{colors.terminal-text}"
+    typography: "{typography.mono}"
+    rounded: "{rounded.inset}"
+    padding: "12px 14px"
+  file-excerpt:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.ink-soft}"
+    typography: "{typography.mono}"
+    rounded: "{rounded.inset}"
+    padding: "12px 16px 12px 22px"
+  margin-note:
     backgroundColor: "transparent"
-    textColor: "{colors.ink-faint}"
-    rounded: "{rounded.none}"
-    padding: "0.2rem 0.75rem"
+    textColor: "{colors.pen}"
+    typography: "{typography.hand}"
+  feature-card:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.card}"
+    padding: "26px 28px 28px"
+  docs-nav-link:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink-soft}"
+    rounded: "{rounded.small}"
+    padding: "6px 10px"
+  docs-nav-link-active:
+    backgroundColor: "{colors.sunk}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.small}"
+    padding: "6px 10px"
 ---
 
 # Design System: Stillmark Landing
 
 ## Overview
 
-**Creative North Star: "The Cyanotype Drawing Set"**
+**Creative North Star: "The Clean Manual With One Red Pen"**
 
-The page is a set of construction drawings printed in Prussian blue. A fine drafting grid covers the whole ground, white line work frames every sheet, and the only warm color on the page is the vermilion revision pencil. Every agent change is a revision on a fixed drawing: the line work never moves, and revisions land as a separate layer on top of it, circled by a scalloped cloud and numbered by a delta triangle. Earlier revisions stay visible at reduced strength instead of being erased.
+The site is a quiet product manual: near-white paper, white surfaces, black ink, and grey hairlines, organized like a modern developer documentation site. A sticky top bar carries Docs, Commands, and Install with the GitHub mark and an EN / PT switch. The home page reads top to bottom in one column: a centered hero with two buttons and the supported editors, a topic picker of pill tabs that shows a real request, the command it runs, and the changed file, a grid of feature cards, an activity log table, and numbered install steps with editor tabs. The docs area pairs a sticky grouped sidebar with an overview and short topic pages.
 
-The sheet vocabulary carries the structure. The first viewport is one framed sheet split like a drawing: headline in the title area, revision table in the corner, drawing field of example files below, install title block at the bottom right. The hero is sheet S-01 and the detail sections that follow are numbered sheets S-02 to S-05 in the same doubled frame, separated by legends, general notes, and a dense command schedule. Line style is meaning, not decoration: a solid line is a file shared in git, a dashed line is a file that stays on the developer's machine.
+The chrome is deliberately plain so the demos carry the personality. Inside every demo a red ballpoint marks exactly what changed: a hand-drawn circle around the changed line with a handwritten red note beside it, a red strike-through on refused lines and refused log rows, and a small red label naming the line as marked. That pen never leaves the demo. Navigation, buttons, headings, selection states, and focus are black and grey.
 
-Density is that of a drawing set: dense tables, hairline rules, uppercase condensed lettering for labels, and generous section gaps between sheets. Corners are square everywhere except a barely softened 2px on buttons.
+Surfaces are flat. Hierarchy comes from white cards on paper, 1px hairlines, a sunk grey for quiet fills, and solid black for the primary action and the selected choice. Nothing animates in on scroll; motion is limited to short hover transitions and a 3px arrow nudge.
 
 **Key Characteristics:**
 
-- Prussian blue ground with a two-scale drafting grid (24px minor, 120px major).
-- White line work at three strengths; no filled cards, no rounded panels.
-- Vermilion is reserved for revisions, primary actions, focus, and hover.
-- Solid line means shared in git; dashed line means local only.
-- Sheets framed by a 1.5px border plus a 1px outline offset 5px.
-- Barlow Condensed lettering, Barlow body, system mono only for code and file content.
+- Near-white paper, white surfaces, black ink, grey hairlines.
+- Solid black for the primary button, the selected picker pill, the active locale, and install step numbers.
+- One red ballpoint, used only inside demos to mark the changed or refused line.
+- Print for everything people read, mono for files and commands, handwriting only for the red margin note.
+- Linear single-column home; docs with a sticky grouped sidebar.
+- Flat cards with hairline borders that turn black on hover.
 
 ## Colors
 
-A monochrome cyanotype (Prussian blue ground, white ink at graded alpha) interrupted by one vermilion revision pencil.
+A neutral light palette with black as the only strong value in the chrome and one red ballpoint reserved for demo marks.
 
 ### Primary
 
-- **Revision Vermilion** (rev): Revision clouds, delta triangles, primary button fill, focus outline, hover border on quiet controls, copied-state border on command wells, text selection tint. If it is vermilion, it is either a revision or the action to take.
-- **Revision Vermilion Lifted** (rev-hover): Primary button hover only.
-- **Revision Pencil Ink** (rev-ink): Vermilion as text on blue: delta numerals, link and nav hover, the command a request runs, "local only" badges and tree notes, copy status messages. Lighter than rev so small text stays legible on the ground.
+- **Ballpoint Red** (pen): The pen inside demos only. The hand-drawn circle plate around the changed line, the handwritten margin note, the 2px strike-through on refused excerpt lines and refused log rows, the result cell of a refused log row, and the small "Changed line marked" label above an excerpt.
 
 ### Neutral
 
-- **Prussian Ground** (ground): Page background under the drafting grid.
-- **Deep Prussian** (ground-deep): Header and footer bands, scrollbar track.
-- **Ink Well** (well): Recessed command and prompt fields, mobile install bar. File sheets and inline code use the same hue at 60% and 75% alpha.
-- **Sheet Tint** (sheet-tint): Translucent fill inside framed sheets so the grid still reads through.
-- **Drawing White** (ink): Headings, primary text, selected segmented options, copied-state button fill.
-- **Faded White** (ink-soft): Body copy, leads, table descriptions, nav default.
-- **Ghost White** (ink-faint): Labels, table headers, sheet numbers, file tags, general-note indexes.
-- **Line Work** (line): Primary strokes: sheet borders, section rules, file-sheet borders, line samples.
-- **Soft Line** (line-soft): Interior divisions: sheet cell dividers, outline frames, control borders, column rules.
-- **Faint Line** (line-faint): Table row rules and inline-code borders.
-- **Grid Minor / Grid Major** (grid-minor, grid-major): The drafting grid on the body background only.
-- **Ink on Revision** (on-rev): Dark navy text on vermilion and on white fills.
+- **Paper** (paper): Page background, the translucent sticky header (at 92% with a 10px blur), the excerpt body, text on black fills.
+- **Surface White** (surface): Cards, the install row, tables, the "On this page" box, the reference list, pager links, unselected pills, the ghost button, the locale switch frame.
+- **Sunk Grey** (sunk): Quiet fills: active and hovered navigation links, the chat request bubble, the copy action, table heads, the selected editor tab, file chips on feature cards, icon tiles, count badges.
+- **Ink** (ink): Headings, body text, the primary button fill, the selected picker pill, the active locale option, install step number discs, hover borders, the focus outline.
+- **Soft Ink** (ink-soft): Leads, secondary copy, navigation links at rest, excerpt lines, table head text.
+- **Muted Ink** (ink-muted): The second hero line, form and example labels, sidebar group headings, breadcrumbs, metadata, pager hints, resting arrows, the shell sign.
+- **Hairline** (rule): Card and table borders, row dividers, the header and footer rules.
+- **Strong Hairline** (rule-strong): Borders on controls (ghost button, install row, unselected pills, the docs menu toggle) and link underlines.
+- **Terminal Black** (terminal) and **Terminal Text** (terminal-text): The command well under "Stillmark runs", the only dark surface on the site; its shell sign sits in a mid grey.
 
 ### Named Rules
 
-**The Revision Pencil Rule.** Vermilion marks revisions and the one action to take. It never colors headings, section rules, or decorative shapes.
+**The Pen Stays In The Demo Rule.** Red appears only inside a demo, marking the line that changed or was refused. Navigation, buttons, headings, tabs, links, and focus are never red.
 
-**The Graded Line Rule.** Every stroke uses one of the three line strengths: line for outer frames and major rules, line-soft for interior divisions, line-faint for table rows. No other white alpha is introduced for strokes.
+**The Black Choice Rule.** The primary action and the currently selected option are solid ink with paper text. Everything else rests on white or transparent and earns an ink border on hover.
 
 ## Typography
 
-**Display Font:** Barlow Condensed (with "Arial Narrow", sans-serif), weights 500 and 600
-**Body Font:** Barlow (with system-ui, sans-serif), weights 400, 500, 600
-**Label/Mono Font:** ui-monospace, "Cascadia Mono", Consolas, monospace
+**Display Font:** Yaldevi (with "Helvetica Neue", Arial, sans-serif), weights 400, 500, 700
+**Body Font:** Yaldevi
+**Label/Mono Font:** JetBrains Mono (with ui-monospace, "Cascadia Mono", Consolas), weights 400 and 700
+**Handwriting Font:** Edu SA Beginner in English; Kalam Light (300) in Portuguese, switched by a pt-BR override of the handwriting family and weight tokens, because Edu SA Beginner has no accented letters
 
-**Character:** Condensed engineering lettering over a plain humanist body, the way a drawing set pairs title-block lettering with general notes. Both families load through @fontsource.
+**Character:** A clear bold sans for everything a person reads, a mono for anything that is literally a file, a command, or a log line, and a schoolroom hand reserved for the pen's margin note.
 
 ### Hierarchy
 
-- **Display** (600, clamp(2.6rem, 5.6vw, 5.4rem), 0.94): Hero headline only, capped at 15ch.
-- **Headline** (600, clamp(2.1rem, 3.8vw, 3.25rem), 1): Section h2s. The closing sheet uses clamp(2rem, 3.4vw, 3rem).
-- **Title** (600, 1.35rem to clamp(1.6rem, 2.4vw, 2rem), 1.05-1.15): Note titles (1.4rem), general-note titles (1.5rem), legend sheet titles (clamp(1.6rem, 2.4vw, 2rem)), title-block label (1.35rem).
-- **Body** (400, 1.0625rem, 1.6): Default text. Leads cap at 60ch, hero subtitle at 48ch, footer tagline at 44ch.
-- **Label** (500, 0.85rem to 1rem, 0.04em-0.08em, uppercase): Nav links, table headers, file tags, request labels, badges, tree notes, segmented options. Button labels use 600 at 1.0625rem, 0.04em. Sheet numbers use 600, 0.85rem, 0.08em and are not uppercased by CSS.
-- **Mono** (400, 0.76rem to 1.05rem, 1.45-1.6): File names, file content lines, command wells, schedule commands, inline code at 0.86em.
-- **Index numerals** (Barlow Condensed 500, 3rem, 1): General-note step numbers in ghost white.
+- **Display** (700, clamp 38px to 68px, 1.04, -0.025em): The two-line centered hero; the second line is Muted Ink.
+- **Headline** (700, clamp 28px to 40px, 1.12, -0.02em): Home section titles, capped at 44rem.
+- **Doc Title** (700, clamp 34px to 48px, 1.08, -0.02em): Docs overview and topic page titles.
+- **Title** (700, 26px, 1.2): Docs section headings.
+- **Title Small** (700, 20px to 21px, 1.25 to 1.3): Feature card titles, example titles, install step titles. Card titles in the docs run 17px to 18px.
+- **Lead** (400, 18px, 1.55, Soft Ink): Section leads (hero lead 19px, topic summary 20px at 500 in Ink). 17px on phones.
+- **Body** (400, 1rem, 1.55): Running text; docs text 16.5px at 1.6.
+- **Nav** (500, 15.5px): Top navigation and picker pills (15px).
+- **Label** (700, 13px, Muted Ink, sentence case): "You say", "Stillmark runs", "What changes", table heads. Sidebar group headings are the one uppercase label (12.5px, 0.04em).
+- **Mono** (JetBrains Mono, 13px to 15px): Excerpt lines (13px on 20px), command wells (13.5px), file names (13.5px 700), the log table (14px), the locale switch (12.5px 700).
+- **Hand** (17px, 1.15, Ballpoint Red): The margin note beside a marked line, and nothing else.
 
 ### Named Rules
 
-**The Lettering Rule.** Headings, labels, buttons, and nav are Barlow Condensed; running text is Barlow. Mono appears only where the content is literally a file, a path, or a command.
+**The Hand Only Annotates Rule.** The handwriting face appears only as the red margin note inside a demo. Requests, headings, and labels are always print.
+
+**The Accent Fallback Rule.** Portuguese handwriting is Kalam Light through the pt-BR override of the handwriting token. Never ship Edu SA Beginner on accented text.
 
 ## Layout
 
-The page is a single centered container (max 80rem, side padding clamp(1rem, 3vw, 2rem)) holding a vertical stack of sheets separated by the section gap (clamp(4.5rem, 9vw, 7.5rem)).
+A centered 1120px page with 32px side padding (18px at 640px and below) under a 64px sticky header. The home is one linear column: hero (104px top padding, 64px on narrow screens), then sections each opened by 112px of space (80px at 760px and below), each with a headline, a lead, and its content 32px below. Feature cards sit in a two-column grid with 16px gaps; install steps stack with 16px gaps.
 
-- **Hero sheet:** A single-column grid on small screens in the order title, drawing field, install, revisions. From 1024px it becomes two columns (1.55fr / 1fr) with areas "title revisions" / "field install", divided by soft interior lines. Cell padding is clamp(1.25rem, 2.6vw, 2rem); the title cell gets clamp(2rem, 3.4vw, 3rem) vertical padding on desktop.
-- **Drawing field:** Three file sheets stack, then sit in three equal columns from 720px. Requests share one grid cell and cross-fade.
-- **Section heads:** Stacked below 900px; from 900px a two-column split (1fr / 1.15fr) aligned to the bottom, 3rem gap, closed by a 1.5px line rule.
-- **Three-column notes:** Legend sheets, general notes, and plain detail notes stack with a 2rem gap, then become three columns at 900px separated by soft vertical rules with 1.75rem gutters and no outer padding.
-- **Detail sheets with a figure:** Notes and figure split 1fr / 1fr with a 3.5rem gap from 900px; alternate sheets flip the figure to the left.
-- **Command schedule:** Full-width table; below 720px rows collapse to stacked blocks and the header becomes screen-reader only.
-- **Mobile install bar:** Fixed to the bottom below 1024px, with the page padded by 9rem to clear it.
-- **Breakpoints observed:** 480px, 560px, 720px, 860px, 900px, 1024px.
+Example cards use a container query: at 840px of card width and up the request column and the changed-file column sit side by side (5 to 6 ratio, 32px gap); narrower, they stack. Docs pages therefore stack request over file while the home picker shows them side by side.
+
+The docs shell is a 228px sticky sidebar beside a main column capped at 52rem, 56px apart. Topic pages run breadcrumb, title, summary, lead, an "On this page" box, sections 56px apart (Try it, Examples, Commands), and a two-column prev/next pager 64px below.
+
+Responsive steps:
+
+- **900px and below:** The docs sidebar becomes a full-width toggle button above the content; the grouped links open in a bordered white panel below it.
+- **760px and below:** Feature grid goes to one column; install step numbers move above the step text.
+- **720px and below:** Header gaps tighten and the Commands link hides.
+- **640px and below:** Install rows stack with the copy action right-aligned, "What are you working on?" cards go to one column, reference rows wrap their summary under the name.
+- **420px and below:** The wordmark hides and only the logo mark remains.
 
 ## Elevation & Depth
 
-Depth is drawn, not lit. Sheets are flat and separated from the ground by line work: a 1.5px border with a second 1px outline offset 5px, plus a translucent sheet tint that lets the drafting grid read through. Recessed fields (command wells, file sheets) sit one step darker in the well color. Two soft shadows exist, both functional: a diffuse drop under the primary button, and an upward shadow under the fixed mobile install bar to separate it from scrolling content.
-
-### Shadow Vocabulary
-
-- **Action lift** (`box-shadow: 0 8px 20px -10px rgba(3, 15, 35, 0.75)`): Primary button only. Quiet buttons remove it.
-- **Docked bar** (`box-shadow: 0 -10px 24px -12px rgba(3, 15, 35, 0.8)`): Mobile install bar only.
+Flat. There are no shadows. Depth comes from white surfaces on near-white paper, 1px hairline borders, the Sunk Grey fill for quiet insets, and solid ink for the selected or primary element. The single layering effect is the sticky header: paper at 92% opacity with a 10px backdrop blur over the scrolling page.
 
 ### Named Rules
 
-**The Double Frame Rule.** Every top-level sheet (hero, detail sheets, closing) carries the 1.5px line border plus the 1px soft outline offset 5px. Inner figures use a single border.
+**The Flat Surface Rule.** Nothing casts a shadow or lifts. Hover is shown by an ink border, an ink text color, a Sunk Grey fill, or a 3px arrow nudge.
 
 ## Shapes
 
-Square drafting geometry. Every frame, field, table, segmented control, and toggle has 0 radius; only buttons soften to 2px. The two recurring silhouettes are the delta triangle (an outlined equilateral triangle, stroke 1.7, with a revision numeral seated inside) and the revision cloud (scalloped arcs about 16px apart drawn around a changed line with 10px horizontal and 6px vertical padding, stroke 1.5). Line style encodes state: solid 1px or 1.5px for shared files, dashed 1.5px for local-only files and their header and tree rules, with a 7 / 5 dash in line samples.
+Softly rounded rectangles in a small, consistent ladder: 7px for small controls (copy action, sidebar links, editor tabs), 8px for insets (top nav links, excerpts, command wells, icon tiles), 10px for controls and lists (buttons, install row, tables, pager, reference list, menu toggle), 12px for docs cards and the request bubble, 14px for large cards (example, feature, install step), and full pills for picker tabs, editor chips in the hero, and count badges. The request bubble has a 4px bottom-left corner so it reads as a chat message. Install step numbers are 34px ink discs. All borders are 1px solid; there are no dashed borders.
+
+### Named Rules
+
+**The Plate Rule.** The red circle around a changed line is the hand-drawn raster plate in assets/plates, never a CSS ellipse. The excerpt splits it: the loop stretches as a background behind the marked line and the arrow end keeps its fixed size in front of the margin note.
 
 ## Components
 
 ### Buttons
 
-Blunt and lettered, like a stamp on the title block.
+Solid and plain.
 
-- **Shape:** Nearly square (2px).
-- **Primary:** Revision vermilion fill, navy text, Barlow Condensed 600 uppercase at 0.04em, min height 2.75rem, padding 0.6rem 1.5rem, action-lift shadow.
-- **Hover / Focus:** Fill lifts to rev-hover over 0.15s ease-out; pressing nudges down 1px. Focus is the global 2px vermilion outline offset 3px.
-- **Copied state:** Fill turns drawing white with a masked check glyph before the label; the matching command well border turns vermilion.
-- **Quiet:** Transparent with a 1px line border and white text, no shadow; hover shifts border to vermilion and text to rev-ink.
+- **Shape:** 10px corners, 46px tall, 22px side padding, 16px 700 label.
+- **Primary:** Ink fill with paper text; darkens to #2b2b2b on hover over 0.15s.
+- **Ghost:** White fill, Strong Hairline border, ink text; the border turns ink on hover.
+- **Text link:** Bold ink text over a 1.5px Strong Hairline underline that turns ink on hover; a trailing arrow nudges 3px right.
+- **Focus:** Global 2px ink outline offset 3px.
 
-### Segmented Control
+### Chips (picker tabs)
 
-- **Style:** Inline group in a 1px soft-line border, options divided by soft lines, Barlow Condensed 500 uppercase at 0.95rem, min height 2.5rem.
-- **State:** Unselected options are ghost white and brighten to white on hover; the selected option fills drawing white with navy text. Used for Agent / CLI install modes, per-agent tabs, and the command schedule mode.
+- **Style:** 40px pill, white fill, Strong Hairline border, topic icon and 15px 500 label in Soft Ink.
+- **State:** Hover gives an ink border and ink text. Selected is solid ink with paper text. Editor tabs in install steps are borderless 34px tabs with 7px corners; selected takes Sunk Grey and bold ink.
 
-### Command Wells
+### Cards / Containers
 
-- **Style:** Recessed well-color field with a 1px soft-line border, mono text. The install prompt runs 0.86rem at 1.6 line height; the CLI command runs 1.05rem; inline install rows run 0.84rem.
-- **Copied:** Border turns vermilion over 0.25s.
+- **Corner Style:** 14px on example, feature, and install step cards; 12px on docs cards; 10px on lists, tables, and pager links.
+- **Background:** Surface White on Paper.
+- **Shadow Strategy:** None (see Elevation & Depth).
+- **Border:** 1px Hairline; linked cards turn the border ink on hover.
+- **Internal Padding:** 28px on large cards (18px on phones), 22px on docs cards, 16px to 18px on list rows and pager links.
 
-### Sheets / Containers
+### Inputs / Fields (install field)
 
-- **Corner Style:** Square (0).
-- **Background:** Sheet tint over the gridded ground.
-- **Shadow Strategy:** None; see the Double Frame Rule.
-- **Border:** 1.5px line plus 1px soft outline offset 5px.
-- **Internal Padding:** clamp(1.25rem, 2.6vw, 2rem); the closing sheet uses clamp(1.5rem, 3vw, 2.5rem).
-- **Sheet number:** A small ruled box pinned to the bottom-right corner of the frame (1px soft top and left rules, 0.2rem 0.75rem padding) holding only the sheet code, such as S-02. Never place it above a heading. Detail sheets reserve extra bottom padding (clamp(3rem, 4.5vw, 3.75rem)) so the box does not cover content.
-
-### File Sheets
-
-- **Style:** Single 1px line border over well at 60% alpha, header row with mono file name and an uppercase file tag ("Shared" / "Local only"), mono content lines at 0.76rem (0.86rem in detail figures).
-- **Local variant:** Border becomes 1.5px dashed and the header rule dashes too.
-- **Revised line:** Wrapped by a vermilion revision cloud and a numbered delta triangle at its top-right corner.
-
-### Revision Table
-
-- **Style:** Collapsed table with a condensed caption, a white top rule over uppercase ghost-white headers, and faint row rules. The first column holds the delta mark.
-- **State:** During the demo, rows not yet revised sit at 0.22 opacity and the current row brightens to white.
-
-### Command Schedule
-
-- **Style:** Dense table bounded by 1.5px line rules top and bottom, uppercase condensed headers at 0.07em, 0.55rem 0.75rem cells with faint row rules, mono command column at 46% width, row hover tint of white at 4% alpha.
+- **Style:** White row with a 1px Strong Hairline border and 10px corners, 54px minimum height, the command in mono 15px after a muted shell sign; the prompt variant sets its text in print. A bold Soft Ink label sits above.
+- **Copy action:** 36px Sunk Grey button with a 1px Hairline border and 7px corners; the border turns ink on hover and after copying.
 
 ### Navigation
 
-- **Style:** Deep Prussian header band closed by a soft line, 4rem tall. Logo pairs the vermilion delta mark with the wordmark in Barlow Condensed 600 at 1.5rem.
-- **Links:** Barlow Condensed 500 uppercase at 1rem and 0.05em, faded white, min height 2.75rem; hover to rev-ink.
-- **Locale toggle:** Square 1px soft-line button showing the other locale code (PT or EN); hover turns the border vermilion. It swaps text on the same page.
-- **Mobile:** Below 860px the in-page anchors hide, leaving GitHub and the locale toggle.
+- **Top bar:** Logo mark and 21px bold wordmark, then Docs, Commands, and Install as 15.5px 500 links in Soft Ink with 8px corners; hover and current page take Sunk Grey and ink. GitHub mark and the EN / PT switch sit at the right; the switch is a white framed segmented control whose active option is solid ink.
+- **Docs sidebar:** Uppercase muted group headings over 15px links; hover and current page take Sunk Grey, the current page in bold. Under 900px it collapses behind a toggle button with a rotating chevron.
+- **Breadcrumb and pager:** 14px muted breadcrumb; pager links are white bordered cards with a muted hint and a 17px bold name, the next link right-aligned.
 
-### Revision Demo (signature)
+### Demo Example (signature)
 
-The hero cycles through three plain-language requests. Each request cross-fades in (0.45s), then after 700ms its revision lands: the cloud stroke-draws around the changed line over 1.1s with cubic-bezier(0.16, 1, 0.3, 1), the line text fades in with a 0.2s delay, the delta mark follows at 0.6s, and the revision table gains its row. Steps advance every 3.4s and hold 4.6s at the end before resetting; previous clouds stay at 0.5 opacity. The demo pauses when off screen or in a hidden tab, and with reduced motion it shows the final state with all revisions applied. Detail sheets reuse static clouds to show revisions that already landed.
+The chat request in a Sunk Grey bubble led by a bold mono "/stillmark", the command in the dark terminal well with a grey "$" prefix, then the changed file: a mono file name with a file icon, the small red "Changed line marked" label on the right, and the excerpt in a 1px Hairline box on Paper. The marked line turns ink and is circled by the red plate (or struck through in red), with the handwritten red note beside it. A muted "What changes" label introduces the plain-language result.
+
+### Before / After Slider
+
+Two layers share one grid cell; the after layer is clipped from the left by a `--pos` custom property driven by a transparent full-size range input. A 1px ink divider carries a white round knob with the chevrons-left-right icon, and small ink "Before" / "After" tags sit in the top corners. It is only used for images and screens; clipping text makes both sides unreadable. The home design showcase compares a deliberately sloppy pricing mock (purple gradient, glow, pill buttons) against the clean version; that gradient is the only place the palette is broken, and only to show what Stillmark removes.
+
+### Without / With Stillmark Split
+
+Every topic (home picker and docs pages) shows what working looks like without Stillmark and with it. The same knob and range input resize two panes instead of clipping a layer: the left pane is Sunk Grey, the right is Surface White, and each holds a small window (three grey dots and a mono title naming the chat, phone, or file) over a centered caption. Each scene is sized to fit half the box and is pinned against the handle, so the shrinking side slides out under it while staying readable. Lines are neutral in Soft Ink, gone wrong in red with an x, or handled in bold ink with a check; the "without" window has a dashed border. Under 640px of width the panes stack and the handle disappears.
+
+### Activity Log
+
+A white bordered table with a Sunk Grey head of 13px bold labels and 1px Hairline row rules. Time, entry, and file cells are mono 14px; the request cell is print 15.5px. Refused rows strike the request and entry in 2px red and set the result in red.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** frame every top-level sheet with the 1.5px line border and the 1px soft outline offset 5px.
-- **Do** use a solid line for files shared in git and a dashed line for files that stay local, everywhere the distinction appears.
-- **Do** mark a revision with both a vermilion cloud and a numbered delta triangle, and keep earlier revisions visible at reduced strength.
-- **Do** keep the drafting grid on the body background and let it show through the sheet tint.
-- **Do** set labels, headers, and controls in uppercase Barlow Condensed with 0.04em to 0.08em tracking.
-- **Do** use rev-ink, not rev, for vermilion text on the blue ground.
+- **Do** keep red inside demos: the circle plate, the margin note, refused strike-throughs, refused log results, and the "Changed line marked" label.
+- **Do** use solid ink for the primary button and the selected option, and an ink border or Sunk Grey fill for hover.
+- **Do** put cards on Surface White with a 1px Hairline border and no shadow.
+- **Do** set files, commands, and log lines in JetBrains Mono and everything else people read in Yaldevi.
+- **Do** let Portuguese handwriting fall to Kalam Light through the pt-BR override.
+- **Do** draw the changed-line circle from the hand-drawn plate.
 
 ### Don't:
 
-- **Don't** use vermilion for headings, rules, or ornament; it belongs to revisions and the primary action.
-- **Don't** round corners beyond the 2px on buttons, or replace sheets with filled rounded cards.
-- **Don't** introduce stroke alphas outside line, line-soft, and line-faint.
-- **Don't** use dashed lines decoratively; a dash always means local only.
-- **Don't** put descriptive text inside sheet-number tags; they hold only the sheet code.
-- **Don't** set prose in mono; mono is for files, paths, and commands.
+- **Don't** use red for navigation, buttons, headings, tabs, links, or focus.
+- **Don't** add shadows, lifted cards, or scroll reveal animations.
+- **Don't** bring back the paper grid texture, a left notebook margin, or numbered contents.
+- **Don't** set requests, headings, or labels in the handwriting face.
+- **Don't** show Edu SA Beginner on accented text.
+- **Don't** replace the circle plate with a CSS ellipse or border.

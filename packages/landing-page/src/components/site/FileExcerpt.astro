@@ -1,0 +1,32 @@
+---
+import FileText from "@lucide/astro/icons/file-text";
+import circlePlate from "../../../assets/plates/circle.png";
+import type { SiteMessages } from "../../i18n/en-US";
+import type { TopicExample } from "../../i18n/topics";
+import ExcerptLines from "./ExcerptLines.astro";
+
+/**
+ * A file name over a bordered excerpt of its lines, with one line marked in red pen
+ * (circled or struck through) and a handwritten margin note beside it.
+ * The circle plate is split so the loop stretches to the line while the arrow keeps its size in front of the note.
+ * `path` is the i18n prefix of the example (`file`, `lines`, `mark.note`).
+ */
+interface Props {
+    example: TopicExample;
+    path: string;
+    ui: SiteMessages["ui"];
+}
+
+const { example, path, ui } = Astro.props;
+---
+
+<figure class="excerpt" style={`--circle-plate: url("${circlePlate.src}")`}>
+    <figcaption class="excerpt-head">
+        <span class="excerpt-file">
+            <FileText size={16} stroke-width={1.8} aria-hidden="true" />
+            <span data-i18n={`${path}.file`}>{example.file}</span>
+        </span>
+        <span class="excerpt-label" data-i18n="ui.entry.excerpt">{ui.entry.excerpt}</span>
+    </figcaption>
+    <ExcerptLines lines={example.lines} linesPath={`${path}.lines`} mark={example.mark} notePath={`${path}.mark.note`} />
+</figure>

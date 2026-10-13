@@ -1,0 +1,42 @@
+---
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+import GithubMark from "./GithubMark.astro";
+import LogoMark from "./LogoMark.astro";
+
+/**
+ * Sticky top bar: logo, main navigation, repository link, and the EN / PT language switch.
+ * `active` marks the navigation item of the current section.
+ */
+interface Props {
+    ui: SiteMessages["ui"];
+    active?: "docs";
+}
+
+const { ui, active } = Astro.props;
+---
+
+<header class="site-header">
+    <div class="site-header-inner">
+        <a class="logo" href={SiteLinks.home} data-i18n-aria-label="ui.home" aria-label={ui.home}>
+            <LogoMark class="logo-mark" />
+            <span class="logo-word">Stillmark</span>
+        </a>
+
+        <nav class="site-nav" aria-label={ui.nav.label} data-i18n-aria-label="ui.nav.label">
+            <a href={SiteLinks.docsUrl()} aria-current={active === "docs" ? "page" : undefined} data-i18n="ui.nav.docs">{ui.nav.docs}</a>
+            <a class="site-nav-commands" href={SiteLinks.docsUrl("reference")} data-i18n="ui.nav.commands">{ui.nav.commands}</a>
+            <a href={SiteLinks.homeInstall} data-i18n="ui.nav.install">{ui.nav.install}</a>
+        </nav>
+
+        <div class="site-tools">
+            <a class="site-github" href={SiteLinks.github} rel="noopener noreferrer" target="_blank" data-i18n-aria-label="ui.github" aria-label={ui.github}>
+                <GithubMark size={22} />
+            </a>
+            <div class="locale-switch" role="group" data-locale-switch aria-label={ui.switchLanguage}>
+                <button type="button" class="locale-option is-active" data-locale-option="en-US" aria-pressed="true" lang="en">EN</button>
+                <button type="button" class="locale-option" data-locale-option="pt-BR" aria-pressed="false" lang="pt-BR">PT</button>
+            </div>
+        </div>
+    </div>
+</header>

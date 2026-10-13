@@ -1,6 +1,8 @@
 @import "./tokens.css";
 @import "./base.css";
-@import "./controls.css";
-@import "./header.css";
-@import "./sheet.css";
-@import "./sections.css";
+@import "./shell.css";
+@import "./components.css";
+@import "./compare.css";
+@import "./contrast.css";
+@import "./home.css";
+@import "./docs.css";

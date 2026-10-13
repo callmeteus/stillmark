@@ -1,0 +1,46 @@
+---
+import Check from "@lucide/astro/icons/check";
+import X from "@lucide/astro/icons/x";
+import { ContrastTone, type ContrastScene } from "../../i18n/topics";
+
+/**
+ * One side of the "without / with Stillmark" slider: a small window titled after a chat, phone, or file,
+ * its lines (neutral, gone wrong in red, or handled with a check), and a caption under it.
+ * `path` is the i18n prefix of the scene (`frame`, `lines.N.text`, `caption`).
+ */
+interface Props {
+    scene: ContrastScene;
+    path: string;
+    variant: "without" | "with";
+}
+
+const { scene, path, variant } = Astro.props;
+const toneClass: Record<ContrastTone, string> = {
+    [ContrastTone.PLAIN]: "is-plain",
+    [ContrastTone.BAD]: "is-bad",
+    [ContrastTone.GOOD]: "is-good"
+};
+---
+
+<div class:list={["scene", `scene-${variant}`]}>
+    <div class="scene-window">
+        <p class="scene-frame">
+            <span class="scene-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span data-i18n={`${path}.frame`}>{scene.frame}</span>
+        </p>
+        <ul class="scene-lines">
+            {
+                scene.lines.map((line, index) => (
+                    <li class:list={["scene-line", toneClass[line.tone]]}>
+                        <span class="scene-icon" aria-hidden="true">
+                            {line.tone === ContrastTone.BAD && <X size={15} stroke-width={2.4} />}
+                            {line.tone === ContrastTone.GOOD && <Check size={15} stroke-width={2.4} />}
+                        </span>
+                        <span data-i18n={`${path}.lines.${index}.text`}>{line.text}</span>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+    <p class="scene-caption" data-i18n={`${path}.caption`}>{scene.caption}</p>
+</div>

@@ -16,8 +16,11 @@
     },
     "dependencies": {
         "@astrojs/sitemap": "^3.7.2",
-        "@fontsource/barlow": "^5.3.0",
-        "@fontsource/barlow-condensed": "^5.3.0",
+        "@fontsource/edu-sa-beginner": "^5.3.0",
+        "@fontsource/jetbrains-mono": "^5.3.0",
+        "@fontsource/kalam": "^5.3.0",
+        "@fontsource/yaldevi": "^5.3.0",
+        "@lucide/astro": "^1.56.0",
         "astro": "^6.4.3"
     }
 }

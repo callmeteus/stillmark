@@ -1,190 +1,44 @@
 ---
-import AgentInstallTabs from "../components/landing/AgentInstallTabs.astro";
-import ClosingInstall from "../components/landing/ClosingInstall.astro";
-import CommandReference from "../components/landing/CommandReference.astro";
-import DeltaMark from "../components/landing/DeltaMark.astro";
-import DetailSection from "../components/landing/DetailSection.astro";
-import GeneralNotes from "../components/landing/GeneralNotes.astro";
-import HeroInstallTabs from "../components/landing/HeroInstallTabs.astro";
-import LegendStrip from "../components/landing/LegendStrip.astro";
-import LineSample from "../components/landing/LineSample.astro";
-import MobileInstallBar from "../components/landing/MobileInstallBar.astro";
-import RevisionDrawing from "../components/landing/RevisionDrawing.astro";
-import RevisionTable from "../components/landing/RevisionTable.astro";
-import SiteHeader from "../components/landing/SiteHeader.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { SiteLinks } from "../config/SiteLinks";
-import { createLocaleBundle } from "../i18n/LocaleBundle";
-import type { LocaleId } from "../i18n/LocaleIds";
+import ActivityLog from "../components/home/ActivityLog.astro";
+import DesignShowcase from "../components/home/DesignShowcase.astro";
+import FeatureGrid from "../components/home/FeatureGrid.astro";
+import HomeHero from "../components/home/HomeHero.astro";
+import InstallSteps from "../components/home/InstallSteps.astro";
+import TopicPicker from "../components/home/TopicPicker.astro";
+import WhyCommand from "../components/home/WhyCommand.astro";
+import { createLocaleBundle, SiteMessagesByLocale } from "../i18n/LocaleBundle";
 import { enUS } from "../i18n/en-US";
-import { buildInstallPrompt } from "../utils/BuildInstallPrompt";
+import { TopicGroup, TopicId, Topics } from "../i18n/topics";
+import SiteLayout from "../layouts/SiteLayout.astro";
 
-const t = enUS;
-const lang = "en-US";
-const installUrls: Record<LocaleId, string> = {
-    "en-US": SiteLinks.resolveInstallGuideUrl("en-US"),
-    "pt-BR": SiteLinks.resolveInstallGuideUrl("pt-BR")
-};
-const localeBundle = createLocaleBundle(installUrls);
-const installPrompt = buildInstallPrompt(t.hero.installPromptTemplate, installUrls[lang]);
-const globalInstallPrompt = buildInstallPrompt(t.hero.installPromptGlobalTemplate, installUrls[lang]);
+const PickerTopics = [
+    ...Topics.filter((topic) => topic.group !== TopicGroup.START),
+    ...Topics.filter((topic) => topic.id === TopicId.SETTINGS)
+];
+
+const bundle = createLocaleBundle((locale) => ({
+    meta: SiteMessagesByLocale[locale].home.meta,
+    page: {
+        ...SiteMessagesByLocale[locale].home,
+        picks: PickerTopics.map((topic) => ({
+            contrast: topic.copy[locale].contrast,
+            say: topic.copy[locale].examples[0].say
+        }))
+    }
+}));
+
+const t = enUS.home;
+const ui = enUS.ui;
 ---
 
-<BaseLayout
-    title={t.meta.title}
-    description={t.meta.description}
-    lang={lang}
-    skipToContent={t.nav.skipToContent}
->
-    <SiteHeader nav={t.nav} logoHref={import.meta.env.BASE_URL} navAriaLabel="Primary" />
-
-    <main id="main-content" class="page-main" tabindex="-1">
-        <div class="container">
-            <section class="sheet" aria-labelledby="hero-title" data-revision-demo>
-                <div class="sheet-cell sheet-title">
-                    <h1 id="hero-title" class="hero-title" data-i18n="hero.title">{t.hero.title}</h1>
-                    <p class="hero-subtitle" data-i18n="hero.subtitle">{t.hero.subtitle}</p>
-                </div>
-
-                <div class="sheet-cell sheet-revisions">
-                    <RevisionTable demo={t.hero.demo} />
-                    <ul class="legend-key">
-                        <li>
-                            <LineSample local={false} />
-                            <span data-i18n="howItWorks.legendShared">{t.howItWorks.legendShared}</span>
-                        </li>
-                        <li>
-                            <LineSample local={true} />
-                            <span data-i18n="howItWorks.legendLocal">{t.howItWorks.legendLocal}</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="sheet-cell sheet-field">
-                    <RevisionDrawing demo={t.hero.demo} />
-                </div>
-
-                <div id="hero-install" class="sheet-cell sheet-install">
-                    <HeroInstallTabs
-                        agentLabel={t.hero.installLabel}
-                        cliLabel={t.hero.installCliLabel}
-                        tabGroupLabel={t.hero.installTabGroupLabel}
-                        modeAgentLabel={t.hero.installModeAgentLabel}
-                        modeCliLabel={t.hero.installModeCliLabel}
-                        scopeGroupLabel={t.hero.installScopeGroupLabel}
-                        scopeProjectLabel={t.hero.installScopeProjectLabel}
-                        scopeGlobalLabel={t.hero.installScopeGlobalLabel}
-                        agentPrompt={installPrompt}
-                        globalAgentPrompt={globalInstallPrompt}
-                        cliCommand={t.hero.cliInstallCommand}
-                        globalCliCommand={t.hero.cliInstallGlobalCommand}
-                        copyLabel={t.copy.copyShort}
-                        copiedLabel={t.copy.copied}
-                        failedLabel={t.copy.failed}
-                        agentReadyLabel={t.copy.readyInTerminal}
-                        cliReadyLabel={t.copy.readyInTerminal}
-                        agentManualHint={t.copy.manualHint}
-                        cliManualHint={t.hero.cliInstallHint}
-                        globalCliManualHint={t.hero.cliInstallGlobalHint}
-                    />
-                </div>
-
-                <p class="sheet-id" aria-hidden="true">S-01</p>
-            </section>
-
-            <section id="how-it-works" class="page-section" aria-labelledby="how-it-works-title">
-                <header class="section-head">
-                    <h2 id="how-it-works-title" data-i18n="howItWorks.title">{t.howItWorks.title}</h2>
-                    <p class="section-lead" data-i18n="howItWorks.lead">{t.howItWorks.lead}</p>
-                </header>
-                <LegendStrip content={t.howItWorks} />
-            </section>
-
-            <section id="get-started" class="page-section" aria-labelledby="get-started-title">
-                <header class="section-head">
-                    <h2 id="get-started-title" data-i18n="quickStart.title">{t.quickStart.title}</h2>
-                </header>
-                <GeneralNotes steps={t.quickStart.steps}>
-                    <AgentInstallTabs
-                        items={t.agents.items}
-                        tabGroupLabel={t.agents.tabGroupLabel}
-                        copyLabel={t.copy.copyShort}
-                        copiedLabel={t.copy.copied}
-                        failedLabel={t.copy.failed}
-                        readyLabel={t.copy.readyInTerminal}
-                    />
-                </GeneralNotes>
-            </section>
-
-            <DetailSection
-                sectionKey="planning"
-                sheetId="S-02"
-                content={t.planning}
-                sample={{ file: ".stillmark/plans/TASK_PLAN.md", local: true, lines: t.planning.sample, revised: { line: 0, rev: 2 } }}
-            />
-            <DetailSection
-                sectionKey="coverage"
-                sheetId="S-03"
-                flip
-                content={t.coverage}
-                sample={{ file: "COVERAGE.md", local: false, lines: t.coverage.sample, revised: { line: 2, rev: 3 } }}
-            />
-            <DetailSection sectionKey="design" sheetId="S-04" content={t.design} />
-            <DetailSection sectionKey="workspace" sheetId="S-05" content={t.workspace} tree={t.workspace.tree} />
-
-            <section id="commands" class="page-section" aria-labelledby="commands-title">
-                <header class="section-head">
-                    <h2 id="commands-title" data-i18n="commands.title">{t.commands.title}</h2>
-                    <p class="section-lead" data-i18n="commands.lead">{t.commands.lead}</p>
-                </header>
-                <CommandReference
-                    commandHeader={t.commands.tableCommand}
-                    descriptionHeader={t.commands.tableDescription}
-                    modeConsoleLabel={t.commands.modeConsoleLabel}
-                    modeAgentLabel={t.commands.modeAgentLabel}
-                    modeGroupLabel={t.commands.modeGroupLabel}
-                    rows={t.commands.rows}
-                    agentOnlyRows={t.commands.agentOnlyRows}
-                />
-            </section>
-
-            <ClosingInstall close={t.close} command={t.hero.cliInstallCommand} copy={t.copy} />
-        </div>
+<SiteLayout bundle={bundle}>
+    <main id="main-content" class="home" tabindex="-1">
+        <HomeHero hero={t.hero} />
+        <DesignShowcase design={t.design} ui={ui} />
+        <TopicPicker topics={PickerTopics} picker={t.picker} ui={ui} />
+        <WhyCommand why={t.why} />
+        <FeatureGrid features={t.features} />
+        <ActivityLog log={t.log} />
+        <InstallSteps install={t.install} ui={ui} />
     </main>
-
-    <footer class="site-footer">
-        <div class="container footer-block">
-            <p class="footer-brand">
-                <DeltaMark class="site-logo-mark" />
-                <span>Stillmark</span>
-            </p>
-            <p class="footer-tagline" data-i18n="footer.tagline">{t.footer.tagline}</p>
-            <p class="footer-meta">
-                <span data-i18n="footer.license">{t.footer.license}</span>
-                {
-                    SiteLinks.github
-                        ? (
-                            <a href={SiteLinks.github} rel="noopener noreferrer" target="_blank" data-i18n="nav.github">
-                                {t.nav.github}
-                            </a>
-                        )
-                        : null
-                }
-                <a href="#hero-install" data-i18n="footer.backToInstall">{t.footer.backToInstall}</a>
-            </p>
-        </div>
-    </footer>
-
-    <MobileInstallBar
-        command={installPrompt}
-        copyLabel={t.copy.copyShort}
-        copiedLabel={t.copy.copied}
-        failedLabel={t.copy.failed}
-        readyLabel={t.copy.readyInTerminal}
-        barLabel={t.hero.installLabel}
-    />
-
-    <script define:vars={{ localeBundle }}>
-        window.__STILLMARK_LOCALE__ = localeBundle;
-    </script>
-</BaseLayout>
+</SiteLayout>

@@ -1,0 +1,33 @@
+---
+import ChevronsLeftRight from "@lucide/astro/icons/chevrons-left-right";
+import type { SiteMessages } from "../../i18n/en-US";
+
+/**
+ * Before/after slider: both versions stacked in the same box, the "after" side revealed
+ * from the handle to the right. A transparent range input drives the handle, so mouse,
+ * touch, and arrow keys all work. Fill the `before` and `after` slots.
+ */
+interface Props {
+    labels: SiteMessages["ui"]["compare"];
+    class?: string;
+}
+
+const { labels, class: className } = Astro.props;
+---
+
+<div class:list={["compare", className]} data-compare style="--pos: 50%">
+    <div class="compare-layer compare-before">
+        <slot name="before" />
+    </div>
+    <div class="compare-layer compare-after">
+        <slot name="after" />
+    </div>
+    <span class="compare-tag is-before" data-i18n="ui.compare.before">{labels.before}</span>
+    <span class="compare-tag is-after" data-i18n="ui.compare.after">{labels.after}</span>
+    <span class="compare-handle" aria-hidden="true">
+        <span class="compare-knob">
+            <ChevronsLeftRight size={16} stroke-width={2} />
+        </span>
+    </span>
+    <input class="compare-range" type="range" min="0" max="100" value="50" aria-label={labels.label} data-i18n-aria-label="ui.compare.label" />
+</div>

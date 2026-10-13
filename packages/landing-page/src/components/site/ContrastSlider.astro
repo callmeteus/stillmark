@@ -1,0 +1,39 @@
+---
+import ChevronsLeftRight from "@lucide/astro/icons/chevrons-left-right";
+import type { SiteMessages } from "../../i18n/en-US";
+import type { TopicContrast } from "../../i18n/topics";
+import ContrastScene from "./ContrastScene.astro";
+
+/**
+ * What working looks like without Stillmark and with it, side by side. Unlike the image slider,
+ * the handle resizes the two halves instead of clipping one layer, so each scene stays whole and readable:
+ * the shrinking side slides out under the handle. Narrow screens stack the two scenes without a handle.
+ * `path` is the i18n prefix of the contrast (for example `page.contrast`).
+ */
+interface Props {
+    contrast: TopicContrast;
+    path: string;
+    ui: SiteMessages["ui"];
+}
+
+const { contrast, path, ui } = Astro.props;
+---
+
+<div class="split-wrap">
+    <div class="split" data-compare style="--pos: 50%">
+        <div class="split-pane split-without">
+            <span class="compare-tag" data-i18n="ui.compare.without">{ui.compare.without}</span>
+            <ContrastScene scene={contrast.without} path={`${path}.without`} variant="without" />
+        </div>
+        <div class="split-pane split-with">
+            <span class="compare-tag" data-i18n="ui.compare.with">{ui.compare.with}</span>
+            <ContrastScene scene={contrast.with} path={`${path}.with`} variant="with" />
+        </div>
+        <span class="compare-handle" aria-hidden="true">
+            <span class="compare-knob">
+                <ChevronsLeftRight size={16} stroke-width={2} />
+            </span>
+        </span>
+        <input class="compare-range" type="range" min="0" max="100" value="50" aria-label={ui.compare.label} data-i18n-aria-label="ui.compare.label" />
+    </div>
+</div>

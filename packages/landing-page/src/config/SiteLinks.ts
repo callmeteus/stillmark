@@ -38,8 +38,29 @@ export function resolveInstallGuideUrl(lang: "en-US" | "pt-BR"): string {
     return `${siteOrigin}/install.md`;
 }
 
+const basePath = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+
+/**
+ * Site-relative URL of the docs overview, optionally at a section anchor.
+ */
+export function docsUrl(anchor?: string): string {
+    return anchor ? `${basePath}docs/#${anchor}` : `${basePath}docs/`;
+}
+
+/**
+ * Site-relative URL of one docs topic page.
+ */
+export function topicUrl(slug: string): string {
+    return `${basePath}docs/${slug}/`;
+}
+
 export const SiteLinks = {
     github: resolveGithubUrl(),
+    home: basePath,
+    homeInstall: `${basePath}#install`,
+    installGuide: `${basePath}install.md`,
     cliTarballInstallUrl: resolveCliTarballInstallUrl(),
-    resolveInstallGuideUrl
+    resolveInstallGuideUrl,
+    docsUrl,
+    topicUrl
 };

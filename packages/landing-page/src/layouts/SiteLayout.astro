@@ -1,0 +1,30 @@
+---
+import SiteFooter from "../components/site/SiteFooter.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import type { LocaleBundle } from "../i18n/LocaleBundle";
+import { enUS } from "../i18n/en-US";
+import BaseLayout from "./BaseLayout.astro";
+
+/**
+ * Every page: the sticky top bar, the page content, and the footer.
+ * Embeds the page's locale bundle so the language switch works without a reload.
+ */
+interface Props {
+    bundle: LocaleBundle;
+    active?: "docs";
+}
+
+const { bundle, active } = Astro.props;
+const en = bundle.messages["en-US"];
+const ui = enUS.ui;
+---
+
+<BaseLayout title={en.meta.title} description={en.meta.description} lang="en-US" skipToContent={ui.skipToContent}>
+    <SiteHeader ui={ui} active={active} />
+    <slot />
+    <SiteFooter ui={ui} />
+
+    <script is:inline define:vars={{ bundle }}>
+        window.__STILLMARK_LOCALE__ = bundle;
+    </script>
+</BaseLayout>

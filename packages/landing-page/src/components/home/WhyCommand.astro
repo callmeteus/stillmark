@@ -1,0 +1,50 @@
+---
+import Check from "@lucide/astro/icons/check";
+import X from "@lucide/astro/icons/x";
+import type { SiteMessages } from "../../i18n/en-US";
+
+/**
+ * Why the skill calls a command instead of letting the agent edit files:
+ * the agent only interprets the request, the command makes the exact change.
+ */
+interface Props {
+    why: SiteMessages["home"]["why"];
+}
+
+const { why } = Astro.props;
+---
+
+<section class="home-section" aria-labelledby="why-title">
+    <h2 id="why-title" class="section-title" data-i18n="page.why.title">{why.title}</h2>
+    <p class="section-lead" data-i18n="page.why.lead">{why.lead}</p>
+
+    <div class="why-compare">
+        <div class="why-card is-without">
+            <h3 class="why-card-title" data-i18n="page.why.without.title">{why.without.title}</h3>
+            <ul class="why-list">
+                {
+                    why.without.items.map((item, index) => (
+                        <li>
+                            <X size={18} stroke-width={2} aria-hidden="true" class="why-icon" />
+                            <span data-i18n={`page.why.without.items.${index}`}>{item}</span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+
+        <div class="why-card is-with">
+            <h3 class="why-card-title" data-i18n="page.why.with.title">{why.with.title}</h3>
+            <ul class="why-list">
+                {
+                    why.with.items.map((item, index) => (
+                        <li>
+                            <Check size={18} stroke-width={2} aria-hidden="true" class="why-icon" />
+                            <span data-i18n={`page.why.with.items.${index}`}>{item}</span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+    </div>
+</section>

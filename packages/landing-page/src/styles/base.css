@@ -3,102 +3,83 @@
 }
 
 html {
-    scrollbar-color: rgba(229, 239, 255, 0.35) var(--ground-deep);
-    scroll-padding-top: 1.5rem;
+    scroll-padding-top: calc(var(--header-height) + 1.5rem);
+    scroll-behavior: smooth;
+    background: var(--paper);
 }
 
 body {
     margin: 0;
     min-height: 100vh;
-    font-family: var(--font-body);
-    font-size: 1.0625rem;
-    line-height: 1.6;
+    font-family: var(--font-print);
+    font-size: 1rem;
+    line-height: 1.55;
     color: var(--ink);
-    background-color: var(--ground);
-    background-image:
-        linear-gradient(var(--grid-major) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
-        linear-gradient(var(--grid-minor) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
-    background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+    background: var(--paper);
     -webkit-font-smoothing: antialiased;
 }
 
 h1,
 h2,
 h3,
-p {
+p,
+figure,
+ol,
+ul {
     margin: 0;
+}
+
+ol,
+ul {
+    padding: 0;
+    list-style: none;
 }
 
 h1,
 h2,
 h3 {
-    font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 700;
     text-wrap: balance;
+}
+
+p {
+    text-wrap: pretty;
 }
 
 a {
     color: inherit;
-    text-decoration-color: var(--line-soft);
+    text-decoration-color: var(--rule-strong);
     text-underline-offset: 0.2em;
 }
 
 a:hover {
-    color: var(--rev-ink);
     text-decoration-color: currentColor;
 }
 
+button {
+    font: inherit;
+    color: inherit;
+}
+
 :focus-visible {
-    outline: 2px solid var(--rev);
+    outline: 2px solid var(--ink);
     outline-offset: 3px;
 }
 
 ::selection {
-    background: rgba(255, 122, 69, 0.45);
-    color: #ffffff;
-}
-
-::-webkit-scrollbar {
-    width: 0.625rem;
-    height: 0.5rem;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--ground-deep);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(229, 239, 255, 0.3);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(229, 239, 255, 0.5);
+    background: rgba(17, 17, 17, 0.14);
 }
 
 code {
     font-family: var(--font-mono);
 }
 
-p code,
-dd code,
-td code {
-    font-size: 0.86em;
-    color: var(--ink);
-    background: rgba(10, 42, 78, 0.75);
-    border: 1px solid var(--line-faint);
-    padding: 0.05em 0.35em;
-    overflow-wrap: anywhere;
+img {
+    max-width: 100%;
 }
 
-.container {
-    max-width: 80rem;
-    margin: 0 auto;
-    padding: 0 clamp(1rem, 3vw, 2rem);
-}
-
-.sr-only {
+.sr-only,
+.copy-status {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -110,11 +91,6 @@ td code {
     border: 0;
 }
 
-.break-code {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
 .skip-link {
     position: absolute;
     left: 1rem;
@@ -122,8 +98,8 @@ td code {
     z-index: 100;
     padding: 0.5rem 1rem;
     background: var(--ink);
-    color: var(--on-rev);
-    font-weight: 600;
+    color: var(--paper);
+    font-weight: 700;
     transform: translateY(-200%);
     transition: transform 0.15s ease-out;
 }
@@ -133,67 +109,11 @@ td code {
     transform: translateY(0);
 }
 
-.page-main {
-    padding-bottom: 2rem;
-}
-
-.page-main:focus {
-    outline: none;
-}
-
-body.has-mobile-install-bar .page-main {
-    padding-bottom: 9rem;
-}
-
-.delta-mark {
-    position: relative;
-    display: inline-grid;
-    place-items: center;
-    width: 1.55em;
-    height: 1.35em;
-    color: var(--rev);
-    flex-shrink: 0;
-}
-
-.delta-mark svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.7;
-    stroke-linejoin: round;
-    overflow: visible;
-}
-
-.delta-mark-label {
-    position: relative;
-    padding-top: 0.32em;
-    font-family: var(--font-display);
-    font-size: 0.72em;
-    font-weight: 600;
-    line-height: 1;
-    color: var(--rev-ink);
-}
-
-.line-sample {
-    display: block;
-    width: 3.5rem;
-    height: 8px;
-    overflow: visible;
-}
-
-.line-sample line {
-    stroke: var(--line);
-    stroke-width: 2;
-}
-
-.line-sample.is-local line {
-    stroke-dasharray: 7 5;
-}
-
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
     *,
     *::before,
     *::after {

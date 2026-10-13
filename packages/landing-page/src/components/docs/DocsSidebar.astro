@@ -1,0 +1,57 @@
+---
+import ChevronDown from "@lucide/astro/icons/chevron-down";
+import { SiteLinks } from "../../config/SiteLinks";
+import type { SiteMessages } from "../../i18n/en-US";
+import { TopicGroups, topicsInGroup } from "../../i18n/topics";
+
+/**
+ * Docs navigation: overview plus every topic under its group.
+ * On narrow screens it collapses behind a "Browse the docs" toggle.
+ * `current` is the slug of the open topic, or undefined on the overview.
+ */
+interface Props {
+    ui: SiteMessages["ui"];
+    current?: string;
+}
+
+const { ui, current } = Astro.props;
+---
+
+<nav class="docs-nav" aria-label={ui.docsNav.label} data-i18n-aria-label="ui.docsNav.label" data-docs-nav>
+    <button type="button" class="docs-nav-toggle" aria-expanded="false" aria-controls="docs-nav-body" data-docs-nav-toggle>
+        <span data-i18n="ui.docsNav.browse">{ui.docsNav.browse}</span>
+        <ChevronDown size={18} stroke-width={1.8} aria-hidden="true" />
+    </button>
+
+    <div id="docs-nav-body" class="docs-nav-body">
+        <a class="docs-nav-link" href={SiteLinks.docsUrl()} aria-current={current ? undefined : "page"} data-i18n="ui.docsNav.overview">
+            {ui.docsNav.overview}
+        </a>
+
+        {
+            TopicGroups.map((group) => {
+                const key = group.toLowerCase() as keyof SiteMessages["ui"]["groups"];
+
+                return (
+                    <div class="docs-nav-group">
+                        <p class="docs-nav-heading" data-i18n={`ui.groups.${key}`}>{ui.groups[key]}</p>
+                        <ul>
+                            {topicsInGroup(group).map((topic) => (
+                                <li>
+                                    <a
+                                        class="docs-nav-link"
+                                        href={SiteLinks.topicUrl(topic.slug)}
+                                        aria-current={topic.slug === current ? "page" : undefined}
+                                        data-i18n={`toc.${topic.slug}`}
+                                    >
+                                        {topic.copy["en-US"].label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                );
+            })
+        }
+    </div>
+</nav>

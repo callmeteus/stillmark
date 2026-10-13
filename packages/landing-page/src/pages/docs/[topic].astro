@@ -1,0 +1,112 @@
+---
+import CommandTable from "../../components/docs/CommandTable.astro";
+import TopicPager from "../../components/docs/TopicPager.astro";
+import ContrastSlider from "../../components/site/ContrastSlider.astro";
+import ExampleCard from "../../components/site/ExampleCard.astro";
+import InstallField from "../../components/site/InstallField.astro";
+import InstallPair from "../../components/site/InstallPair.astro";
+import { SiteLinks } from "../../config/SiteLinks";
+import { createLocaleBundle } from "../../i18n/LocaleBundle";
+import { enUS } from "../../i18n/en-US";
+import { TopicId, Topics, type TopicDefinition } from "../../i18n/topics";
+import DocsLayout from "../../layouts/DocsLayout.astro";
+
+/**
+ * One generated page per docs topic.
+ */
+export function getStaticPaths() {
+    return Topics.map((topic, index) => ({
+        params: { topic: topic.slug },
+        props: { topic, previous: Topics[index - 1], next: Topics[index + 1] }
+    }));
+}
+
+interface Props {
+    topic: TopicDefinition;
+    previous?: TopicDefinition;
+    next?: TopicDefinition;
+}
+
+const { topic, previous, next } = Astro.props;
+const ui = enUS.ui;
+const t = topic.copy["en-US"];
+const groupKey = topic.group.toLowerCase() as keyof typeof ui.groups;
+
+const bundle = createLocaleBundle((locale) => {
+    const copy = topic.copy[locale];
+
+    return {
+        meta: { title: `${copy.label} - Stillmark docs`, description: copy.summary },
+        page: {
+            ...copy,
+            tryIt: `/stillmark ${copy.examples[0].say}`,
+            previous: previous?.copy[locale].label,
+            next: next?.copy[locale].label
+        }
+    };
+});
+---
+
+<DocsLayout bundle={bundle} current={topic.slug}>
+    <header class="doc-head">
+        <p class="doc-crumbs">
+            <a href={SiteLinks.docsUrl()} data-i18n="ui.docsNav.label">{ui.docsNav.label}</a>
+            <span aria-hidden="true">/</span>
+            <span data-i18n={`ui.groups.${groupKey}`}>{ui.groups[groupKey]}</span>
+        </p>
+        <h1 class="doc-title" data-i18n="page.label">{t.label}</h1>
+        <p class="doc-summary" data-i18n="page.summary">{t.summary}</p>
+        <p class="doc-lead" data-i18n="page.lead">{t.lead}</p>
+    </header>
+
+    <nav class="on-page" aria-labelledby="on-page-title">
+        <p id="on-page-title" class="on-page-title" data-i18n="ui.topic.onThisPage">{ui.topic.onThisPage}</p>
+        <ul>
+            {t.contrast && <li><a href="#contrast" data-i18n="ui.topic.contrast">{ui.topic.contrast}</a></li>}
+            <li><a href="#try-it" data-i18n="ui.topic.tryIt">{ui.topic.tryIt}</a></li>
+            <li><a href="#examples" data-i18n="ui.topic.examples">{ui.topic.examples}</a></li>
+            <li><a href="#commands" data-i18n="ui.commands.title">{ui.commands.title}</a></li>
+        </ul>
+    </nav>
+
+    {
+        t.contrast && (
+            <section class="doc-section" aria-labelledby="contrast">
+                <h2 id="contrast" class="doc-heading" data-i18n="ui.topic.contrast">{ui.topic.contrast}</h2>
+                <ContrastSlider contrast={t.contrast} path="page.contrast" ui={ui} />
+            </section>
+        )
+    }
+
+    <section class="doc-section" aria-labelledby="try-it">
+        <h2 id="try-it" class="doc-heading" data-i18n="ui.topic.tryIt">{ui.topic.tryIt}</h2>
+        {
+            topic.id === TopicId.INSTALL ? (
+                <InstallPair ui={ui} idPrefix="topic" />
+            ) : (
+                <>
+                    <p class="doc-text" data-i18n="ui.topic.tryItHint">{ui.topic.tryItHint}</p>
+                    <InstallField id="try-it-say" text={`/stillmark ${t.examples[0].say}`} textPath="page.tryIt" copy={ui.copy} />
+                </>
+            )
+        }
+    </section>
+
+    <section class="doc-section" aria-labelledby="examples">
+        <h2 id="examples" class="doc-heading" data-i18n="ui.topic.examples">{ui.topic.examples}</h2>
+        {
+            t.examples.map((example, index) => (
+                <article class="doc-example" aria-labelledby={`example-${index}`}>
+                    <ExampleCard example={example} path={`page.examples.${index}`} ui={ui}>
+                        <h3 slot="title" id={`example-${index}`} class="example-title" data-i18n={`page.examples.${index}.title`}>
+                            {example.title}
+                        </h3>
+                    </ExampleCard>
+                </article>
+            ))
+        }
+    </section>
+
+    <CommandTable commands={t.commands} ui={ui} />
+    <TopicPager previous={previous} next={next} ui={ui} />
+</DocsLayout>

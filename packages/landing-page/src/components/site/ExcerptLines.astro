@@ -1,0 +1,33 @@
+---
+import { MarkKind, type ExcerptMark } from "../../i18n/topics";
+
+/**
+ * The lines of a file excerpt. With `mark`, one line is circled or struck through in red pen
+ * with its handwritten note. Line copy resolves from `linesPath.N`, the note from `notePath`.
+ */
+interface Props {
+    lines: string[];
+    linesPath: string;
+    mark?: ExcerptMark;
+    notePath?: string;
+}
+
+const { lines, linesPath, mark, notePath } = Astro.props;
+---
+
+<ol class="excerpt-lines">
+    {
+        lines.map((line, index) =>
+            mark && index === mark.line ? (
+                <li class:list={["excerpt-line", "is-marked", { "is-circle": mark.kind === MarkKind.CIRCLE, "is-strike": mark.kind === MarkKind.STRIKE }]}>
+                    <span class="excerpt-mark">
+                        <span data-i18n={`${linesPath}.${index}`}>{line}</span>
+                    </span>
+                    <span class="excerpt-note" data-i18n={notePath}>{mark.note}</span>
+                </li>
+            ) : (
+                <li class="excerpt-line" data-i18n={`${linesPath}.${index}`}>{line}</li>
+            )
+        )
+    }
+</ol>

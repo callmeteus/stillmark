@@ -1,0 +1,121 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import InstallPair from "../../components/site/InstallPair.astro";
+import TopicIcon from "../../components/site/TopicIcon.astro";
+import { SiteLinks } from "../../config/SiteLinks";
+import { createLocaleBundle, SiteMessagesByLocale, topicSummaries } from "../../i18n/LocaleBundle";
+import { enUS } from "../../i18n/en-US";
+import { TopicGroups, Topics, topicsInGroup, type TopicDefinition } from "../../i18n/topics";
+import DocsLayout from "../../layouts/DocsLayout.astro";
+
+/**
+ * Topic behind a "What are you working on?" card.
+ */
+function cardTopic(slug: string): TopicDefinition {
+    const topic = Topics.find((candidate) => candidate.slug === slug);
+
+    if (!topic) {
+        throw new Error(`[docs] unknown topic slug in working cards: ${slug}`);
+    }
+
+    return topic;
+}
+
+const bundle = createLocaleBundle((locale) => {
+    const docs = SiteMessagesByLocale[locale].docs;
+
+    return {
+        meta: docs.meta,
+        page: {
+            ...docs,
+            says: docs.working.cards.map((card) => cardTopic(card.slug).copy[locale].examples[0].say),
+            topics: topicSummaries(locale)
+        }
+    };
+});
+
+const t = enUS.docs;
+const ui = enUS.ui;
+---
+
+<DocsLayout bundle={bundle}>
+    <header class="doc-head">
+        <h1 class="doc-title" data-i18n="page.title">{t.title}</h1>
+        <p class="doc-lead" data-i18n="page.lead">{t.lead}</p>
+    </header>
+
+    <section class="doc-section" aria-labelledby="start-title">
+        <h2 id="start-title" class="doc-heading" data-i18n="page.getStarted.title">{t.getStarted.title}</h2>
+        <p class="doc-text" data-i18n="page.getStarted.body">{t.getStarted.body}</p>
+        <InstallPair ui={ui} idPrefix="docs" />
+    </section>
+
+    <section class="doc-section" aria-labelledby="working-title">
+        <h2 id="working-title" class="doc-heading" data-i18n="page.working.title">{t.working.title}</h2>
+        <p class="doc-text" data-i18n="page.working.lead">{t.working.lead}</p>
+
+        <ul class="working-grid">
+            {
+                t.working.cards.map((card, index) => {
+                    const topic = cardTopic(card.slug);
+
+                    return (
+                        <li>
+                            <a class="working-card" href={SiteLinks.topicUrl(card.slug)}>
+                                <span class="working-icon">
+                                    <TopicIcon id={topic.id} size={18} />
+                                </span>
+                                <h3 class="working-title" data-i18n={`page.working.cards.${index}.title`}>{card.title}</h3>
+                                <p class="working-body" data-i18n={`page.working.cards.${index}.body`}>{card.body}</p>
+                                <code class="working-say">
+                                    <span class="example-slash">/stillmark</span>
+                                    <span data-i18n={`page.says.${index}`}>{topic.copy["en-US"].examples[0].say}</span>
+                                </code>
+                            </a>
+                        </li>
+                    );
+                })
+            }
+        </ul>
+    </section>
+
+    <section id="reference" class="doc-section" aria-labelledby="reference-title">
+        <h2 id="reference-title" class="doc-heading" data-i18n="page.reference.title">{t.reference.title}</h2>
+        <p class="doc-text" data-i18n="page.reference.lead">{t.reference.lead}</p>
+
+        {
+            TopicGroups.map((group) => {
+                const key = group.toLowerCase() as keyof typeof ui.groups;
+                const topics = topicsInGroup(group);
+
+                return (
+                    <div class="reference-group">
+                        <h3 class="reference-heading">
+                            <span data-i18n={`ui.groups.${key}`}>{ui.groups[key]}</span>
+                            <span class="reference-count">{topics.length}</span>
+                        </h3>
+                        <ul class="reference-list">
+                            {topics.map((topic) => {
+                                const index = Topics.indexOf(topic);
+
+                                return (
+                                    <li>
+                                        <a class="reference-row" href={SiteLinks.topicUrl(topic.slug)}>
+                                            <TopicIcon id={topic.id} size={18} />
+                                            <span class="reference-name" data-i18n={`toc.${topic.slug}`}>{topic.copy["en-US"].label}</span>
+                                            <span class="reference-summary" data-i18n={`page.topics.${index}.summary`}>{topic.copy["en-US"].summary}</span>
+                                            <span class="reference-meta">
+                                                {topic.copy["en-US"].commands.length} <span data-i18n="ui.commands.count">{ui.commands.count}</span>
+                                            </span>
+                                            <ArrowRight size={16} stroke-width={1.8} aria-hidden="true" class="reference-arrow" />
+                                        </a>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                );
+            })
+        }
+    </section>
+</DocsLayout>
