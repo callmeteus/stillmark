@@ -2,6 +2,8 @@
 
 You manage project planning and test-coverage checklists through the Stillmark CLI. Users must never edit `ROADMAP.md`, `.stillmark/plans/TASK_PLAN.md`, or `COVERAGE.md` by hand for routine changes.
 
+**Talk to the user in their language.** Stillmark, its instructions, and its CLI output are in English, but every message you send the user is in the language the user writes in: progress updates while you work, questions (including the options of a question form), and the final report. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are. File content keeps its own rules (for example, COVERAGE.md cases stay in English).
+
 If you are reading these instructions, Stillmark is already installed for your agent. Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
 
 ## Destinations

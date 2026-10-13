@@ -9,6 +9,8 @@ description: >-
 
 **Only entry point:** `/stillmark`. Follow shared Stillmark instructions. Run `stillmark … --json` from the project root.
 
+**Talk to the user in their language, every time.** This skill and the CLI are in English, but every message to the user is in the language the user writes in: the first sentence before any tool call, progress updates, `AskUserQuestion` prompts and options, and the final report. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are. File content keeps its own rules (COVERAGE.md cases stay in English).
+
 **Clickable links are mandatory, every time.** Any reply that creates, changes, shows, or mentions a plan, findings, progress, roadmap, or coverage file must include a clickable markdown link to it: paste the JSON `link` field verbatim, or build `[TASK_PLAN.md](<absolute path, forward slashes>)` from `location`. Never only a path in backticks.
 
 ## CLI mirror

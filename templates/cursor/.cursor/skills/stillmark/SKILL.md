@@ -14,6 +14,8 @@ description: >-
 
 All file-backed operations run `stillmark … --json` from the **project root**. The text after `/stillmark` is the instruction.
 
+**Talk to the user in their language, every time.** This skill and the CLI are in English, but every message to the user is in the language the user writes in: the first sentence before any tool call, progress updates, `AskQuestion` prompts and options, and the final report. A user writing in Portuguese gets Portuguese from the first line, with correct accents. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are. File content keeps its own rules (COVERAGE.md cases stay in English).
+
 **Clickable links are mandatory, every time.** Whenever a reply creates, changes, shows, or mentions `TASK_PLAN.md`, `FINDINGS.md`, `PROGRESS.md`, `ROADMAP.md`, or `COVERAGE.md`, include a clickable markdown link to the file. Paste the JSON `link` field verbatim; when there is none, build `[TASK_PLAN.md](C:/abs/path/.stillmark/plans/TASK_PLAN.md)` from the absolute `location` (forward slashes, spaces as `%20`). A path in backticks alone is not acceptable: `.stillmark/plans/` is git-ignored and greyed out in the explorer.
 
 ## CLI mirror rule

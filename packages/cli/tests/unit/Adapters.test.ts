@@ -14,5 +14,6 @@ describe("Adapters", () => {
         expect(text).toContain("needsClarification");
         expect(text).toContain("/stillmark coverage");
         expect(text).not.toContain("Use `/coverage`");
+        expect(text).toContain("Talk to the user in their language");
     });
 });

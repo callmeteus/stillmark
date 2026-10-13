@@ -2,6 +2,8 @@
 
 Follow the **stillmark** skill. Text after `/stillmark` is the full instruction. **Do not use `/coverage`** - use `/stillmark coverage …` instead.
 
+**Reply in the user's language.** Stillmark is in English, but every message to the user (first sentence, progress updates, questions, final report) is in the language of the text after `/stillmark`.
+
 This command running means Stillmark is already installed. Setting up the repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
 
 ## CLI mirror
