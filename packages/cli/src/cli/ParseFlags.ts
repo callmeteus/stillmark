@@ -52,6 +52,7 @@ const VALUE_FLAGS: Record<string, string> = {
     "--commit": "commit",
     "--roadmap-dates": "roadmapDates",
     "--strip-attribution": "stripAttribution",
+    "--auto-push": "autoPush",
     "--message": "message"
 };
 

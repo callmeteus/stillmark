@@ -93,4 +93,38 @@ describe("first-run setup commit", () => {
             cleanup();
         }
     });
+
+    it("pushes right after the commit by default, and stays local with --auto-push=false", async () => {
+        const { root, cleanup } = createTempProject();
+        const remote = fs.mkdtempSync(path.join(path.dirname(root), "stillmark-remote-"));
+
+        try {
+            git(remote, "init", "-q", "--bare");
+            git(root, "init", "-q", "-b", "main");
+            fs.writeFileSync(path.join(root, "app.ts"), "export {};\n");
+            git(root, "add", "app.ts");
+            git(root, "commit", "-q", "-m", "inicial");
+            git(root, "remote", "add", "origin", remote);
+            git(root, "push", "-q", "-u", "origin", "main");
+
+            await cli(root, "init");
+            await cli(root, "config", "status");
+
+            expect((lastJson().config as { git: { autoPush: boolean } }).git.autoPush).toBe(true);
+            expect(await cli(root, "git", "setup-commit")).toBe(0);
+            expect(lastJson()).toMatchObject({ pushed: true });
+            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toBe("configura o Stillmark");
+
+            expect(await cli(root, "config", "set", "--auto-push=false")).toBe(0);
+            fs.writeFileSync(path.join(root, "PRODUCT.md"), "# Product\n");
+            await cli(root, "git", "setup-commit", "--message", "docs: produto");
+
+            expect(lastJson()).toMatchObject({ changed: true, pushed: false });
+            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toBe("configura o Stillmark");
+            expect(await cli(root, "config", "set", "--auto-push=maybe")).toBe(1);
+        } finally {
+            cleanup();
+            fs.rmSync(remote, { recursive: true, force: true });
+        }
+    });
 });

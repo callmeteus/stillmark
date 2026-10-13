@@ -24,7 +24,7 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
 {
     "git": {
         "autoCommit": false,
-        "autoPush": false
+        "autoPush": true
     },
     "sharing": {
         "firstRunPrompted": false,

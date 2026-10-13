@@ -28,6 +28,9 @@ export interface LearnedConfig {
 
 export interface GitConfig {
     autoCommit: boolean;
+    /**
+     * When true (default), commits made by Stillmark or requested by the user are pushed right after.
+     */
     autoPush: boolean;
     /**
      * Optional template with `{summary}`. When omitted, Stillmark infers prefix from `git log`.
@@ -75,7 +78,7 @@ const DEFAULT_SHARING: SharingConfig = {
 const DEFAULT_CONFIG: StillmarkConfig = {
     git: {
         autoCommit: false,
-        autoPush: false,
+        autoPush: true,
         stripAgentAttribution: true
     },
     roadmap: { dates: true },

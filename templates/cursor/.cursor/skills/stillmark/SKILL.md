@@ -144,6 +144,8 @@ Never commit or push unless the user grants it. Preview subjects: `stillmark git
 
 Before a commit the user asked for, run `stillmark git hook install --json` (idempotent) so the `commit-msg` hook strips `Co-authored-by: Cursor`, `Made-with: Cursor`, and Claude attribution. On by default (`git.stripAgentAttribution`); off with `stillmark config set --strip-attribution=false`. If `attributionHook.foreign` is true, tell the user an existing hook was left alone.
 
+Defaults for every commit the user asks for: no agent markers in the message (no `(t)`), no agent co-author, and push right after (`git.autoPush`, on by default; off with `stillmark config set --auto-push=false`, or skip when the user says not to push). `/stillmark git commit` means: stage the pending work, commit with a message from `git message-style`, then push.
+
 ## Examples (CLI via slash)
 
 ```text

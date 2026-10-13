@@ -136,15 +136,20 @@ export async function runGitCommand(
             ? flags.message.trim()
             : (await resolveCommitMessage(paths.root, "configura o Stillmark", config.git.commitMessage, runner, "chore")).message;
         const result = await commitSetupFiles(paths, runner, message);
+        const push = result.committed && config.git.autoPush && result.topLevel
+            ? await runner.run(result.topLevel, ["push"])
+            : undefined;
+        const pushNote = push === undefined ? "" : push.ok ? "; pushed" : `; push failed: ${push.stderr.trim()}`;
 
         return {
             ok: result.committed || result.detail === "Nothing to commit",
             changed: result.committed,
             action: "git setup-commit",
             summary: result.committed
-                ? `Committed ${result.files.length} Stillmark file(s): ${message}`
+                ? `Committed ${result.files.length} Stillmark file(s): ${message}${pushNote}`
                 : result.detail,
-            setupFiles: result
+            setupFiles: result,
+            pushed: push?.ok ?? false
         } as OperationResult;
     }
 
@@ -190,4 +195,28 @@ export async function runConfigSetStripAttribution(
     const synced = await syncAttributionHook(paths, runner);
 
     return { ...synced, changed: true, action: "config-set", config } as OperationResult;
+}
+
+/**
+ * `stillmark config set --auto-push=true|false`: whether commits are pushed right after.
+ */
+export function runConfigSetAutoPush(paths: ProjectPaths, flags: Record<string, string | boolean>): OperationResult {
+    const value = String(flags.autoPush).toLowerCase();
+
+    if (value !== "true" && value !== "false") {
+        return { ok: false, changed: false, summary: "Use --auto-push=true or --auto-push=false" };
+    }
+
+    const config = loadConfig(paths);
+
+    config.git = { ...config.git, autoPush: value === "true" };
+    writeConfig(paths, config);
+
+    return {
+        ok: true,
+        changed: true,
+        action: "config-set",
+        summary: value === "true" ? "Commits will be pushed right after" : "Commits will stay local until you push",
+        config
+    } as OperationResult;
 }

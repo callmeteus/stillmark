@@ -126,7 +126,9 @@ After each operation, report what changed, item IDs, and file paths from the JSO
 
 ## Git
 
-Never run `git commit` or `git push` yourself. Stillmark git integration follows `stillmark.config.json` (`autoCommit` / `autoPush`, default off). Per-call: `--git` or `--no-git`.
+Never run `git commit` or `git push` yourself unless the user asks for a commit. Stillmark git integration follows `stillmark.config.json`: `autoCommit` (default off) commits roadmap changes automatically; per-call `--git` or `--no-git`.
+
+Push: `git.autoPush` is on by default. When the user asks for a commit (or Stillmark commits), push right after; skip the push only when the user says so or `autoPush` is off (`stillmark config set --auto-push=false`). Report whether the push worked.
 
 Commit subjects: Stillmark checks recent `git log` only to see whether the repo uses conventional commits; if so it writes `docs: …` for planning documents and `chore: …` for setup, otherwise the plain summary. It never copies a scope from history (such as `(t)` or `(auth)`). Preview with `stillmark git message-style "<summary>" --json`. Override with `git.commitMessage` and `{summary}` in config when needed.
 

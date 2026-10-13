@@ -1,7 +1,7 @@
 {
     "git": {
         "autoCommit": false,
-        "autoPush": false,
+        "autoPush": true,
         "stripAgentAttribution": true
     },
     "roadmap": {
