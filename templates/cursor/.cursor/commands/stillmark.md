@@ -10,11 +10,13 @@ This command running means Stillmark is already installed. Setting up the repo i
 
 Any terminal command `stillmark <args>` works as `/stillmark <args>` with `--json` appended.
 
-Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `update`, `long-running`.
+Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
 
 `/stillmark notify ...` sets up Telegram, Discord, Slack, or webhook notifications when the agent finishes (see the skill); secrets stay in the user's home, never in the repo.
 
 `/stillmark caveman on|off|lite|full|ultra` switches terse replies for this conversation only (add `--save` to keep it); follow the returned `rules` from now on, or drop them after `off`.
+
+`/stillmark readme` creates or restructures a README from the real project: `readme plan`, ask which template when `needsClarification`, write it, then `readme check` until clean (see the skill).
 
 `/stillmark git push` pushes local commits; when it lists `uncommitted` files, ask whether to commit them first, then push again.
 

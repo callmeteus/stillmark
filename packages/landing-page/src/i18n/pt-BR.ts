@@ -277,6 +277,8 @@ export const ptBR: Messages = {
             ["stillmark caveman on|off", "Respostas curtas só nesta conversa (`--save` guarda a escolha)"],
             ["stillmark caveman compress <arquivo>", "Enxuga um arquivo de instruções do agente e guarda o original legível (`verify` confere, `restore` devolve)"],
             ["stillmark caveman", "Quanto as respostas curtas custam por mensagem e quanto os arquivos enxutos economizam"],
+            ["stillmark readme plan", "Começa um README com o que existe de verdade no projeto, num modelo que você escolhe entre nove (a versão antiga fica guardada)"],
+            ["stillmark readme check", "Encontra comandos que não existem, links quebrados, texto inacabado e informações que o README antigo tinha"],
             ["stillmark roadmap defer \"…\"", "Move item do roadmap para adiados"],
             ["stillmark roadmap priority \"…\" <nível>", "Altera prioridade no roadmap"],
             ["stillmark plan init [objetivo]", "Inicia TASK_PLAN.md para o objetivo atual"],

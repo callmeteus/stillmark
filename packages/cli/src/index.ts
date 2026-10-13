@@ -12,3 +12,4 @@ export * from "./coverage";
 export * from "./caveman";
 export * from "./notify";
 export * from "./update";
+export * from "./readme";

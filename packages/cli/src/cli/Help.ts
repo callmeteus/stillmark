@@ -61,6 +61,12 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark caveman verify <file>",
         "stillmark caveman restore <file>"
     ],
+    readme: [
+        "stillmark readme templates",
+        "stillmark readme plan [--template=<id>] [--file=README.md]   (project facts, outline, facts to keep; backs up the current README)",
+        "stillmark readme check [--template=<id>] [--file=README.md]   (sections, unknown commands, broken links, leftovers, lost facts)",
+        "stillmark readme restore [--file=README.md]"
+    ],
     git: [
         "stillmark git push   (pushes local commits; lists uncommitted files without committing them)",
         "stillmark git message-style [\"<summary>\"]",

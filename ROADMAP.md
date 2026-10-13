@@ -8,11 +8,6 @@
   - All commands documented, including the full design mode
   - Dedicated site areas or pages per topic (roadmap, plan, coverage, design, git, config, updates) instead of one long page
   - English and Portuguese with the same content
-- [ ] **R-021** README.md generator and refactorer with selectable templates
-  priority: medium · status: planned · added: 2026-10-13
-  - Generates a README from the real project (scripts, packages, setup) or restructures an existing one
-  - Several templates the user picks from (for example app or monorepo root, package, open source library)
-  - Keeps accurate existing facts (ports, env vars, URLs) and never invents commands
 - [ ] **R-023** Generate and maintain CHANGELOG.md, including retroactive history
   priority: medium · status: planned · added: 2026-10-13
   - Created and updated by the CLI like ROADMAP.md and COVERAGE.md, with validation
@@ -77,3 +72,8 @@
   - Fires on every finish: success, failure, blocked, or waiting for input
   - Channels: Telegram and Discord bots, generic webhooks, and local delivery from the user's own computer
   - Channels and credentials configured per user, never committed
+- [x] **R-021** README.md generator and refactorer with selectable templates
+  priority: medium · status: done · added: 2026-10-13 · done: 2026-10-13
+  - Generates a README from the real project (scripts, packages, setup) or restructures an existing one
+  - Several templates the user picks from (for example app or monorepo root, package, open source library)
+  - Keeps accurate existing facts (ports, env vars, URLs) and never invents commands

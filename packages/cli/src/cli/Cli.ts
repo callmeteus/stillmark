@@ -45,6 +45,7 @@ import { runCavemanCommand, runConfigSetCaveman } from "./CavemanCommands";
 import { runConfigSetLanguage } from "./LanguageCommands";
 import { runNotifyCommand, runNotifyHookCommand } from "./NotifyCommands";
 import { parseFlags } from "./ParseFlags";
+import { runReadmeCommand } from "./ReadmeCommands";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
 export interface CliOptions {
@@ -515,6 +516,13 @@ export async function runCli(argv: string[]): Promise<number> {
             return result.ok ? 0 : 1;
         }
 
+        if (cmd === "readme") {
+            const result = runReadmeCommand(paths, positional, flags);
+            output(result, json);
+
+            return result.ok ? 0 : 1;
+        }
+
         if (cmd === "git") {
             const result = await runGitCommand(paths, positional.slice(1), gitRunner, flags);
             output(result, json);
@@ -634,7 +642,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | config | classify | roadmap | plan | git | notify | caveman | coverage | add | move | install | update | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | git | notify | caveman | readme | coverage | add | move | install | update | long-running"
             },
             json
         );

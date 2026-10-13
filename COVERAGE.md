@@ -202,3 +202,17 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Astro build produces a static GitHub Pages artifact
 - [ ] [happy] Locale toggle switches every message between English and Portuguese
 - [ ] [happy] Copy buttons copy the install prompt and show the copied state
+
+## 12. README generator
+
+### `packages/cli/src/readme`
+- [x] [happy] Every template uses catalog sections and maps headings in English, Portuguese, and Spanish
+- [x] [happy] Reads scripts as commands for the detected package manager, bin, env var names, and linkable docs
+- [x] [happy] Suggests app-root, package, cli, service, standard, or minimal from the project shape
+- [x] [happy] Plan without a template suggests one and asks the user to pick
+- [x] [happy] Plan backs up the README, maps existing headings, and lists URLs, ports, and env vars to keep
+- [x] [sad] Refuses unknown templates, files outside the project, and non-markdown files
+- [x] [sad] Check reports missing and empty sections, heading jumps, placeholders, unknown scripts and make targets, broken links, and lost facts
+- [x] [edge] Ignores placeholders inside code and badge URLs
+- [x] [happy] Restore brings the previous README back
+- [x] [edge] Keeps the backup during a rewrite and refreshes it after a passing check

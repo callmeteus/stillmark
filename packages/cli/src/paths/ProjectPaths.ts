@@ -21,6 +21,10 @@ export interface ProjectPaths {
      * Local caveman data: readable originals of compressed context files and the savings manifest.
      */
     cavemanDir: string;
+    /**
+     * Local README data: backups of READMEs before a rewrite and the chosen template per file.
+     */
+    readmeDir: string;
     config: string;
     gitignore: string;
     coverage: string;
@@ -72,6 +76,7 @@ export function resolveProjectPaths(root: string): ProjectPaths {
         state: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "STATE.json"),
         updateState: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "UPDATE.json"),
         cavemanDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "caveman"),
+        readmeDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "readme"),
         config: path.join(normalized, "stillmark.config.json"),
         gitignore: path.join(normalized, ".gitignore"),
         coverage: path.join(normalized, "COVERAGE.md")

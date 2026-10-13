@@ -10,6 +10,8 @@ You manage project planning and test-coverage checklists through the Stillmark C
 
 **Notifications when the agent finishes.** Channels live per user in `~/.stillmark/notify.json`, never in the repository; never write tokens or webhook URLs into repo files. Telegram: the user creates a bot with @BotFather and messages it once, then `stillmark notify add telegram --token=<token> --json` finds the chat. Discord and Slack channel webhooks: `stillmark notify add discord|slack --url=<webhook> --json`; any JSON endpoint: `notify add webhook --url=<https url>`. For every finish (done, failed, stopped, waiting for the user), install the agent hook: `stillmark notify hook install --agent=cursor|claude --json`; with the hook in place do not also run `notify send`. Without a hook (Codex), run `stillmark notify send "<one-line outcome>" --status=done|failed|waiting --json` as the last step of a run. Confirm with `stillmark notify test --json`.
 
+**README generator and refactorer.** Never write a README from memory. `stillmark readme plan [--file=<path>/README.md] --json` reads the real project (`facts.runCommands` with ready script commands, workspaces, bin, env var names, linkable files), backs up the current README, and returns the template `outline`, `factsToKeep`, and `instructions`. When `needsClarification` is true, ask the user which of the returned `templates` to use (suggested first), then run `readme plan --template=<id>` again. Write the README in `language` with only the facts from the payload, moving existing content into matching sections; then `stillmark readme check --json` until `issues` is empty (missing sections, placeholders, commands that do not exist, broken links, lost facts). `stillmark readme restore --json` brings the previous version back; `stillmark readme templates --json` lists the layouts and their sources.
+
 If you are reading these instructions, Stillmark is already installed for your agent. Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
 
 ## Destinations
@@ -65,6 +67,7 @@ stillmark config set --detail=compact|extended|inherit [--module=coverage|roadma
 stillmark config set --auto-update=true|false [--update-interval=<hours>] --json
 stillmark config set --caveman=off|lite|full|ultra --json
 stillmark caveman [stats] | on|off|lite|full|ultra [--save] | compress <file> | verify <file> | restore <file> --json
+stillmark readme templates | plan [--template=<id>] [--file=README.md] | check [--file=README.md] | restore [--file=README.md] --json
 stillmark update [--force] --json
 stillmark update apply --json
 ```

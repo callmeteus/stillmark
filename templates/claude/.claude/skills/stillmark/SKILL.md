@@ -15,11 +15,13 @@ description: >-
 
 **Caveman replies (optional, off by default).** `config status` returns `caveman` (`level`, `rules`, `ruleTokens`); when `rules` is not empty, follow them in every reply (terse, still in the user's language, commands/code/links/IDs/errors exact). This conversation only: `stillmark caveman on|off|lite|full|ultra --json` (returns `temporary: true` and `rules`; after `off`, drop them even if the saved setting is on). Saved: add `--save` or `config set --caveman=full|lite|ultra|off`. Context files (never ROADMAP, COVERAGE, plans, CHANGELOG): `caveman compress <file>` keeps the original and returns `instructions`; rewrite, then `caveman verify <file>` until clean, or `caveman restore <file>`. `stillmark caveman --json` shows rule cost per turn and tokens saved.
 
+**README generator and refactorer.** Never write a README from memory. `stillmark readme plan [--file=<path>/README.md] --json` reads the real project (`facts.runCommands`, workspaces, bin, env var names, linkable files), backs up the current README, and returns `outline`, `factsToKeep`, and `instructions`. When `needsClarification` is true, ask which of the returned `templates` to use (suggested first), then `readme plan --template=<id>`. Write in `language` with only those facts, moving existing content into matching sections; then `readme check --json` until `issues` is empty. `readme restore` brings the previous version back; `readme templates` lists the layouts and sources.
+
 **Clickable links are mandatory, every time.** Any reply that creates, changes, shows, or mentions a plan, findings, progress, roadmap, or coverage file must include a clickable markdown link to it: paste the JSON `link` field verbatim, or build `[TASK_PLAN.md](<absolute path, forward slashes>)` from `location`. Never only a path in backticks.
 
 ## CLI mirror
 
-`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `long-running`.
+`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `readme`, `long-running`.
 
 **Notifications.** Per user in `~/.stillmark/notify.json`, never in the repo. Telegram: bot from @BotFather, user messages it once, then `stillmark notify add telegram --token=<t> --json` (chat found by itself). Discord/Slack channel webhooks: `notify add discord|slack --url=<webhook>`; generic JSON: `notify add webhook --url=<https>`. Every finish: `stillmark notify hook install --agent=claude --json` (Stop and Notification hooks in `~/.claude/settings.json`; then do not also run `notify send`). Check with `notify test [<name>]`; `notify off|on`, `notify remove <name>`, `notify` lists (masked).
 

@@ -266,6 +266,8 @@ export const enUS = {
             ["stillmark caveman on|off", "Short replies for this conversation only (`--save` keeps the choice)"],
             ["stillmark caveman compress <file>", "Shrink an agent instructions file, keeping the readable original (`verify` checks it, `restore` brings it back)"],
             ["stillmark caveman", "How much the short replies cost per message and how much the shrunk files save"],
+            ["stillmark readme plan", "Starts a README from what is really in the project, with a layout you pick from nine (the old version is kept)"],
+            ["stillmark readme check", "Finds commands that do not exist, broken links, unfinished text, and information the old README had"],
             ["stillmark roadmap defer \"…\"", "Move a roadmap item to deferred"],
             ["stillmark roadmap priority \"…\" <level>", "Change roadmap priority"],
             ["stillmark plan init [objective]", "Start TASK_PLAN.md for the current objective"],
