@@ -14,3 +14,6 @@ dist-release/
 /pt-br/
 /sitemap-index.xml
 /sitemap-0.xml
+
+# Stillmark
+.stillmark/plans/
