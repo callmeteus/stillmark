@@ -20,6 +20,9 @@ For local development in this monorepo, build `packages/cli` and use `npx stillm
 
 ```bash
 stillmark init
+stillmark init --todos --json
+stillmark roadmap todos --json
+stillmark roadmap todos --add --json
 stillmark roadmap add "PostgreSQL support" --json
 stillmark roadmap done "PostgreSQL support" --json
 stillmark roadmap add "Login by QR code" --done --commit=a1b2c3d --json

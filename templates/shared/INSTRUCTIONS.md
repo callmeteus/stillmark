@@ -31,8 +31,9 @@ If `needsClarification` is true, ask exactly one concise question. Do not duplic
 ## Commands (run from project root)
 
 ```bash
-stillmark init
+stillmark init [--todos]
 stillmark roadmap add "<description>" [--priority=critical|high|medium|low] --json
+stillmark roadmap todos [--add] --json
 stillmark roadmap priority "<item>" critical|high|medium|low --json
 stillmark roadmap done "<item>" [--date=YYYY-MM-DD|--commit=<sha>] --json
 stillmark roadmap add "<finished work>" --done [--commit=<sha>] [--priority=high] --json
@@ -80,6 +81,8 @@ TASK_PLAN.md ends with a generated `## Checklist`: one checkbox per task (`- [ ]
 
 Finished work goes to `## Done` as a checked item with `status: done`: `roadmap done "<item>"` for an existing item, `roadmap add "<description>" --done` for work that was never on the roadmap. To backfill history ("add everything already done"), read `git log --date=short --format="%h %ad %s"` and the code, group commits into user-visible features, mark matching items with `roadmap done`, and add the rest with `--done` (one command per feature, no secrets or internal details). Pass `--commit=<sha>` of the commit that finished each feature (usually the last one in the group) so the delivery date is the real one; the CLI reads the date from git.
 
+Pending work left in code comments: `roadmap todos --json` lists every `TODO` / `FIXME` comment (git-ignored files and build output skipped) with its files and `onRoadmap` when the roadmap already has it, and writes nothing. `roadmap todos --add --json` adds each new one to `## Backlog` (`FIXME` as `high`), skipping duplicates and anything that looks like a secret; a second run adds nothing. When comments are vague or not in `language.resolved.roadmap`, list them and add the ones worth tracking with `roadmap add "<clear title>"` instead. `init --todos` runs the `--add` right after setup.
+
 Roadmap dates are on by default (`roadmap.dates` in `stillmark.config.json`): new items get `added: YYYY-MM-DD`, finished items `done: YYYY-MM-DD`. `roadmap done` on an item already done with `--date` / `--commit` fixes its date. Turn dates off with `config set --roadmap-dates=false` when the user asks. Set priority with `--priority` when adding, or `plan priority` / `roadmap priority` afterwards; without the flag the task is `medium`.
 
 ## Auto-update
@@ -125,7 +128,7 @@ Design playbooks ship inside the installed `stillmark` skill under `reference/`.
 
 On the first `/stillmark` in a repo, run `stillmark config status --json`. When `needsFirstRunPrompt` is true, run the setup before the original request, using the agent's structured question tool (Cursor `AskQuestion`, Claude Code `AskUserQuestion`; otherwise a numbered list):
 
-1. Ask together: the **document language** (single choice, mandatory: the user's chat language first, then English, then other), whether to **version `.stillmark/learnings/design/` in git** (single choice; **never** offer to commit `.stillmark/plans/`), and **what to generate now** (multiple choice: **All**, then `DESIGN.md` when the repo has a UI, `PRODUCT.md`, `COVERAGE.md` from existing tests, roadmap history from `git log` dated with `--commit=<sha>`, code style learnings, and **Nothing for now**).
+1. Ask together: the **document language** (single choice, mandatory: the user's chat language first, then English, then other), whether to **version `.stillmark/learnings/design/` in git** (single choice; **never** offer to commit `.stillmark/plans/`), and **what to generate now** (multiple choice: **All**, then `DESIGN.md` when the repo has a UI, `PRODUCT.md`, `COVERAGE.md` from existing tests, roadmap history from `git log` dated with `--commit=<sha>`, roadmap items from the code's `TODO` / `FIXME` comments, code style learnings, and **Nothing for now**).
 2. Record the language with `stillmark config set --language=<tag> --json` and sharing with `stillmark config set --design-system=true|false --prompted --json`. If the user defers sharing, skip `--prompted` so the setup can return later.
 3. Generate each picked item in the chosen language from the real code and history, never inventing; unknowns become open questions in the file.
 4. Then ask whether to commit **only the Stillmark files just created**, showing the file list and the exact `proposedMessage` from `stillmark git setup-files --json`, with options to commit with it, commit with a message the user types, or skip. On yes run `stillmark git setup-commit [--message "<msg>"] --json`: it commits exactly those paths (config, `ROADMAP.md`, `COVERAGE.md`, `.gitignore`, `DESIGN.md`, `PRODUCT.md`, shared learnings), leaves any other staged or unstaged work untouched, and pushes right after when `git.autoPush` is on.

@@ -6,13 +6,14 @@ const GLOBAL_OPTIONS = "Global options: --json, --root=<dir>, --help. Use -- bef
  * Usage lines per top-level command.
  */
 const COMMAND_USAGE: Record<string, string[]> = {
-    init: ["stillmark init"],
+    init: ["stillmark init [--todos]   (--todos also adds the code's TODO/FIXME comments to the roadmap)"],
     classify: ["stillmark classify \"<text>\""],
     roadmap: [
         "stillmark roadmap",
         "stillmark roadmap add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--done] [--date=YYYY-MM-DD|--commit=<ref>] [--allow-sensitive] [--git|--no-git]",
         "stillmark roadmap done \"<item>\" [--date=YYYY-MM-DD|--commit=<ref>]",
         "stillmark roadmap defer \"<item>\"",
+        "stillmark roadmap todos [--add] [--git|--no-git]   (lists TODO/FIXME comments in the code; --add puts the new ones in ## Backlog, FIXME as high)",
         "stillmark roadmap priority <item> critical|high|medium|low"
     ],
     plan: [

@@ -25,6 +25,8 @@ const BOOLEAN_FLAGS: Record<string, string> = {
     "--replace": "replace",
     "--done": "done",
     "--save": "save",
+    "--add": "add",
+    "--todos": "todos",
     "--help": "help",
     "-h": "help"
 };

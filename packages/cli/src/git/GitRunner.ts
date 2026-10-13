@@ -33,6 +33,10 @@ export function defaultSpawner(
         child.on("close", (code) => {
             resolve({ code: code ?? 1, stdout, stderr });
         });
+        // git missing or cwd gone: report a failed run instead of crashing the CLI.
+        child.on("error", (error) => {
+            resolve({ code: 1, stdout, stderr: error.message });
+        });
     });
 }
 

@@ -2,12 +2,6 @@
 
 ## Backlog
 
-- [ ] **R-019** Landing site that explains everything the agent does, like impeccable.style
-  priority: medium · status: planned · added: 2026-10-13
-  - Every agent capability explained with a concrete example (what you say, what Stillmark does, what changes)
-  - All commands documented, including the full design mode
-  - Dedicated site areas or pages per topic (roadmap, plan, coverage, design, git, config, updates) instead of one long page
-  - English and Portuguese with the same content
 - [ ] **R-023** Generate and maintain CHANGELOG.md, including retroactive history
   priority: medium · status: planned · added: 2026-10-13
   - Created and updated by the CLI like ROADMAP.md and COVERAGE.md, with validation
@@ -78,4 +72,12 @@
   - Several templates the user picks from (for example app or monorepo root, package, open source library)
   - Keeps accurate existing facts (ports, env vars, URLs) and never invents commands
 - [x] **R-026** Push right after every commit by default, configurable with config set --auto-push
+  priority: medium · status: done · done: 2026-10-13
+- [x] **R-019** Landing site that explains everything the agent does, like impeccable.style
+  priority: medium · status: done · added: 2026-10-13 · done: 2026-10-13
+  - Every agent capability explained with a concrete example (what you say, what Stillmark does, what changes)
+  - All commands documented, including the full design mode
+  - Dedicated site areas or pages per topic (roadmap, plan, coverage, design, git, config, updates) instead of one long page
+  - English and Portuguese with the same content
+- [x] **R-027** Turn TODO and FIXME comments in the code into roadmap items, with stillmark roadmap todos and init --todos
   priority: medium · status: done · done: 2026-10-13

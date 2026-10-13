@@ -40,6 +40,23 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Writes roadmap details and acceptance as indented lines
 - [ ] [happy] `roadmap defer` moves an item to Deferred
 
+### `packages/cli/src/todos/ScanTodos.ts`
+
+- [x] [happy] Finds TODO and FIXME comments across comment styles
+- [x] [edge] Ignores prose files, lowercase words, empty tags, build output, and node_modules
+- [x] [edge] Ignores markers inside string literals and wrapped doc sentences
+- [x] [edge] Merges the same comment from several files and keeps FIXME
+- [x] [happy] Uses the git file list so ignored files are skipped
+- [x] [edge] Shortens very long comments to one roadmap line
+### `packages/cli/src/operations/RoadmapTodos.ts`
+
+- [x] [happy] Lists comments without writing and flags the ones already on the roadmap
+- [x] [happy] Adds new comments to Backlog with FIXME as high priority
+- [x] [edge] A second run adds nothing
+- [x] [security] Leaves out comments that look like secrets
+- [x] [happy] Notes the source file when roadmap detail is extended
+- [x] [happy] Runs from the CLI as roadmap todos and init --todos
+- [x] [sad] Lists without a roadmap but refuses to add before init
 ## 3. Task plan
 
 ### `packages/cli/src/operations/PlanOperations.ts`

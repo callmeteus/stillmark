@@ -29,6 +29,7 @@ import {
     initProject,
     moveToPlan,
     moveToRoadmap,
+    roadmapTodos,
     setConfigDetail,
     setConfigSharing,
     updateRoadmapItem
@@ -135,8 +136,10 @@ export async function runCli(argv: string[]): Promise<number> {
             const hook = loadConfig(paths).git.stripAgentAttribution
                 ? (await syncAttributionHook(paths, gitRunner)).attributionHook
                 : undefined;
+            const todos = flags.todos ? await roadmapTodos(paths, { add: true, gitOverride, gitRunner }) : undefined;
+            const summary = todos ? `${init.summary}. ${todos.summary}` : init.summary;
 
-            output({ ...init, attributionHook: hook } as OperationResult, json);
+            output({ ...init, summary, attributionHook: hook, todos: todos?.todos } as OperationResult, json);
 
             return 0;
         }
@@ -236,6 +239,13 @@ export async function runCli(argv: string[]): Promise<number> {
 
             if (sub === "done" && positional[2]) {
                 const result = updateRoadmapItem(paths, { query: positional.slice(2).join(" "), done: true, date });
+                output(result, json, paths.roadmap);
+
+                return result.ok ? 0 : 1;
+            }
+
+            if (sub === "todos") {
+                const result = await roadmapTodos(paths, { add: Boolean(flags.add), gitOverride, gitRunner });
                 output(result, json, paths.roadmap);
 
                 return result.ok ? 0 : 1;

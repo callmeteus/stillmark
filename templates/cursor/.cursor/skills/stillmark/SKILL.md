@@ -34,6 +34,7 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 - Plan progress: TASK_PLAN.md ends with a generated `## Checklist` (`- [ ] T-001 - Title`, or `- [ ] PHASE-1 / T-001 - Title` grouped by phase). Never edit it by hand: run `plan status <task> in-progress` when starting a task and `plan done <task>` right after finishing it. Phases: `plan add "<title>" --phase=PHASE-1` or `plan phase <task> <phase>`.
 - Priority: `--priority=critical|high|medium|low` on `plan add`, `roadmap add`, and `add`; change later with `plan priority <task> <level>` or `roadmap priority "<item>" <level>`. Default is `medium`.
 - Finished work: `roadmap done "<item>"` moves an existing item to `## Done` (checked, `status: done`); `roadmap add "<description>" --done` records work that was never listed. To backfill the past, read `git log --date=short --format="%h %ad %s"`, group commits into user-visible features, and run one command per feature with `--commit=<sha>` of the commit that finished it, so the `done:` date is the real delivery date.
+- Code TODOs: `roadmap todos --json` lists the `TODO` / `FIXME` comments in the code (git-ignored files and build output skipped) with their files and whether the roadmap already has each (`onRoadmap`); it writes nothing. `roadmap todos --add --json` puts every new one in `## Backlog`, `FIXME` as `high`, skipping duplicates and anything that looks like a secret; running it again adds nothing. When the comments are vague or in another language than `language.resolved.roadmap`, list them and add the ones worth tracking with `roadmap add "<clear title>"` instead. `init --todos` does the `--add` right after setting up.
 - Dates: on by default, items get `added:` / `done:` (`YYYY-MM-DD`). `--date=YYYY-MM-DD` sets one by hand; `roadmap done` on an item already done with `--date`/`--commit` fixes its date. Off with `config set --roadmap-dates=false`.
 - Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
 
@@ -69,6 +70,7 @@ When `sharing.needsFirstRunPrompt` is **true**, run the setup once, in the user'
      - `PRODUCT.md`: what the product is, who uses it, tone of voice.
      - `COVERAGE.md`: test checklist from the existing tests (`stillmark coverage init`, then fill).
      - Roadmap history: past deliveries from `git log`, dated by commit (`roadmap add --done --commit=<sha>`).
+     - Roadmap from code TODOs: pending work left in `TODO` / `FIXME` comments (`roadmap todos --add`, or list and rewrite as above).
      - Code style learnings: conventions in `.stillmark/learnings/code-style/`.
 2. Record the language with `stillmark config set --language=<tag> --json` (BCP-47 such as `pt-BR`, `en`, `es`), and sharing with `stillmark config set --design-system=true|false --prompted --json` (dismissed = skip `--prompted` so the setup can return).
 3. Generate what was picked, in the chosen language, one item at a time, from the real code and history. Never invent: list unknowns as open questions inside the file. Link every file you write.
@@ -191,6 +193,7 @@ Defaults for every commit the user asks for: no agent markers in the message (no
 /stillmark init
 /stillmark config status --json
 /stillmark roadmap add "Observability"
+/stillmark roadmap todos --json
 /stillmark plan init "Ship billing" --in-scope "Invoices\nRefunds" --out-of-scope "Tax reports"
 /stillmark plan add "Refund webhook" --priority=high
 /stillmark move "API keys" to plan --confirm --json
