@@ -37,6 +37,7 @@ stillmark config set --strip-attribution=true|false --json
 stillmark git hook [status|install|remove] --json
 stillmark git setup-files --json
 stillmark git setup-commit [--message "<msg>"] --json
+stillmark git push --json
 stillmark plan init "<objective>" [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] --json
 stillmark plan scope [--objective "<text>"] [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] [--replace] --json
 stillmark plan add "<description>" [--priority=critical|high|medium|low] [--phase=PHASE-1] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
@@ -134,7 +135,7 @@ After each operation, report what changed, item IDs, and file paths from the JSO
 
 Never run `git commit` or `git push` yourself unless the user asks for a commit. Stillmark git integration follows `stillmark.config.json`: `autoCommit` (default off) commits roadmap changes automatically; per-call `--git` or `--no-git`.
 
-Push: `git.autoPush` is on by default. When the user asks for a commit (or Stillmark commits), push right after; skip the push only when the user says so or `autoPush` is off (`stillmark config set --auto-push=false`). Report whether the push worked.
+Push: `git.autoPush` is on by default. When the user asks for a commit (or Stillmark commits), push right after; skip the push only when the user says so or `autoPush` is off (`stillmark config set --auto-push=false`). Report whether the push worked. `stillmark git push --json` pushes local commits (setting `origin` as upstream on the first push) and never commits; when `uncommitted` is not empty, ask whether to commit those files first (proposed message from `git message-style`), then run it again.
 
 Commit subjects: Stillmark checks recent `git log` only to see whether the repo uses conventional commits; if so it writes `docs: …` for planning documents and `chore: …` for setup, otherwise the plain summary. It never copies a scope from history (such as `(t)` or `(auth)`). Preview with `stillmark git message-style "<summary>" --json`. Override with `git.commitMessage` and `{summary}` in config when needed.
 

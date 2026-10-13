@@ -73,3 +73,5 @@
   - Agent replies drop filler but keep commands, file links, IDs, and errors exact, still in the user's language
   - Optionally compress Stillmark skill and planning context the way caveman-compress does, with the readable original kept
   - Measure the savings, since the extra rules also cost input tokens
+- [x] **R-024** Push local commits with stillmark git push, listing uncommitted work instead of committing it
+  priority: medium · status: done · done: 2026-10-13

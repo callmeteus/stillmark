@@ -142,6 +142,9 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Setup commit commits only Stillmark files, leaving other work untouched
 - [x] [sad] Setup commit reports nothing to commit and refuses outside git
 
+- [x] [happy] Git push sets the upstream on first push, then pushes only new commits
+- [x] [security] Git push never commits and lists uncommitted files
+- [x] [sad] Git push refuses outside git, without a remote, and reports a failed push
 ## 8. Install and update
 
 ### `packages/cli/src/update`

@@ -26,6 +26,7 @@ stillmark roadmap add "Login by QR code" --done --commit=a1b2c3d --json
 stillmark config set --roadmap-dates=false --json
 stillmark git setup-files --json
 stillmark git setup-commit --json
+stillmark git push --json
 stillmark plan init "Billing export" --in-scope "CSV\nPDF" --out-of-scope "Excel" --json
 stillmark plan scope --in-scope "Refunds" --json
 stillmark plan add "Integration tests" --priority=high --phase=PHASE-1 --json --accept-scope-change

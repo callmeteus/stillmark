@@ -54,6 +54,7 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark caveman restore <file>"
     ],
     git: [
+        "stillmark git push   (pushes local commits; lists uncommitted files without committing them)",
         "stillmark git message-style [\"<summary>\"]",
         "stillmark git hook [status|install|remove]",
         "stillmark git setup-files",

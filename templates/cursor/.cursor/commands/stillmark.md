@@ -14,6 +14,8 @@ Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverag
 
 `/stillmark caveman on|off|lite|full|ultra` switches terse replies for this conversation only (add `--save` to keep it); follow the returned `rules` from now on, or drop them after `off`.
 
+`/stillmark git push` pushes local commits; when it lists `uncommitted` files, ask whether to commit them first, then push again.
+
 Start each run with `stillmark update --json`; when `updateAvailable` is true, run `recommended` first (see the skill).
 
 ## Coverage (embedded)

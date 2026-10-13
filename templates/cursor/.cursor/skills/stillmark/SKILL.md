@@ -163,6 +163,8 @@ Before a commit the user asked for, run `stillmark git hook install --json` (ide
 
 Defaults for every commit the user asks for: no agent markers in the message (no `(t)`), no agent co-author, and push right after (`git.autoPush`, on by default; off with `stillmark config set --auto-push=false`, or skip when the user says not to push). `/stillmark git commit` means: stage the pending work, commit with a message from `git message-style`, then push.
 
+`/stillmark git push` runs `stillmark git push --json`: it pushes local commits (setting `origin` as upstream on the first push) and never commits. When `uncommitted` is not empty, ask with `AskQuestion` whether to commit those files first, showing the proposed message (commit with it, commit with a message the user types, push only what is committed); after committing, run `stillmark git push --json` again.
+
 ## Examples (CLI via slash)
 
 ```text

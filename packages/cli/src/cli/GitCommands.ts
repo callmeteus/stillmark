@@ -4,6 +4,7 @@ import {
     commitSetupFiles,
     installAttributionHook,
     listSetupFiles,
+    pushPending,
     removeAttributionHook,
     resolveCommitMessage,
     type AttributionHookStatus,
@@ -107,7 +108,8 @@ export async function runGitHook(
 }
 
 /**
- * `stillmark git <sub> ...`: `hook [status|install|remove]` or `message-style [summary]` (alias `suggest`).
+ * `stillmark git <sub> ...`: `push`, `hook [status|install|remove]`, `setup-files`, `setup-commit`,
+ * or `message-style [summary]` (alias `suggest`).
  */
 export async function runGitCommand(
     paths: ProjectPaths,
@@ -171,6 +173,26 @@ export async function runGitCommand(
         } as OperationResult;
     }
 
+    if (sub === "push") {
+        const result = await pushPending(paths.root, runner);
+        const pending = result.uncommitted.length > 0
+            ? `${result.uncommitted.length} uncommitted file(s) left out; ask the user whether to commit them (message from stillmark git message-style), then run stillmark git push again`
+            : "";
+        const outcome = !result.gitRepo || result.detail
+            ? result.detail ?? "Push failed"
+            : result.pushed
+                ? `Pushed ${result.ahead} commit(s) of ${result.branch} to ${result.upstream ?? `origin/${result.branch}`}`
+                : `Nothing to push; ${result.branch} matches ${result.upstream}`;
+
+        return {
+            ok: result.gitRepo && result.detail === undefined,
+            changed: result.pushed,
+            action: "git push",
+            summary: [outcome, pending].filter(Boolean).join(". "),
+            ...result
+        } as OperationResult;
+    }
+
     if (sub === "message-style" || sub === "suggest") {
         const fallback = commitSummary(paths, "update");
         const summary = rest.join(" ") || fallback.summary;
@@ -189,7 +211,7 @@ export async function runGitCommand(
     return {
         ok: false,
         changed: false,
-        summary: "Usage: stillmark git message-style [summary] | git hook [status|install|remove] | git setup-files | git setup-commit [--message \"<msg>\"]"
+        summary: "Usage: stillmark git push | git message-style [summary] | git hook [status|install|remove] | git setup-files | git setup-commit [--message \"<msg>\"]"
     };
 }
 
