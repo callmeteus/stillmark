@@ -267,6 +267,8 @@ export const ptBR: Messages = {
             ["stillmark roadmap add \"…\" --done --commit=<sha>", "Registra no roadmap algo que já foi entregue, com a data do commit que entregou"],
             ["stillmark config set --roadmap-dates=false", "Para de colocar datas nos itens do roadmap (ligado por padrão)"],
             ["stillmark config set --strip-attribution=false", "Mantém as linhas \"Co-authored-by\" do Cursor e do Claude nos commits (removidas por padrão)"],
+            ["stillmark config set --auto-push=false", "Deixa os commits só na sua máquina, sem enviar (enviados por padrão)"],
+            ["stillmark config set --language=pt-BR", "Escolhe o idioma do roadmap, dos planos, da cobertura e dos commits, para todos ou um de cada vez"],
             ["stillmark roadmap defer \"…\"", "Move item do roadmap para adiados"],
             ["stillmark roadmap priority \"…\" <nível>", "Altera prioridade no roadmap"],
             ["stillmark plan init [objetivo]", "Inicia TASK_PLAN.md para o objetivo atual"],

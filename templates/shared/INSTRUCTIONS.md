@@ -2,7 +2,9 @@
 
 You manage project planning and test-coverage checklists through the Stillmark CLI. Users must never edit `ROADMAP.md`, `.stillmark/plans/TASK_PLAN.md`, or `COVERAGE.md` by hand for routine changes.
 
-**Talk to the user in their language.** Stillmark, its instructions, and its CLI output are in English, but every message you send the user is in the language the user writes in: progress updates while you work, questions (including the options of a question form), and the final report. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are. File content keeps its own rules (for example, COVERAGE.md cases stay in English).
+**Talk to the user in their language.** Stillmark, its instructions, and its CLI output are in English, but every message you send the user is in the language the user writes in: progress updates while you work, questions (including the options of a question form), and the final report. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are. File content follows the configured document language, not the chat language.
+
+**Document language (mandatory).** `stillmark config status --json` returns `language.needsPrompt` and `language.resolved` per target (`roadmap`, `plan`, `coverage`, `changelog`, `docs` for DESIGN/PRODUCT/README/learnings, `commits`). When `needsPrompt` is true, ask the user once, before writing any file, and record it with `stillmark config set --language=<tag> --json` (BCP-47: `pt-BR`, `en`, `es`, ...). Write every item, task, coverage case, document, and commit message in `language.resolved.<target>`. Structure the CLI parses (headings such as `## Backlog`, IDs, `status:` / `priority:` fields, coverage tags) stays exactly as the CLI writes it. One document in another language: `stillmark config set --language=<tag> --module=<target> --json`; `--language=inherit` removes the override. `git setup-files` and `git message-style` return `commitLanguage`; when the built-in summary is not in that language, translate it and pass `--message`.
 
 If you are reading these instructions, Stillmark is already installed for your agent. Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
 
@@ -10,7 +12,7 @@ If you are reading these instructions, Stillmark is already installed for your a
 
 - **ROADMAP.md** (version-controlled): strategic goals, initiatives, milestones, future capabilities, deferred work.
 - **.stillmark/plans/TASK_PLAN.md** (private local, gitignored): concrete tasks for the current execution scope, including **design and UI work** when relevant (dependencies, visual acceptance criteria, blockers, verification). Planning is optional for a one-off browser fix; use the plan when design spans multiple steps or long-running execution.
-- **COVERAGE.md** (version-controlled): checkbox-only test case checklist by area (edited via `/stillmark coverage …`). English case text; tags `[happy]`, `[sad]`, `[edge]`, `[security]`.
+- **COVERAGE.md** (version-controlled): checkbox-only test case checklist by area (edited via `/stillmark coverage …`). Case text in the coverage language (`language.resolved.coverage`); tags `[happy]`, `[sad]`, `[edge]`, `[security]` stay as they are.
 
 When the user names a destination, respect it. When omitted, run:
 
@@ -111,10 +113,10 @@ Design playbooks ship inside the installed `stillmark` skill under `reference/`.
 
 On the first `/stillmark` in a repo, run `stillmark config status --json`. When `needsFirstRunPrompt` is true, run the setup before the original request, using the agent's structured question tool (Cursor `AskQuestion`, Claude Code `AskUserQuestion`; otherwise a numbered list):
 
-1. Ask together: whether to **version `.stillmark/learnings/design/` in git** (single choice; **never** offer to commit `.stillmark/plans/`), and **what to generate now** (multiple choice: **All**, then `DESIGN.md` when the repo has a UI, `PRODUCT.md`, `COVERAGE.md` from existing tests, roadmap history from `git log` dated with `--commit=<sha>`, code style learnings, and **Nothing for now**).
-2. Record sharing with `stillmark config set --design-system=true|false --prompted --json`. If the user defers, skip `--prompted` so the setup can return later.
-3. Generate each picked item from the real code and history, never inventing; unknowns become open questions in the file.
-4. Then ask whether to commit **only the Stillmark files just created**, showing the file list and the exact `proposedMessage` from `stillmark git setup-files --json`, with options to commit with it, commit with a message the user types, or skip. On yes run `stillmark git setup-commit [--message "<msg>"] --json`: it commits exactly those paths (config, `ROADMAP.md`, `COVERAGE.md`, `.gitignore`, `DESIGN.md`, `PRODUCT.md`, shared learnings), leaves any other staged or unstaged work untouched, and never pushes.
+1. Ask together: the **document language** (single choice, mandatory: the user's chat language first, then English, then other), whether to **version `.stillmark/learnings/design/` in git** (single choice; **never** offer to commit `.stillmark/plans/`), and **what to generate now** (multiple choice: **All**, then `DESIGN.md` when the repo has a UI, `PRODUCT.md`, `COVERAGE.md` from existing tests, roadmap history from `git log` dated with `--commit=<sha>`, code style learnings, and **Nothing for now**).
+2. Record the language with `stillmark config set --language=<tag> --json` and sharing with `stillmark config set --design-system=true|false --prompted --json`. If the user defers sharing, skip `--prompted` so the setup can return later.
+3. Generate each picked item in the chosen language from the real code and history, never inventing; unknowns become open questions in the file.
+4. Then ask whether to commit **only the Stillmark files just created**, showing the file list and the exact `proposedMessage` from `stillmark git setup-files --json`, with options to commit with it, commit with a message the user types, or skip. On yes run `stillmark git setup-commit [--message "<msg>"] --json`: it commits exactly those paths (config, `ROADMAP.md`, `COVERAGE.md`, `.gitignore`, `DESIGN.md`, `PRODUCT.md`, shared learnings), leaves any other staged or unstaged work untouched, and pushes right after when `git.autoPush` is on.
 
 Use `--accept-scope-change` only after the user authorizes expanding scope. Use `--allow-sensitive` on roadmap writes only after warning the user about public ROADMAP.md.
 

@@ -16,6 +16,10 @@
         "codeStyleDir": ".stillmark/learnings/code-style"
     },
     "detail": {},
+    "language": {
+        "global": "en",
+        "commits": "pt-BR"
+    },
     "update": {
         "auto": true,
         "intervalHours": 24

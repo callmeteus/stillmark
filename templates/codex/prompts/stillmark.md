@@ -4,6 +4,8 @@ Run `stillmark` from the project root with `--json` for all planning operations.
 
 **User's language (mandatory):** Stillmark is in English, but every message to the user (progress updates, questions, final report) is in the language the user writes in. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are.
 
+**Document language (mandatory):** `stillmark config status --json` returns `language.needsPrompt` and `language.resolved` per target (`roadmap`, `plan`, `coverage`, `changelog`, `docs`, `commits`). When `needsPrompt` is true, ask once before writing any file and record it with `stillmark config set --language=<tag> --json`. Write every item, task, coverage case, document, and commit message in that language; headings, IDs, and fields the CLI parses stay as written. Per document: `--module=<target>`; `--language=inherit` removes an override.
+
 **Clickable links (mandatory):** every reply that creates, changes, shows, or mentions a plan, findings, progress, roadmap, or coverage file must include a clickable markdown link to it. Paste the JSON `link` field verbatim, or build `[TASK_PLAN.md](<absolute path, forward slashes>)` from `location`. Never only a path in backticks.
 
 **Auto-update:** start each `/stillmark` with `stillmark update --json` (npm is checked at most once per `update.intervalHours`, default 24h). When `updateAvailable` is true, run `recommended`, tell the user in one line, then continue. Ignore `error`.

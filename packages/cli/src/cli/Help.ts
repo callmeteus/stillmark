@@ -42,7 +42,8 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark config set --auto-update=true|false [--update-interval=<hours>]",
         "stillmark config set --roadmap-dates=true|false",
         "stillmark config set --strip-attribution=true|false",
-        "stillmark config set --auto-push=true|false"
+        "stillmark config set --auto-push=true|false",
+        "stillmark config set --language=<en|pt-BR|...>|inherit [--module=roadmap|plan|coverage|changelog|docs|commits]"
     ],
     git: [
         "stillmark git message-style [\"<summary>\"]",

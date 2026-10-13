@@ -47,6 +47,7 @@ describe("first-run setup commit", () => {
             git(root, "commit", "-q", "-m", "inicial");
 
             await cli(root, "init");
+            await cli(root, "config", "set", "--language=pt-BR", "--module=commits");
             fs.writeFileSync(path.join(root, "DESIGN.md"), "# Design\n");
             fs.writeFileSync(path.join(root, "app.ts"), "export const staged = 1;\n");
             git(root, "add", "app.ts");
@@ -113,14 +114,14 @@ describe("first-run setup commit", () => {
             expect((lastJson().config as { git: { autoPush: boolean } }).git.autoPush).toBe(true);
             expect(await cli(root, "git", "setup-commit")).toBe(0);
             expect(lastJson()).toMatchObject({ pushed: true });
-            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toBe("configura o Stillmark");
+            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toBe("set up Stillmark");
 
             expect(await cli(root, "config", "set", "--auto-push=false")).toBe(0);
             fs.writeFileSync(path.join(root, "PRODUCT.md"), "# Product\n");
             await cli(root, "git", "setup-commit", "--message", "docs: produto");
 
             expect(lastJson()).toMatchObject({ changed: true, pushed: false });
-            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toBe("configura o Stillmark");
+            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toBe("set up Stillmark");
             expect(await cli(root, "config", "set", "--auto-push=maybe")).toBe(1);
         } finally {
             cleanup();

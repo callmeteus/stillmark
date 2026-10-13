@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import { sanitizeDetailConfig, type DetailConfig } from "./DetailLevel";
+import { sanitizeLanguageConfig, type LanguageConfig } from "./LanguageConfig";
 import { DefaultUpdateConfig, sanitizeUpdateConfig, type UpdateConfig } from "./UpdateConfig";
 
 export interface SharingConfig {
@@ -60,6 +61,10 @@ export interface StillmarkConfig {
      */
     detail: DetailConfig;
     /**
+     * Language of written content (documents and commit messages), global or per target.
+     */
+    language: LanguageConfig;
+    /**
      * Periodic update checks for the CLI and installed agent templates.
      */
     update: UpdateConfig;
@@ -85,6 +90,7 @@ const DEFAULT_CONFIG: StillmarkConfig = {
     sharing: { ...DEFAULT_SHARING },
     learned: { ...DEFAULT_LEARNED },
     detail: {},
+    language: {},
     update: { ...DefaultUpdateConfig }
 };
 
@@ -100,6 +106,7 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
             sharing: { ...DEFAULT_SHARING },
             learned: { ...DEFAULT_LEARNED },
             detail: {},
+            language: {},
             update: { ...DefaultUpdateConfig }
         };
     }
@@ -131,6 +138,7 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
             codeStyleDir: parsed.learned?.codeStyleDir ?? DEFAULT_LEARNED.codeStyleDir
         },
         detail: sanitizeDetailConfig(parsed.detail),
+        language: sanitizeLanguageConfig(parsed.language),
         update: sanitizeUpdateConfig(parsed.update)
     };
 }

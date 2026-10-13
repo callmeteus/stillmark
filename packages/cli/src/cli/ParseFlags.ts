@@ -53,6 +53,7 @@ const VALUE_FLAGS: Record<string, string> = {
     "--roadmap-dates": "roadmapDates",
     "--strip-attribution": "stripAttribution",
     "--auto-push": "autoPush",
+    "--language": "language",
     "--message": "message"
 };
 

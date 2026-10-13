@@ -41,7 +41,7 @@ Arquivo: <repo>/COVERAGE.md
 stillmark coverage validate --json
 ```
 
-- English only (except inside backticks).
+- Area titles, case text, and NOTFIXED reasons in `language.resolved.coverage` from `stillmark config status --json` (English when unset). The structure stays fixed: `# <Project> test coverage`, `## N.` numbering, tags, and the `NOTFIXED` keyword.
 - `## N. <Area>`, `###` / `####`, `- [x]` / `- [ ]`, optional `[happy]` `[sad]` `[edge]` `[security]`.
 - `NOTFIXED` only in last `## N. NOTFIXED` area, always `[x]`, suffix ` - NOTFIXED: <reason>`.
 - Detail level comes from `stillmark config status --json` -> `detail.coverage`. **compact** (default): case lines only. **extended**: optional 2-space indented detail lines right under a case (what the test exercises, inputs, expected result). Never put detail lines under headings.
@@ -63,7 +63,7 @@ stillmark coverage validate --json
 | add cases for X | Read X; `stillmark coverage add` when it fits. |
 | mark X covered | Find test first; `stillmark coverage check "<case>"`. |
 | uncheck X | `stillmark coverage uncheck "<case>"`. |
-| NOTFIXED + reason | Move to NOTFIXED area; English suffix. |
+| NOTFIXED + reason | Move to NOTFIXED area; reason in the coverage language. |
 | migrate / legacy | Checkbox format, then validate. |
 
 ## CLI helpers

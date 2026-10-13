@@ -41,6 +41,7 @@ import { helpResult, unknownOptionsResult } from "./Help";
 import { priorityFlag, runPlanCommand } from "./PlanCommands";
 import { roadmapDateFlag, runConfigSetRoadmapDates } from "./RoadmapCommands";
 import { runConfigSetAutoPush, runConfigSetStripAttribution, runGitCommand, syncAttributionHook } from "./GitCommands";
+import { runConfigSetLanguage } from "./LanguageCommands";
 import { parseFlags } from "./ParseFlags";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
@@ -390,6 +391,13 @@ export async function runCli(argv: string[]): Promise<number> {
 
             if (sub === "set" && flags.stripAttribution !== undefined) {
                 const result = await runConfigSetStripAttribution(paths, flags, gitRunner);
+                output(result, json);
+
+                return result.ok ? 0 : 1;
+            }
+
+            if (sub === "set" && flags.language !== undefined) {
+                const result = runConfigSetLanguage(paths, flags);
                 output(result, json);
 
                 return result.ok ? 0 : 1;

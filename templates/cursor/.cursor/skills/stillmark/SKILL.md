@@ -14,7 +14,7 @@ description: >-
 
 All file-backed operations run `stillmark … --json` from the **project root**. The text after `/stillmark` is the instruction.
 
-**Talk to the user in their language, every time.** This skill and the CLI are in English, but every message to the user is in the language the user writes in: the first sentence before any tool call, progress updates, `AskQuestion` prompts and options, and the final report. A user writing in Portuguese gets Portuguese from the first line, with correct accents. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are. File content keeps its own rules (COVERAGE.md cases stay in English).
+**Talk to the user in their language, every time.** This skill and the CLI are in English, but every message to the user is in the language the user writes in: the first sentence before any tool call, progress updates, `AskQuestion` prompts and options, and the final report. A user writing in Portuguese gets Portuguese from the first line, with correct accents. Translate CLI summaries; keep commands, file names, IDs, and JSON fields as they are. File content follows the configured document language (below), not the chat language.
 
 **Clickable links are mandatory, every time.** Whenever a reply creates, changes, shows, or mentions `TASK_PLAN.md`, `FINDINGS.md`, `PROGRESS.md`, `ROADMAP.md`, or `COVERAGE.md`, include a clickable markdown link to the file. Paste the JSON `link` field verbatim; when there is none, build `[TASK_PLAN.md](C:/abs/path/.stillmark/plans/TASK_PLAN.md)` from the absolute `location` (forward slashes, spaces as `%20`). A path in backticks alone is not acceptable: `.stillmark/plans/` is git-ignored and greyed out in the explorer.
 
@@ -61,7 +61,8 @@ stillmark config status --json
 
 When `sharing.needsFirstRunPrompt` is **true**, run the setup once, in the user's language, before the original request:
 
-1. **One `AskQuestion` form with two questions:**
+1. **One `AskQuestion` form with three questions:**
+   - **Document language** (single choice, mandatory): the language of everything Stillmark writes (roadmap, plans, coverage cases, changelog, DESIGN/PRODUCT, commit messages). First option the language the user is writing in, then English, then "Other" (the user types it). Mention that one document can use another language later.
    - **Sharing** (single choice): version `.stillmark/learnings/design/` in git or keep it local. Task plans **always** stay local; never offer to commit `.stillmark/plans/`.
    - **What to generate now** (`allow_multiple: true`). First option **All**, then each item on its own, then **Nothing for now**:
      - `DESIGN.md`: visual system read from the code (colors, type, spacing, components). Offer only when the repo has a UI.
@@ -69,9 +70,15 @@ When `sharing.needsFirstRunPrompt` is **true**, run the setup once, in the user'
      - `COVERAGE.md`: test checklist from the existing tests (`stillmark coverage init`, then fill).
      - Roadmap history: past deliveries from `git log`, dated by commit (`roadmap add --done --commit=<sha>`).
      - Code style learnings: conventions in `.stillmark/learnings/code-style/`.
-2. Record sharing with `stillmark config set --design-system=true|false --prompted --json` (dismissed = skip `--prompted` so the setup can return).
-3. Generate what was picked, one item at a time, from the real code and history. Never invent: list unknowns as open questions inside the file. Link every file you write.
-4. **Then ask (single choice)** whether to commit **only** the Stillmark files just created. Show the file list **and the exact commit message** (`proposedMessage`) from `stillmark git setup-files --json` in the question. Options: commit with that message, commit with another message (the user types it), don't commit. Commit runs `stillmark git setup-commit --json` (exactly those paths, other staged or unstaged work untouched, never pushes), with `--message "<msg>"` when the user typed one. No changes nothing.
+2. Record the language with `stillmark config set --language=<tag> --json` (BCP-47 such as `pt-BR`, `en`, `es`), and sharing with `stillmark config set --design-system=true|false --prompted --json` (dismissed = skip `--prompted` so the setup can return).
+3. Generate what was picked, in the chosen language, one item at a time, from the real code and history. Never invent: list unknowns as open questions inside the file. Link every file you write.
+4. **Then ask (single choice)** whether to commit **only** the Stillmark files just created. Show the file list **and the exact commit message** (`proposedMessage`) from `stillmark git setup-files --json` in the question. Options: commit with that message, commit with another message (the user types it), don't commit. Commit runs `stillmark git setup-commit --json` (exactly those paths, other staged or unstaged work untouched, pushed right after when `git.autoPush` is on), with `--message "<msg>"` when the user typed one. No changes nothing.
+
+## Document language (mandatory)
+
+`config status` returns `language.needsPrompt` and `language.resolved` (per target: `roadmap`, `plan`, `coverage`, `changelog`, `docs`, `commits`). When `needsPrompt` is **true** in a repo that already finished the first run, ask the language question alone once, before writing any file, and record it with `stillmark config set --language=<tag> --json`.
+
+Write every item title, detail, acceptance criterion, task, coverage case, document, and commit message in `language.resolved.<target>`, whatever language the chat uses. Structure the CLI parses stays as the CLI writes it (headings such as `## Backlog`, IDs, `status:`/`priority:` fields, coverage tags). When `proposedMessage` or `git message-style` returns a language different from `commitLanguage`, translate the summary and pass `--message`. Requests like "roadmap em inglês" or "tudo em português" map to `stillmark config set --language=<tag> [--module=<target>] --json` (`--language=inherit` removes an override).
 
 **Commit messages are the user's call.** Use `proposedMessage` (or `git message-style`) as is: never add markers, scopes, or sign-offs that come from your own agent rules (for example a `(t)` suffix for agent commits). If a rule you follow would change the message, put both versions in the question and let the user pick.
 

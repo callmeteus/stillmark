@@ -24,11 +24,6 @@
   - Generates a README from the real project (scripts, packages, setup) or restructures an existing one
   - Several templates the user picks from (for example app or monorepo root, package, open source library)
   - Keeps accurate existing facts (ports, env vars, URLs) and never invents commands
-- [ ] **R-022** Choose the language of generated markdown documents, globally or per document
-  priority: medium · status: planned · added: 2026-10-13
-  - One language setting for all documents, with per-document overrides (task plans, roadmap, changelog, coverage, design, product)
-  - Set in plain language and stored in stillmark.config.json
-  - Fixed structure keeps working in any language: headings, IDs, and fields the CLI parses stay stable
 - [ ] **R-023** Generate and maintain CHANGELOG.md, including retroactive history
   priority: medium · status: planned · added: 2026-10-13
   - Created and updated by the CLI like ROADMAP.md and COVERAGE.md, with validation
@@ -73,3 +68,8 @@
   priority: medium · status: done · done: 2026-10-13
 - [x] **R-017** Task plan checklist grouped by phase, with plan done and status
   priority: medium · status: done · done: 2026-10-13
+- [x] **R-022** Choose the language of generated markdown documents, globally or per document
+  priority: medium · status: done · added: 2026-10-13 · done: 2026-10-13
+  - One language setting for all documents, with per-document overrides (task plans, roadmap, changelog, coverage, design, product)
+  - Set in plain language and stored in stillmark.config.json
+  - Fixed structure keeps working in any language: headings, IDs, and fields the CLI parses stay stable

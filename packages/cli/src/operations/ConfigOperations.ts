@@ -1,8 +1,10 @@
 import {
     loadConfig,
     resolveAllDetailLevels,
+    resolveAllLanguages,
     type DetailLevel,
     type DetailModule,
+    type LanguageTarget,
     type SharingConfig,
     type StillmarkConfig,
     writeConfig
@@ -26,8 +28,19 @@ export interface SharingStatusPayload {
     };
 }
 
+export interface LanguageStatusPayload {
+    /**
+     * True until a language was chosen for this repo; agents must ask the user once.
+     */
+    needsPrompt: boolean;
+    /**
+     * Effective language per target (English when nothing is set).
+     */
+    resolved: Record<LanguageTarget, string>;
+}
+
 /**
- * JSON payload for `stillmark config status` (first-run sharing prompt).
+ * JSON payload for `stillmark config status` (first-run sharing and language prompts).
  */
 export function configStatus(
     paths: ProjectPaths,
@@ -36,6 +49,7 @@ export function configStatus(
     config: StillmarkConfig;
     sharing: SharingStatusPayload;
     detail: Record<DetailModule, DetailLevel>;
+    language: LanguageStatusPayload;
 } {
     const resolved = config ?? loadConfig(paths);
 
@@ -64,7 +78,52 @@ export function configStatus(
                 : "Design learnings stay local; code-style learnings may still be committed",
         config: resolved,
         sharing,
-        detail: resolveAllDetailLevels(resolved.detail)
+        detail: resolveAllDetailLevels(resolved.detail),
+        language: {
+            needsPrompt: Object.keys(resolved.language).length === 0,
+            resolved: resolveAllLanguages(resolved.language)
+        }
+    };
+}
+
+export interface SetConfigLanguageOptions {
+    /**
+     * Normalized language tag, or `inherit` to remove the override.
+     */
+    tag: string;
+    /**
+     * Target to override; omit to change the global language.
+     */
+    target?: LanguageTarget;
+}
+
+/**
+ * Updates the `language` block of `stillmark.config.json`.
+ */
+export function setConfigLanguage(
+    paths: ProjectPaths,
+    options: SetConfigLanguageOptions
+): OperationResult & { config: StillmarkConfig; language: Record<LanguageTarget, string> } {
+    const config = loadConfig(paths);
+    const key = options.target ?? "global";
+
+    if (options.tag === "inherit") {
+        delete config.language[key];
+    } else {
+        config.language[key] = options.tag;
+    }
+
+    writeConfig(paths, config);
+
+    const language = resolveAllLanguages(config.language);
+
+    return {
+        ok: true,
+        changed: true,
+        action: "config-set",
+        summary: `Language: ${Object.entries(language).map(([target, tag]) => `${target} ${tag}`).join(", ")}`,
+        config,
+        language
     };
 }
 

@@ -1,4 +1,4 @@
-import { loadConfig, writeConfig } from "../config";
+import { loadConfig, resolveLanguage, writeConfig } from "../config";
 import {
     attributionHookStatus,
     commitSetupFiles,
@@ -13,6 +13,22 @@ import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
 
 export type AttributionHookResult = OperationResult & { attributionHook: AttributionHookStatus };
+
+/**
+ * Built-in commit summaries per base language; other languages fall back to English and the agent passes `--message`.
+ */
+const COMMIT_SUMMARIES: Record<string, { setup: string; update: string }> = {
+    en: { setup: "set up Stillmark", update: "update Stillmark" },
+    pt: { setup: "configura o Stillmark", update: "atualiza o Stillmark" },
+    es: { setup: "configura Stillmark", update: "actualiza Stillmark" }
+};
+
+function commitSummary(paths: ProjectPaths, kind: "setup" | "update"): { language: string; summary: string } {
+    const language = resolveLanguage(loadConfig(paths).language, "commits");
+    const summaries = COMMIT_SUMMARIES[language.split("-")[0]] ?? COMMIT_SUMMARIES.en;
+
+    return { language, summary: summaries[kind] };
+}
 
 function hookSummary(status: AttributionHookStatus, enabled: boolean): string {
     if (!status.gitRepo) {
@@ -107,8 +123,9 @@ export async function runGitCommand(
 
     if (sub === "setup-files") {
         const listed = await listSetupFiles(paths, runner);
+        const { language, summary } = commitSummary(paths, "setup");
         const proposedMessage = listed.gitRepo
-            ? (await resolveCommitMessage(paths.root, "configura o Stillmark", loadConfig(paths).git.commitMessage, runner, "chore")).message
+            ? (await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner, "chore")).message
             : undefined;
 
         return {
@@ -121,7 +138,8 @@ export async function runGitCommand(
                     : "No Stillmark files with pending changes"
                 : "Not a git repository",
             setupFiles: listed,
-            proposedMessage
+            proposedMessage,
+            commitLanguage: language
         } as OperationResult;
     }
 
@@ -134,7 +152,7 @@ export async function runGitCommand(
 
         const message = typeof flags.message === "string" && flags.message.trim()
             ? flags.message.trim()
-            : (await resolveCommitMessage(paths.root, "configura o Stillmark", config.git.commitMessage, runner, "chore")).message;
+            : (await resolveCommitMessage(paths.root, commitSummary(paths, "setup").summary, config.git.commitMessage, runner, "chore")).message;
         const result = await commitSetupFiles(paths, runner, message);
         const push = result.committed && config.git.autoPush && result.topLevel
             ? await runner.run(result.topLevel, ["push"])
@@ -154,7 +172,8 @@ export async function runGitCommand(
     }
 
     if (sub === "message-style" || sub === "suggest") {
-        const summary = rest.join(" ") || "Atualização do Stillmark";
+        const fallback = commitSummary(paths, "update");
+        const summary = rest.join(" ") || fallback.summary;
         const resolved = await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner);
 
         return {
@@ -162,8 +181,9 @@ export async function runGitCommand(
             changed: false,
             action: "git-message-style",
             summary: resolved.message,
-            commitMessage: resolved
-        };
+            commitMessage: resolved,
+            commitLanguage: fallback.language
+        } as OperationResult;
     }
 
     return {
