@@ -25,6 +25,10 @@ stillmark roadmap priority "<item>" critical|high|medium|low --json
 stillmark roadmap done "<item>" [--date=YYYY-MM-DD|--commit=<sha>] --json
 stillmark roadmap add "<finished work>" --done [--commit=<sha>] [--priority=high] --json
 stillmark config set --roadmap-dates=true|false --json
+stillmark config set --strip-attribution=true|false --json
+stillmark git hook [status|install|remove] --json
+stillmark git setup-files --json
+stillmark git commit-setup [--message "<msg>"] --json
 stillmark plan init "<objective>" [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] --json
 stillmark plan scope [--objective "<text>"] [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] [--replace] --json
 stillmark plan add "<description>" [--priority=critical|high|medium|low] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
@@ -94,9 +98,14 @@ UI work uses the same **stillmark** skill, not a separate slash command:
 
 Design playbooks ship inside the installed `stillmark` skill under `reference/`. Persist research in `.stillmark/plans/FINDINGS.md`, outcomes in `PROGRESS.md`. Durable learnings live as markdown under `.stillmark/learnings/` (see `stillmark.config.json` → `learned`): add focused `.md` files in `design/` and `code-style/`, like Cursor rules.
 
-## First-run sharing (`.stillmark`)
+## First-run setup (`.stillmark`)
 
-On the first `/stillmark` in a repo, run `stillmark config status --json`. When `needsFirstRunPrompt` is true, ask whether to **version `.stillmark/learnings/design/` in git**. **Never** offer to commit `.stillmark/plans/`. Record the answer with `stillmark config set --design-system=true|false --prompted --json`. If the user defers, skip `--prompted` so the question can return later.
+On the first `/stillmark` in a repo, run `stillmark config status --json`. When `needsFirstRunPrompt` is true, run the setup before the original request, using the agent's structured question tool (Cursor `AskQuestion`, Claude Code `AskUserQuestion`; otherwise a numbered list):
+
+1. Ask together: whether to **version `.stillmark/learnings/design/` in git** (single choice; **never** offer to commit `.stillmark/plans/`), and **what to generate now** (multiple choice: **All**, then `DESIGN.md` when the repo has a UI, `PRODUCT.md`, `COVERAGE.md` from existing tests, roadmap history from `git log` dated with `--commit=<sha>`, code style learnings, and **Nothing for now**).
+2. Record sharing with `stillmark config set --design-system=true|false --prompted --json`. If the user defers, skip `--prompted` so the setup can return later.
+3. Generate each picked item from the real code and history, never inventing; unknowns become open questions in the file.
+4. Then ask whether to commit **only the Stillmark files just created**, showing the list from `stillmark git setup-files --json`. On yes run `stillmark git commit-setup --json`: it commits exactly those paths (config, `ROADMAP.md`, `COVERAGE.md`, `.gitignore`, `DESIGN.md`, `PRODUCT.md`, shared learnings), leaves any other staged or unstaged work untouched, and never pushes.
 
 Use `--accept-scope-change` only after the user authorizes expanding scope. Use `--allow-sensitive` on roadmap writes only after warning the user about public ROADMAP.md.
 
@@ -111,6 +120,8 @@ After each operation, report what changed, item IDs, and file paths from the JSO
 Never run `git commit` or `git push` yourself. Stillmark git integration follows `stillmark.config.json` (`autoCommit` / `autoPush`, default off). Per-call: `--git` or `--no-git`.
 
 Commit subjects: by default Stillmark **learns the prefix from recent `git log`** (no hardcoded `docs(roadmap):`). Preview with `stillmark git commit-style "<summary>" --json`. Override with `git.commitMessage` and `{summary}` in config when needed.
+
+Agent attribution: `git.stripAgentAttribution` (default on) installs a `commit-msg` hook that removes `Co-authored-by: Cursor`, `Made-with: Cursor`, `Co-Authored-By: Claude …`, and "Generated with Claude Code" from every commit. `stillmark init` installs it; before any commit the user asked for, run `stillmark git hook install --json` (safe to repeat). It never replaces a `commit-msg` hook it did not write; tell the user when `attributionHook.foreign` is true. Turn it off with `stillmark config set --strip-attribution=false` (removes the hook). Cursor Cloud Agents commit on Cursor's servers, where local hooks do not run.
 
 When UI or code conventions become stable, **capture them in learnings markdown** under `.stillmark/learnings/design/` and `.stillmark/learnings/code-style/` (paths in `stillmark.config.json` → `learned`). Prefer new short `.md` files or edits to `overview.md`; do not scatter the same rules only in chat.
 

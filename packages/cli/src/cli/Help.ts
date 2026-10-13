@@ -37,9 +37,15 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark config set --design-system=true|false [--prompted]",
         "stillmark config set --detail=compact|extended|inherit [--module=coverage|roadmap|plan]",
         "stillmark config set --auto-update=true|false [--update-interval=<hours>]",
-        "stillmark config set --roadmap-dates=true|false"
+        "stillmark config set --roadmap-dates=true|false",
+        "stillmark config set --strip-attribution=true|false"
     ],
-    git: ["stillmark git commit-style [\"<summary>\"]"],
+    git: [
+        "stillmark git commit-style [\"<summary>\"]",
+        "stillmark git hook [status|install|remove]",
+        "stillmark git setup-files",
+        "stillmark git commit-setup [--message \"<msg>\"]"
+    ],
     install: [
         "stillmark install --agent cursor|claude|codex [--global]",
         "stillmark install --agent cursor|claude|codex [--global] --link   (dev: link the source templates)"

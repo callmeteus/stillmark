@@ -49,7 +49,9 @@ const VALUE_FLAGS: Record<string, string> = {
     "--update-interval": "updateInterval",
     "--date": "date",
     "--commit": "commit",
-    "--roadmap-dates": "roadmapDates"
+    "--roadmap-dates": "roadmapDates",
+    "--strip-attribution": "stripAttribution",
+    "--message": "message"
 };
 
 /**

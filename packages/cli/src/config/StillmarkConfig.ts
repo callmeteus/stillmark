@@ -33,6 +33,11 @@ export interface GitConfig {
      * Optional template with `{summary}`. When omitted, Stillmark infers prefix from `git log`.
      */
     commitMessage?: string;
+    /**
+     * When true (default), a `commit-msg` hook removes AI agent attribution
+     * (`Co-authored-by: Cursor`, `Co-Authored-By: Claude`, `Made-with: Cursor`, "Generated with Claude Code").
+     */
+    stripAgentAttribution: boolean;
 }
 
 export interface RoadmapConfig {
@@ -70,7 +75,8 @@ const DEFAULT_SHARING: SharingConfig = {
 const DEFAULT_CONFIG: StillmarkConfig = {
     git: {
         autoCommit: false,
-        autoPush: false
+        autoPush: false,
+        stripAgentAttribution: true
     },
     roadmap: { dates: true },
     sharing: { ...DEFAULT_SHARING },
@@ -102,7 +108,11 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
         git: {
             autoCommit: parsed.git?.autoCommit ?? DEFAULT_CONFIG.git.autoCommit,
             autoPush: parsed.git?.autoPush ?? DEFAULT_CONFIG.git.autoPush,
-            commitMessage: parsed.git?.commitMessage
+            commitMessage: parsed.git?.commitMessage,
+            stripAgentAttribution:
+                typeof parsed.git?.stripAgentAttribution === "boolean"
+                    ? parsed.git.stripAgentAttribution
+                    : DEFAULT_CONFIG.git.stripAgentAttribution
         },
         roadmap: {
             dates: typeof parsed.roadmap?.dates === "boolean" ? parsed.roadmap.dates : DEFAULT_CONFIG.roadmap.dates

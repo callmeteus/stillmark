@@ -1,10 +1,12 @@
 # Stillmark (Codex)
 
-Run `stillmark` from the project root with `--json` for all planning operations. ROADMAP.md is public; `.stillmark/plans/TASK_PLAN.md` is private and local. Classify ambiguous adds with `stillmark classify`. Record finished work with `stillmark roadmap done "<item>"` or `stillmark roadmap add "<description>" --done`; add `--commit=<sha>` when backfilling so the `done:` date comes from git (dates are on by default; `config set --roadmap-dates=false` turns them off). Do not run git yourself; use Stillmark config for optional roadmap commits.
+Run `stillmark` from the project root with `--json` for all planning operations. ROADMAP.md is public; `.stillmark/plans/TASK_PLAN.md` is private and local. Classify ambiguous adds with `stillmark classify`. Record finished work with `stillmark roadmap done "<item>"` or `stillmark roadmap add "<description>" --done`; add `--commit=<sha>` when backfilling so the `done:` date comes from git (dates are on by default; `config set --roadmap-dates=false` turns them off). Do not run git yourself; use Stillmark config for optional roadmap commits. When the user asks for a commit, run `stillmark git hook install --json` first so agent attribution trailers are stripped (default on; `stillmark config set --strip-attribution=false` turns it off).
 
 **Clickable links (mandatory):** every reply that creates, changes, shows, or mentions a plan, findings, progress, roadmap, or coverage file must include a clickable markdown link to it. Paste the JSON `link` field verbatim, or build `[TASK_PLAN.md](<absolute path, forward slashes>)` from `location`. Never only a path in backticks.
 
 **Auto-update:** start each `/stillmark` with `stillmark update --json` (npm is checked at most once per `update.intervalHours`, default 24h). When `updateAvailable` is true, run `recommended`, tell the user in one line, then continue. Ignore `error`.
+
+**First run:** when `stillmark config status --json` reports `needsFirstRunPrompt`, ask whether to version design learnings and what to generate now (numbered multiple choice: All, `DESIGN.md`, `PRODUCT.md`, `COVERAGE.md`, roadmap history from `git log`, code style learnings, Nothing). Record with `stillmark config set --design-system=true|false --prompted --json`, generate the picks, then ask whether to commit only those files (`stillmark git setup-files --json` lists them; yes = `stillmark git commit-setup --json`).
 
 **Global install:** if this repo has no `stillmark.config.json` / `ROADMAP.md`, ask once before running `stillmark init --json`.
 

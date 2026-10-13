@@ -1,0 +1,189 @@
+import { loadConfig, writeConfig } from "../config";
+import {
+    attributionHookStatus,
+    commitSetupFiles,
+    installAttributionHook,
+    listSetupFiles,
+    removeAttributionHook,
+    resolveCommitMessage,
+    type AttributionHookStatus,
+    type GitRunner
+} from "../git";
+import type { ProjectPaths } from "../paths/ProjectPaths";
+import type { OperationResult } from "../results/OperationResult";
+
+export type AttributionHookResult = OperationResult & { attributionHook: AttributionHookStatus };
+
+function hookSummary(status: AttributionHookStatus, enabled: boolean): string {
+    if (!status.gitRepo) {
+        return "Not a git repository; the commit attribution hook was not touched";
+    }
+
+    if (status.foreign) {
+        return `${status.hookPath} already exists and was not written by Stillmark; it was left alone. Merge it by hand, or move it away and run stillmark git hook install`;
+    }
+
+    if (status.installed) {
+        return "Commits from agents will have Cursor and Claude attribution removed";
+    }
+
+    return enabled
+        ? "Commit attribution hook is not installed; run stillmark git hook install"
+        : "Agent attribution is kept in commits";
+}
+
+/**
+ * Applies `git.stripAgentAttribution`: installs the hook when on, removes Stillmark's hook when off.
+ */
+export async function syncAttributionHook(paths: ProjectPaths, runner: GitRunner): Promise<AttributionHookResult> {
+    const enabled = loadConfig(paths).git.stripAgentAttribution;
+    const before = await attributionHookStatus(paths.root, runner);
+    const after = enabled
+        ? await installAttributionHook(paths.root, runner)
+        : await removeAttributionHook(paths.root, runner);
+
+    return {
+        ok: !after.foreign || !enabled,
+        changed: before.installed !== after.installed,
+        action: "git hook",
+        location: after.installed ? after.hookPath : undefined,
+        summary: hookSummary(after, enabled),
+        attributionHook: after
+    };
+}
+
+/**
+ * `stillmark git hook [status|install|remove]`.
+ */
+export async function runGitHook(
+    paths: ProjectPaths,
+    sub: string | undefined,
+    runner: GitRunner
+): Promise<AttributionHookResult> {
+    const enabled = loadConfig(paths).git.stripAgentAttribution;
+
+    if (sub === "install" || sub === "remove") {
+        const before = await attributionHookStatus(paths.root, runner);
+        const after = sub === "install"
+            ? await installAttributionHook(paths.root, runner)
+            : await removeAttributionHook(paths.root, runner);
+
+        return {
+            ok: after.gitRepo && !(sub === "install" && after.foreign),
+            changed: before.installed !== after.installed,
+            action: `git hook ${sub}`,
+            location: after.installed ? after.hookPath : undefined,
+            summary: hookSummary(after, sub === "install"),
+            attributionHook: after
+        };
+    }
+
+    const status = await attributionHookStatus(paths.root, runner);
+
+    return {
+        ok: true,
+        changed: false,
+        action: "git hook status",
+        location: status.installed ? status.hookPath : undefined,
+        summary: hookSummary(status, enabled),
+        attributionHook: status
+    };
+}
+
+/**
+ * `stillmark git <sub> ...`: `hook [status|install|remove]` or `commit-style [summary]` (alias `suggest`).
+ */
+export async function runGitCommand(
+    paths: ProjectPaths,
+    args: string[],
+    runner: GitRunner,
+    flags: Record<string, string | boolean> = {}
+): Promise<OperationResult> {
+    const [sub, ...rest] = args;
+
+    if (sub === "hook") {
+        return runGitHook(paths, rest[0], runner);
+    }
+
+    if (sub === "setup-files") {
+        const listed = await listSetupFiles(paths, runner);
+
+        return {
+            ok: listed.gitRepo,
+            changed: false,
+            action: "git setup-files",
+            summary: listed.gitRepo
+                ? listed.files.length > 0
+                    ? `Stillmark files to commit: ${listed.files.join(", ")}`
+                    : "No Stillmark files with pending changes"
+                : "Not a git repository",
+            setupFiles: listed
+        } as OperationResult;
+    }
+
+    if (sub === "commit-setup") {
+        const config = loadConfig(paths);
+
+        if (config.git.stripAgentAttribution) {
+            await installAttributionHook(paths.root, runner);
+        }
+
+        const message = typeof flags.message === "string" && flags.message.trim()
+            ? flags.message.trim()
+            : (await resolveCommitMessage(paths.root, "configura o Stillmark", config.git.commitMessage, runner)).message;
+        const result = await commitSetupFiles(paths, runner, message);
+
+        return {
+            ok: result.committed || result.detail === "Nothing to commit",
+            changed: result.committed,
+            action: "git commit-setup",
+            summary: result.committed
+                ? `Committed ${result.files.length} Stillmark file(s): ${message}`
+                : result.detail,
+            setupFiles: result
+        } as OperationResult;
+    }
+
+    if (sub === "commit-style" || sub === "suggest") {
+        const summary = rest.join(" ") || "Atualização do Stillmark";
+        const resolved = await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner);
+
+        return {
+            ok: true,
+            changed: false,
+            action: "git-commit-style",
+            summary: resolved.message,
+            commitMessage: resolved
+        };
+    }
+
+    return {
+        ok: false,
+        changed: false,
+        summary: "Usage: stillmark git commit-style [summary] | git hook [status|install|remove] | git setup-files | git commit-setup [--message \"<msg>\"]"
+    };
+}
+
+/**
+ * `stillmark config set --strip-attribution=true|false`: saves the setting, then installs or removes the hook.
+ */
+export async function runConfigSetStripAttribution(
+    paths: ProjectPaths,
+    flags: Record<string, string | boolean>,
+    runner: GitRunner
+): Promise<OperationResult> {
+    const value = String(flags.stripAttribution).toLowerCase();
+
+    if (value !== "true" && value !== "false") {
+        return { ok: false, changed: false, summary: "Use --strip-attribution=true or --strip-attribution=false" };
+    }
+
+    const config = loadConfig(paths);
+
+    config.git = { ...config.git, stripAgentAttribution: value === "true" };
+    writeConfig(paths, config);
+
+    const synced = await syncAttributionHook(paths, runner);
+
+    return { ...synced, changed: true, action: "config-set", config } as OperationResult;
+}

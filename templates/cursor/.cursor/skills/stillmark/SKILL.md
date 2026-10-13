@@ -48,13 +48,25 @@ User controls: "para de atualizar sozinho" = `stillmark config set --auto-update
 
 When the skill was installed with `--global`, a repository may have no `stillmark.config.json` or `ROADMAP.md` yet. Before the first file-backed command there, ask once whether to set Stillmark up in this repo; on yes run `stillmark init --json`, on no answer without touching files.
 
-## First run: sharing under `.stillmark`
+## First run: setup
 
 ```bash
 stillmark config status --json
 ```
 
-When `sharing.needsFirstRunPrompt` is **true**, ask **one** question (task plans **always** stay local; optional `.stillmark/learnings/design/` in git). Record with `stillmark config set --design-system=true|false --prompted --json`. Defer = skip `--prompted`.
+When `sharing.needsFirstRunPrompt` is **true**, run the setup once, in the user's language, before the original request:
+
+1. **One `AskQuestion` form with two questions:**
+   - **Sharing** (single choice): version `.stillmark/learnings/design/` in git or keep it local. Task plans **always** stay local; never offer to commit `.stillmark/plans/`.
+   - **What to generate now** (`allow_multiple: true`). First option **All**, then each item on its own, then **Nothing for now**:
+     - `DESIGN.md`: visual system read from the code (colors, type, spacing, components). Offer only when the repo has a UI.
+     - `PRODUCT.md`: what the product is, who uses it, tone of voice.
+     - `COVERAGE.md`: test checklist from the existing tests (`stillmark coverage init`, then fill).
+     - Roadmap history: past deliveries from `git log`, dated by commit (`roadmap add --done --commit=<sha>`).
+     - Code style learnings: conventions in `.stillmark/learnings/code-style/`.
+2. Record sharing with `stillmark config set --design-system=true|false --prompted --json` (dismissed = skip `--prompted` so the setup can return).
+3. Generate what was picked, one item at a time, from the real code and history. Never invent: list unknowns as open questions inside the file. Link every file you write.
+4. **Then ask (single choice)** whether to commit **only** the Stillmark files just created. Show the list from `stillmark git setup-files --json` in the question. Yes runs `stillmark git commit-setup --json` (commits exactly those paths, leaves other staged or unstaged work alone, never pushes; add `--message "<msg>"` to use a custom subject, otherwise it follows `git commit-style`). No changes nothing.
 
 ## Detail level: compact or extended
 
@@ -122,6 +134,8 @@ Triggered by `design …`, browser selection, or obvious UI critique. Load `refe
 ## Git
 
 Never commit or push unless the user grants it. Preview subjects: `stillmark git commit-style "<summary>" --json`.
+
+Before a commit the user asked for, run `stillmark git hook install --json` (idempotent) so the `commit-msg` hook strips `Co-authored-by: Cursor`, `Made-with: Cursor`, and Claude attribution. On by default (`git.stripAgentAttribution`); off with `stillmark config set --strip-attribution=false`. If `attributionHook.foreign` is true, tell the user an existing hook was left alone.
 
 ## Examples (CLI via slash)
 

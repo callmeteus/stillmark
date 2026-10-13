@@ -10,7 +10,7 @@ import {
     type GitOverride
 } from "../config";
 import { isPriority, parseTaskPlan } from "../documents";
-import { GitRunner, resolveCommitMessage } from "../git";
+import { GitRunner } from "../git";
 import { classifyIntent } from "../intent";
 import { applyPlanChange } from "../long-running";
 import {
@@ -42,6 +42,7 @@ import { installTemplates } from "../update";
 import { helpResult, unknownOptionsResult } from "./Help";
 import { hasScopeFlags, priorityFlag, runPlanScope } from "./PlanCommands";
 import { roadmapDateFlag, runConfigSetRoadmapDates } from "./RoadmapCommands";
+import { runConfigSetStripAttribution, runGitCommand, syncAttributionHook } from "./GitCommands";
 import { parseFlags } from "./ParseFlags";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
@@ -128,7 +129,12 @@ export async function runCli(argv: string[]): Promise<number> {
 
     try {
         if (cmd === "init") {
-            output(initProject(paths), json);
+            const init = initProject(paths);
+            const hook = loadConfig(paths).git.stripAgentAttribution
+                ? (await syncAttributionHook(paths, gitRunner)).attributionHook
+                : undefined;
+
+            output({ ...init, attributionHook: hook } as OperationResult, json);
 
             return 0;
         }
@@ -451,6 +457,13 @@ export async function runCli(argv: string[]): Promise<number> {
                 return 0;
             }
 
+            if (sub === "set" && flags.stripAttribution !== undefined) {
+                const result = await runConfigSetStripAttribution(paths, flags, gitRunner);
+                output(result, json);
+
+                return result.ok ? 0 : 1;
+            }
+
             if (sub === "set" && flags.roadmapDates !== undefined) {
                 const result = runConfigSetRoadmapDates(paths, flags);
                 output(result, json);
@@ -530,40 +543,10 @@ export async function runCli(argv: string[]): Promise<number> {
         }
 
         if (cmd === "git") {
-            if (sub === "commit-style" || sub === "suggest") {
-                const summary =
-                    positional.slice(2).join(" ") || "Atualização do Stillmark";
-                const config = loadConfig(paths);
-                const resolved = await resolveCommitMessage(
-                    paths.root,
-                    summary,
-                    config.git.commitMessage,
-                    gitRunner
-                );
-                output(
-                    {
-                        ok: true,
-                        changed: false,
-                        action: "git-commit-style",
-                        summary: resolved.message,
-                        commitMessage: resolved
-                    },
-                    json
-                );
+            const result = await runGitCommand(paths, positional.slice(1), gitRunner, flags);
+            output(result, json);
 
-                return 0;
-            }
-
-            output(
-                {
-                    ok: false,
-                    changed: false,
-                    summary: "Usage: stillmark git commit-style [summary text]"
-                },
-                json
-            );
-
-            return 1;
+            return result.ok ? 0 : 1;
         }
 
         if (cmd === "coverage") {

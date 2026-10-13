@@ -255,6 +255,7 @@ export const enUS = {
             ["stillmark roadmap done \"…\"", "Mark a roadmap item as done"],
             ["stillmark roadmap add \"…\" --done --commit=<sha>", "Record work that already shipped, dated by the commit that delivered it"],
             ["stillmark config set --roadmap-dates=false", "Stop adding dates to roadmap items (on by default)"],
+            ["stillmark config set --strip-attribution=false", "Keep \"Co-authored-by\" lines from Cursor and Claude in commits (removed by default)"],
             ["stillmark roadmap defer \"…\"", "Move a roadmap item to deferred"],
             ["stillmark roadmap priority \"…\" <level>", "Change roadmap priority"],
             ["stillmark plan init [objective]", "Start TASK_PLAN.md for the current objective"],
