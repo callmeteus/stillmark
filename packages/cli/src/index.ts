@@ -9,4 +9,5 @@ export * from "./results/OperationResult";
 export * from "./paths/ProjectPaths";
 export * from "./adapters";
 export * from "./coverage";
+export * from "./caveman";
 export * from "./update";

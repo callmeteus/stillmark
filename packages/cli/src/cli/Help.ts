@@ -43,7 +43,15 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark config set --roadmap-dates=true|false",
         "stillmark config set --strip-attribution=true|false",
         "stillmark config set --auto-push=true|false",
-        "stillmark config set --language=<en|pt-BR|...>|inherit [--module=roadmap|plan|coverage|changelog|docs|commits]"
+        "stillmark config set --language=<en|pt-BR|...>|inherit [--module=roadmap|plan|coverage|changelog|docs|commits]",
+        "stillmark config set --caveman=off|lite|full|ultra|on"
+    ],
+    caveman: [
+        "stillmark caveman [stats]",
+        "stillmark caveman on|off|lite|full|ultra [--save]   (this conversation only; --save keeps it in stillmark.config.json)",
+        "stillmark caveman compress <file>   (keeps the readable original, then the agent rewrites the file)",
+        "stillmark caveman verify <file>",
+        "stillmark caveman restore <file>"
     ],
     git: [
         "stillmark git message-style [\"<summary>\"]",

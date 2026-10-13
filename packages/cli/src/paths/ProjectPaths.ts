@@ -17,6 +17,10 @@ export interface ProjectPaths {
      * Local update cache: last check, latest known version, installed templates version.
      */
     updateState: string;
+    /**
+     * Local caveman data: readable originals of compressed context files and the savings manifest.
+     */
+    cavemanDir: string;
     config: string;
     gitignore: string;
     coverage: string;
@@ -67,6 +71,7 @@ export function resolveProjectPaths(root: string): ProjectPaths {
         taskPlan: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "TASK_PLAN.md"),
         state: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "STATE.json"),
         updateState: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "UPDATE.json"),
+        cavemanDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "caveman"),
         config: path.join(normalized, "stillmark.config.json"),
         gitignore: path.join(normalized, ".gitignore"),
         coverage: path.join(normalized, "COVERAGE.md")

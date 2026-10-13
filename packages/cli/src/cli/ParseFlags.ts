@@ -24,6 +24,7 @@ const BOOLEAN_FLAGS: Record<string, string> = {
     "--link": "link",
     "--replace": "replace",
     "--done": "done",
+    "--save": "save",
     "--help": "help",
     "-h": "help"
 };
@@ -54,6 +55,7 @@ const VALUE_FLAGS: Record<string, string> = {
     "--strip-attribution": "stripAttribution",
     "--auto-push": "autoPush",
     "--language": "language",
+    "--caveman": "caveman",
     "--message": "message"
 };
 

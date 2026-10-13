@@ -13,11 +13,13 @@ description: >-
 
 **Document language (mandatory).** `config status` returns `language.needsPrompt` and `language.resolved` per target (`roadmap`, `plan`, `coverage`, `changelog`, `docs`, `commits`). When `needsPrompt` is true, ask the language once before writing any file and record it with `stillmark config set --language=<tag> --json` (`pt-BR`, `en`, ...). Write every item, task, coverage case, document, and commit message in `language.resolved.<target>`; structure the CLI parses (headings, IDs, `status:`/`priority:` fields, coverage tags) stays as the CLI writes it. Per document: `config set --language=<tag> --module=<target>`; `--language=inherit` removes an override. When `commitLanguage` has no built-in summary, translate and pass `--message`.
 
+**Caveman replies (optional, off by default).** `config status` returns `caveman` (`level`, `rules`, `ruleTokens`); when `rules` is not empty, follow them in every reply (terse, still in the user's language, commands/code/links/IDs/errors exact). This conversation only: `stillmark caveman on|off|lite|full|ultra --json` (returns `temporary: true` and `rules`; after `off`, drop them even if the saved setting is on). Saved: add `--save` or `config set --caveman=full|lite|ultra|off`. Context files (never ROADMAP, COVERAGE, plans, CHANGELOG): `caveman compress <file>` keeps the original and returns `instructions`; rewrite, then `caveman verify <file>` until clean, or `caveman restore <file>`. `stillmark caveman --json` shows rule cost per turn and tokens saved.
+
 **Clickable links are mandatory, every time.** Any reply that creates, changes, shows, or mentions a plan, findings, progress, roadmap, or coverage file must include a clickable markdown link to it: paste the JSON `link` field verbatim, or build `[TASK_PLAN.md](<absolute path, forward slashes>)` from `location`. Never only a path in backticks.
 
 ## CLI mirror
 
-`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `long-running`.
+`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `caveman`, `long-running`.
 
 ## Modes
 

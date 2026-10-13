@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
 import type { ProjectPaths } from "../paths/ProjectPaths";
+import { DefaultCavemanConfig, sanitizeCavemanConfig, type CavemanConfig } from "./CavemanConfig";
 import { sanitizeDetailConfig, type DetailConfig } from "./DetailLevel";
 import { sanitizeLanguageConfig, type LanguageConfig } from "./LanguageConfig";
 import { DefaultUpdateConfig, sanitizeUpdateConfig, type UpdateConfig } from "./UpdateConfig";
@@ -65,6 +66,10 @@ export interface StillmarkConfig {
      */
     language: LanguageConfig;
     /**
+     * Optional terse reply style (caveman mode), off by default.
+     */
+    caveman: CavemanConfig;
+    /**
      * Periodic update checks for the CLI and installed agent templates.
      */
     update: UpdateConfig;
@@ -91,6 +96,7 @@ const DEFAULT_CONFIG: StillmarkConfig = {
     learned: { ...DEFAULT_LEARNED },
     detail: {},
     language: {},
+    caveman: { ...DefaultCavemanConfig },
     update: { ...DefaultUpdateConfig }
 };
 
@@ -107,6 +113,7 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
             learned: { ...DEFAULT_LEARNED },
             detail: {},
             language: {},
+            caveman: { ...DefaultCavemanConfig },
             update: { ...DefaultUpdateConfig }
         };
     }
@@ -139,6 +146,7 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
         },
         detail: sanitizeDetailConfig(parsed.detail),
         language: sanitizeLanguageConfig(parsed.language),
+        caveman: sanitizeCavemanConfig(parsed.caveman),
         update: sanitizeUpdateConfig(parsed.update)
     };
 }

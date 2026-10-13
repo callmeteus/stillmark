@@ -159,7 +159,24 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [sad] Refuses an unknown agent and ignores agents never installed
 - [x] [happy] Shared instructions contain the required rules
 
-## 9. Landing page
+## 9. Caveman mode
+
+### `packages/cli/src/caveman`
+
+- [x] [happy] Off by default and hands agents no rules
+- [x] [happy] Turns on with plain words and grows the rules per level
+- [x] [sad] Refuses unknown levels without writing the config
+- [x] [edge] Falls back to off when the config holds an invalid level
+- [x] [happy] Accepts a shorter rewrite that keeps code, links, paths, and headings exact
+- [x] [sad] Reports lost frontmatter, code blocks, headings, inline code, URLs, and paths
+- [x] [edge] Reports a rewrite that is not smaller and ignores Windows line endings
+- [x] [happy] Keeps the original, verifies the rewrite, reports savings, and restores
+- [x] [edge] Compressing again reuses the kept original
+- [x] [security] Refuses Stillmark documents and files outside the project
+- [x] [sad] Refuses verify and restore before compress, missing files, and other formats
+- [x] [happy] Turns on or off for the conversation only without touching the config
+- [x] [happy] Saves the level with --save
+## 10. Landing page
 
 ### `packages/landing-page`
 

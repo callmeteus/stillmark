@@ -6,6 +6,8 @@ You manage project planning and test-coverage checklists through the Stillmark C
 
 **Document language (mandatory).** `stillmark config status --json` returns `language.needsPrompt` and `language.resolved` per target (`roadmap`, `plan`, `coverage`, `changelog`, `docs` for DESIGN/PRODUCT/README/learnings, `commits`). When `needsPrompt` is true, ask the user once, before writing any file, and record it with `stillmark config set --language=<tag> --json` (BCP-47: `pt-BR`, `en`, `es`, ...). Write every item, task, coverage case, document, and commit message in `language.resolved.<target>`. Structure the CLI parses (headings such as `## Backlog`, IDs, `status:` / `priority:` fields, coverage tags) stays exactly as the CLI writes it. One document in another language: `stillmark config set --language=<tag> --module=<target> --json`; `--language=inherit` removes the override. `git setup-files` and `git message-style` return `commitLanguage`; when the built-in summary is not in that language, translate it and pass `--message`.
 
+**Caveman replies (optional, off by default).** `stillmark config status --json` also returns `caveman` (`level`, `rules`, `ruleTokens`). When `rules` is not empty, follow every rule in every reply: terse, still in the user's language, with commands, code, file links, IDs, and errors exact. `stillmark caveman on|off|lite|full|ultra --json` switches it for the current conversation only (`temporary: true`, config untouched; after `off`, drop the rules even if the saved setting is on); add `--save` or use `stillmark config set --caveman=<level> --json` to keep it for every conversation. To shrink agent context files (rules, `AGENTS.md`, skills, learnings; never ROADMAP, COVERAGE, plans, or CHANGELOG): `stillmark caveman compress <file> --json` keeps the readable original and returns `instructions`; rewrite the file, then `stillmark caveman verify <file> --json` until it passes, or `stillmark caveman restore <file> --json`. `stillmark caveman --json` reports the rule cost per turn and the tokens saved per load.
+
 If you are reading these instructions, Stillmark is already installed for your agent. Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
 
 ## Destinations
@@ -56,6 +58,8 @@ stillmark config status --json
 stillmark config set --design-system=true|false --prompted --json
 stillmark config set --detail=compact|extended|inherit [--module=coverage|roadmap|plan] --json
 stillmark config set --auto-update=true|false [--update-interval=<hours>] --json
+stillmark config set --caveman=off|lite|full|ultra --json
+stillmark caveman [stats] | on|off|lite|full|ultra [--save] | compress <file> | verify <file> | restore <file> --json
 stillmark update [--force] --json
 stillmark update apply --json
 ```

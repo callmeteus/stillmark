@@ -1,7 +1,9 @@
+import { cavemanRulesPayload } from "../caveman";
 import {
     loadConfig,
     resolveAllDetailLevels,
     resolveAllLanguages,
+    type CavemanLevel,
     type DetailLevel,
     type DetailModule,
     type LanguageTarget,
@@ -39,6 +41,18 @@ export interface LanguageStatusPayload {
     resolved: Record<LanguageTarget, string>;
 }
 
+export interface CavemanStatusPayload {
+    level: CavemanLevel;
+    /**
+     * Reply rules agents must follow; empty when the level is `off`.
+     */
+    rules: string[];
+    /**
+     * Estimated input tokens the rules add to every turn.
+     */
+    ruleTokens: number;
+}
+
 /**
  * JSON payload for `stillmark config status` (first-run sharing and language prompts).
  */
@@ -50,6 +64,7 @@ export function configStatus(
     sharing: SharingStatusPayload;
     detail: Record<DetailModule, DetailLevel>;
     language: LanguageStatusPayload;
+    caveman: CavemanStatusPayload;
 } {
     const resolved = config ?? loadConfig(paths);
 
@@ -82,7 +97,34 @@ export function configStatus(
         language: {
             needsPrompt: Object.keys(resolved.language).length === 0,
             resolved: resolveAllLanguages(resolved.language)
-        }
+        },
+        caveman: cavemanRulesPayload(resolved.caveman.level)
+    };
+}
+
+/**
+ * Sets the caveman reply level in `stillmark.config.json`.
+ */
+export function setConfigCaveman(
+    paths: ProjectPaths,
+    level: CavemanLevel
+): OperationResult & { config: StillmarkConfig; caveman: CavemanStatusPayload } {
+    const config = loadConfig(paths);
+
+    config.caveman = { level };
+    writeConfig(paths, config);
+
+    const caveman = cavemanRulesPayload(level);
+
+    return {
+        ok: true,
+        changed: true,
+        action: "config-set",
+        summary: level === "off"
+            ? "Caveman replies are off"
+            : `Caveman replies are ${level}; the rules cost ~${caveman.ruleTokens} input tokens per turn`,
+        config,
+        caveman
     };
 }
 

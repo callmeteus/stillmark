@@ -15,6 +15,7 @@ Agent skill / command  -->  stillmark CLI  -->  parsers + guards  -->  markdown 
 - **Coverage** (`packages/cli/src/coverage/`) validates checkbox-only `COVERAGE.md`, toggles cases, and surfaces git diff hints for `/stillmark coverage update` (playbook in `templates/.../stillmark/reference/coverage.md`).
 - **Git** (`GitRunner`) optionally commits or pushes **only** `ROADMAP.md` when enabled in `stillmark.config.json`.
 - **Long-running** persists `.stillmark/plans/STATE.json` and recomputes the next actionable task after authorized plan changes.
+- **Caveman** (`packages/cli/src/caveman/`) holds the optional terse reply rules per level, handed to agents through `config status` only while `caveman.level` is not `off`, and the compress/verify/restore cycle for agent context files: the readable original and a token manifest stay in `.stillmark/plans/caveman/`, and verify compares frontmatter, fenced code, headings, inline code, URLs, and paths byte-exact before recording the savings.
 
 ## Configuration
 

@@ -41,6 +41,7 @@ import { helpResult, unknownOptionsResult } from "./Help";
 import { priorityFlag, runPlanCommand } from "./PlanCommands";
 import { roadmapDateFlag, runConfigSetRoadmapDates } from "./RoadmapCommands";
 import { runConfigSetAutoPush, runConfigSetStripAttribution, runGitCommand, syncAttributionHook } from "./GitCommands";
+import { runCavemanCommand, runConfigSetCaveman } from "./CavemanCommands";
 import { runConfigSetLanguage } from "./LanguageCommands";
 import { parseFlags } from "./ParseFlags";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
@@ -403,6 +404,13 @@ export async function runCli(argv: string[]): Promise<number> {
                 return result.ok ? 0 : 1;
             }
 
+            if (sub === "set" && flags.caveman !== undefined) {
+                const result = runConfigSetCaveman(paths, flags);
+                output(result, json);
+
+                return result.ok ? 0 : 1;
+            }
+
             if (sub === "set" && flags.autoPush !== undefined) {
                 const result = runConfigSetAutoPush(paths, flags);
                 output(result, json);
@@ -486,6 +494,13 @@ export async function runCli(argv: string[]): Promise<number> {
             );
 
             return 1;
+        }
+
+        if (cmd === "caveman") {
+            const result = runCavemanCommand(paths, positional, flags);
+            output(result, json);
+
+            return result.ok ? 0 : 1;
         }
 
         if (cmd === "git") {
@@ -607,7 +622,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | config | classify | roadmap | plan | git | coverage | add | move | install | update | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | git | caveman | coverage | add | move | install | update | long-running"
             },
             json
         );

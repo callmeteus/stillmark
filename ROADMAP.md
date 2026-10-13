@@ -13,12 +13,6 @@
   - All commands documented, including the full design mode
   - Dedicated site areas or pages per topic (roadmap, plan, coverage, design, git, config, updates) instead of one long page
   - English and Portuguese with the same content
-- [ ] **R-020** Optional caveman mode to save tokens (terse replies, inspired by the caveman skill)
-  priority: medium · status: planned · added: 2026-10-13
-  - Opt-in setting in stillmark.config.json, off by default, toggled in plain language
-  - Agent replies drop filler but keep commands, file links, IDs, and errors exact, still in the user's language
-  - Optionally compress Stillmark skill and planning context the way caveman-compress does, with the readable original kept
-  - Measure the savings, since the extra rules also cost input tokens
 - [ ] **R-021** README.md generator and refactorer with selectable templates
   priority: medium · status: planned · added: 2026-10-13
   - Generates a README from the real project (scripts, packages, setup) or restructures an existing one
@@ -73,3 +67,9 @@
   - One language setting for all documents, with per-document overrides (task plans, roadmap, changelog, coverage, design, product)
   - Set in plain language and stored in stillmark.config.json
   - Fixed structure keeps working in any language: headings, IDs, and fields the CLI parses stay stable
+- [x] **R-020** Optional caveman mode to save tokens (terse replies, inspired by the caveman skill)
+  priority: medium · status: done · added: 2026-10-13 · done: 2026-10-13
+  - Opt-in setting in stillmark.config.json, off by default, toggled in plain language
+  - Agent replies drop filler but keep commands, file links, IDs, and errors exact, still in the user's language
+  - Optionally compress Stillmark skill and planning context the way caveman-compress does, with the readable original kept
+  - Measure the savings, since the extra rules also cost input tokens

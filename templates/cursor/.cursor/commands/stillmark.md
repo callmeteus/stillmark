@@ -10,7 +10,9 @@ This command running means Stillmark is already installed. Setting up the repo i
 
 Any terminal command `stillmark <args>` works as `/stillmark <args>` with `--json` appended.
 
-Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `update`, `long-running`.
+Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `caveman`, `update`, `long-running`.
+
+`/stillmark caveman on|off|lite|full|ultra` switches terse replies for this conversation only (add `--save` to keep it); follow the returned `rules` from now on, or drop them after `off`.
 
 Start each run with `stillmark update --json`; when `updateAvailable` is true, run `recommended` first (see the skill).
 
