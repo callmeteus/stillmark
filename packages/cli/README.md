@@ -21,7 +21,10 @@ For local development in this monorepo, build `packages/cli` and use `npx stillm
 ```bash
 stillmark init
 stillmark roadmap add "PostgreSQL support" --json
-stillmark plan add "Integration tests" --json --accept-scope-change
+stillmark plan init "Billing export" --in-scope "CSV\nPDF" --out-of-scope "Excel" --json
+stillmark plan scope --in-scope "Refunds" --json
+stillmark plan add "Integration tests" --priority=high --json --accept-scope-change
+stillmark plan priority T-001 critical --json
 stillmark classify "Add observability as a future milestone" --json
 stillmark move "Dashboard" to plan --json --confirm
 stillmark install --agent cursor

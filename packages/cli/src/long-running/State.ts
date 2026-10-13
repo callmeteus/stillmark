@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { parseTaskPlan } from "../documents";
+import { parseTaskPlan, PriorityOrder } from "../documents";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import { addPlanTask } from "../operations/PlanOperations";
 import type { OperationResult } from "../results/OperationResult";
@@ -47,12 +47,7 @@ export function saveState(paths: ProjectPaths, state: LongRunningState): void {
     fs.renameSync(tmp, paths.state);
 }
 
-const PRIORITY_ORDER: Record<string, number> = {
-    critical: 0,
-    high: 1,
-    medium: 2,
-    low: 3
-};
+const PRIORITY_ORDER: Record<string, number> = PriorityOrder;
 
 /**
  * Pick next actionable task id.

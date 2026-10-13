@@ -12,6 +12,8 @@ description: >-
 
 All file-backed operations run `stillmark … --json` from the **project root**. The text after `/stillmark` is the instruction.
 
+**Clickable links are mandatory, every time.** Whenever a reply creates, changes, shows, or mentions `TASK_PLAN.md`, `FINDINGS.md`, `PROGRESS.md`, `ROADMAP.md`, or `COVERAGE.md`, include a clickable markdown link to the file. Paste the JSON `link` field verbatim; when there is none, build `[TASK_PLAN.md](C:/abs/path/.stillmark/plans/TASK_PLAN.md)` from the absolute `location` (forward slashes, spaces as `%20`). A path in backticks alone is not acceptable: `.stillmark/plans/` is git-ignored and greyed out in the explorer.
+
 ## CLI mirror rule
 
 Anything valid on the terminal as `stillmark <args>` is valid as:
@@ -24,6 +26,8 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 - Always append `--json` for CLI runs unless the user forbids it.
 - `stillmark <command> --help` prints usage and changes nothing. Unknown options are refused; put text that starts with a dash after `--`.
 - Task criteria go through flags, not hand edits: `plan add "<title>" --acceptance "<a>\n<b>" --verification "<check>"` (`--acceptance` also works on `roadmap add`).
+- Scope per plan, never copied from the previous one: `plan init "<objective>" --in-scope "<a>\n<b>" --out-of-scope "<c>"`, or later `plan scope --in-scope "<d>"` (appends; `--replace` overwrites; no flags shows it).
+- Priority: `--priority=critical|high|medium|low` on `plan add`, `roadmap add`, and `add`; change later with `plan priority <task> <level>` or `roadmap priority "<item>" <level>`. Default is `medium`.
 - Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `update`, `long-running`.
 
 ## Auto-update (start of every `/stillmark`)
@@ -124,7 +128,8 @@ Never commit or push unless the user grants it. Preview subjects: `stillmark git
 /stillmark install --agent cursor
 /stillmark config status --json
 /stillmark roadmap add "Observability"
-/stillmark plan init "Ship billing"
+/stillmark plan init "Ship billing" --in-scope "Invoices\nRefunds" --out-of-scope "Tax reports"
+/stillmark plan add "Refund webhook" --priority=high
 /stillmark move "API keys" to plan --confirm --json
 /stillmark git commit-style "Add WAF rules" --json
 ```

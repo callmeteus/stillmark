@@ -20,4 +20,6 @@ Start each run with `stillmark update --json`; when `updateAvailable` is true, r
 
 ## Report
 
+**Always** give a clickable markdown link to every plan, roadmap, or coverage file you touch, show, or mention: paste the JSON `link` field verbatim (or build `[TASK_PLAN.md](<absolute path with forward slashes>)` from `location`). Never only a path in backticks.
+
 CLI: JSON `summary`. Coverage: what changed in COVERAGE.md + validate result. Design: files touched and what you verified.

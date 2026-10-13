@@ -2,6 +2,8 @@
 
 Run `stillmark` from the project root with `--json` for all planning operations. ROADMAP.md is public; `.stillmark/plans/TASK_PLAN.md` is private and local. Classify ambiguous adds with `stillmark classify`. Do not run git yourself; use Stillmark config for optional roadmap commits.
 
+**Clickable links (mandatory):** every reply that creates, changes, shows, or mentions a plan, findings, progress, roadmap, or coverage file must include a clickable markdown link to it. Paste the JSON `link` field verbatim, or build `[TASK_PLAN.md](<absolute path, forward slashes>)` from `location`. Never only a path in backticks.
+
 **Auto-update:** start each `/stillmark` with `stillmark update --json` (npm is checked at most once per `update.intervalHours`, default 24h). When `updateAvailable` is true, run `recommended`, tell the user in one line, then continue. Ignore `error`.
 
 **Global install:** if this repo has no `stillmark.config.json` / `ROADMAP.md`, ask once before running `stillmark init --json`.

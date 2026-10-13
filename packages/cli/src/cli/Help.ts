@@ -10,18 +10,20 @@ const COMMAND_USAGE: Record<string, string[]> = {
     classify: ["stillmark classify \"<text>\""],
     roadmap: [
         "stillmark roadmap",
-        "stillmark roadmap add \"<description>\" [--details \"<text>\"] [--allow-sensitive] [--git|--no-git]",
+        "stillmark roadmap add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--allow-sensitive] [--git|--no-git]",
         "stillmark roadmap defer \"<item>\"",
-        "stillmark roadmap priority <item> <priority>"
+        "stillmark roadmap priority <item> critical|high|medium|low"
     ],
     plan: [
         "stillmark plan",
-        "stillmark plan init [\"<objective>\"]",
-        "stillmark plan add \"<description>\" [--details \"<text>\"] [--acceptance \"<criterion>\\n<criterion>\"] [--verification \"<check>\\n<check>\"] [--accept-scope-change]",
+        "stillmark plan init [\"<objective>\"] [--in-scope \"<a>\\n<b>\"] [--out-of-scope \"<c>\"]",
+        "stillmark plan scope [--objective \"<text>\"] [--in-scope \"<a>\\n<b>\"] [--out-of-scope \"<c>\"] [--replace]",
+        "stillmark plan add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<criterion>\\n<criterion>\"] [--verification \"<check>\\n<check>\"] [--accept-scope-change]",
+        "stillmark plan priority <task> critical|high|medium|low",
         "stillmark plan blocked <task> <blocker>"
     ],
     add: [
-        "stillmark add \"<description>\" [--details \"<text>\"] [--acceptance \"<text>\"] [--verification \"<text>\"] [--accept-scope-change]"
+        "stillmark add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--verification \"<text>\"] [--accept-scope-change]"
     ],
     move: ["stillmark move \"<item>\" to plan|roadmap [--confirm]"],
     coverage: [

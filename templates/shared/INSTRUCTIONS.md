@@ -20,9 +20,13 @@ If `needsClarification` is true, ask exactly one concise question. Do not duplic
 
 ```bash
 stillmark init
-stillmark roadmap add "<description>" --json
-stillmark plan add "<description>" [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
-stillmark add "<description>" --json
+stillmark roadmap add "<description>" [--priority=critical|high|medium|low] --json
+stillmark roadmap priority "<item>" critical|high|medium|low --json
+stillmark plan init "<objective>" [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] --json
+stillmark plan scope [--objective "<text>"] [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] [--replace] --json
+stillmark plan add "<description>" [--priority=critical|high|medium|low] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
+stillmark plan priority <task> critical|high|medium|low --json
+stillmark add "<description>" [--priority=critical|high|medium|low] --json
 stillmark move "<item>" to plan --json
 stillmark move "<item>" to roadmap --json
 stillmark long-running apply "<description>" --json [--accept-scope-change]
@@ -41,6 +45,8 @@ stillmark update apply --json
 ```
 
 Run `stillmark <command> --help` to see the options; unknown options are refused, never written as text. Pass acceptance criteria and verification through `--acceptance` / `--verification` (split lines with `\n`) instead of editing `(define)` by hand. A fresh plan with `(Not set)` / `(define)` scope does not block `plan add`.
+
+Each new plan gets its own scope: set objective, in scope, and out of scope with `plan init ... --in-scope/--out-of-scope` or `plan scope` (appends; `--replace` overwrites; no flags shows the current scope). Never reuse the scope of a previous plan. Set priority with `--priority` when adding, or `plan priority` / `roadmap priority` afterwards; without the flag the task is `medium`.
 
 ## Auto-update
 
@@ -90,6 +96,8 @@ Use `--accept-scope-change` only after the user authorizes expanding scope. Use 
 ## Reporting
 
 After each operation, report what changed, item IDs, and file paths from the JSON `summary`. Never invent completion status.
+
+**Clickable links are mandatory.** Every reply that creates, changes, shows, or mentions a plan, roadmap, or coverage file must include a clickable markdown link to it. Paste the JSON `link` field verbatim (e.g. `[TASK_PLAN.md](C:/repo/.stillmark/plans/TASK_PLAN.md)`); when there is no `link`, build one from the absolute `location` with forward slashes. Do the same for `FINDINGS.md` and `PROGRESS.md` next to the plan. A bare path in backticks is not enough: the plan folder is git-ignored and hard to find by hand.
 
 ## Git
 

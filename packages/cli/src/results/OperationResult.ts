@@ -23,6 +23,8 @@ export interface OperationResult {
     changed: boolean;
     action?: string;
     location?: string;
+    /** Markdown link to `location` that agents paste verbatim so the user can open the file. */
+    link?: string;
     itemId?: string;
     summary?: string;
     needsClarification?: boolean;

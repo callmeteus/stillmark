@@ -9,7 +9,7 @@ import {
     type DetailModule,
     type GitOverride
 } from "../config";
-import { parseTaskPlan } from "../documents";
+import { isPriority, parseTaskPlan } from "../documents";
 import { GitRunner, resolveCommitMessage } from "../git";
 import { classifyIntent } from "../intent";
 import { applyPlanChange } from "../long-running";
@@ -36,9 +36,11 @@ import {
     updateRoadmapItem
 } from "../operations";
 import { resolveProjectPaths } from "../paths/ProjectPaths";
+import { withFileLink } from "../results/FileLink";
 import type { OperationResult } from "../results/OperationResult";
 import { installTemplates } from "../update";
 import { helpResult, unknownOptionsResult } from "./Help";
+import { hasScopeFlags, priorityFlag, runPlanScope } from "./PlanCommands";
 import { parseFlags } from "./ParseFlags";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
@@ -49,11 +51,17 @@ export interface CliOptions {
     gitRunner?: GitRunner;
 }
 
-function output(result: OperationResult, json: boolean): void {
+function output(raw: OperationResult, json: boolean, file?: string): void {
+    const result = withFileLink(raw, file);
+
     if (json) {
         console.log(JSON.stringify(result, null, 2));
     } else {
         console.log(result.summary ?? JSON.stringify(result));
+
+        if (result.location && result.link) {
+            console.log(`Open: ${result.location}`);
+        }
     }
 }
 
@@ -97,6 +105,14 @@ export async function runCli(argv: string[]): Promise<number> {
 
     if (unknown.length > 0) {
         output(unknownOptionsResult(unknown, cmd), json);
+
+        return 1;
+    }
+
+    const { priority, error: priorityError } = priorityFlag(flags);
+
+    if (priorityError) {
+        output(priorityError, json);
 
         return 1;
     }
@@ -188,9 +204,11 @@ export async function runCli(argv: string[]): Promise<number> {
                         privatePlanRaw: planRaw,
                         gitRunner,
                         details,
-                        acceptance
+                        acceptance,
+                        priority
                     }),
-                    json
+                    json,
+                    paths.roadmap
                 );
 
                 return 0;
@@ -202,20 +220,23 @@ export async function runCli(argv: string[]): Promise<number> {
                         query: positional.slice(2).join(" "),
                         defer: true
                     }),
-                    json
+                    json,
+                    paths.roadmap
                 );
 
                 return 0;
             }
 
             if (sub === "priority" && positional[2] && positional[3]) {
-                output(
-                    updateRoadmapItem(paths, {
-                        query: positional[2],
-                        priority: positional[3]
-                    }),
-                    json
-                );
+                const value = positional[3].toLowerCase();
+
+                if (!isPriority(value)) {
+                    output(priorityFlag({ priority: value }).error as OperationResult, json);
+
+                    return 1;
+                }
+
+                output(updateRoadmapItem(paths, { query: positional[2], priority: value }), json, paths.roadmap);
 
                 return 0;
             }
@@ -228,7 +249,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         ? fs.readFileSync(paths.roadmap, "utf8").slice(0, 2000)
                         : "No ROADMAP.md"
                 },
-                json
+                json,
+                paths.roadmap
             );
 
             return 0;
@@ -237,7 +259,30 @@ export async function runCli(argv: string[]): Promise<number> {
         if (cmd === "plan") {
             if (sub === "init") {
                 const objective = positional.slice(2).join(" ") || undefined;
-                output(initTaskPlan(paths, objective), json);
+                const init = initTaskPlan(paths, objective);
+
+                output(init.ok && hasScopeFlags(flags) ? runPlanScope(paths, flags) : init, json, paths.taskPlan);
+
+                return init.ok ? 0 : 1;
+            }
+
+            if (sub === "scope") {
+                const result = runPlanScope(paths, flags);
+                output(result, json, paths.taskPlan);
+
+                return result.ok ? 0 : 1;
+            }
+
+            if (sub === "priority" && positional[2] && positional[3]) {
+                const value = positional[3].toLowerCase();
+
+                if (!isPriority(value)) {
+                    output(priorityFlag({ priority: value }).error as OperationResult, json);
+
+                    return 1;
+                }
+
+                output(updatePlanTask(paths, { query: positional[2], priority: value }), json, paths.taskPlan);
 
                 return 0;
             }
@@ -249,9 +294,11 @@ export async function runCli(argv: string[]): Promise<number> {
                         acceptScopeChange: Boolean(flags.acceptScopeChange),
                         details,
                         acceptance,
-                        verification
+                        verification,
+                        priority
                     }),
-                    json
+                    json,
+                    paths.taskPlan
                 );
 
                 return 0;
@@ -263,7 +310,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         query: positional[2],
                         blockedBy: positional.slice(3).join(" ")
                     }),
-                    json
+                    json,
+                    paths.taskPlan
                 );
 
                 return 0;
@@ -277,7 +325,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         ? fs.readFileSync(paths.taskPlan, "utf8").slice(0, 2000)
                         : "No TASK_PLAN.md"
                 },
-                json
+                json,
+                paths.taskPlan
             );
 
             return 0;
@@ -319,7 +368,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         gitOverride,
                         gitRunner,
                         details,
-                        acceptance
+                        acceptance,
+                        priority
                     }),
                     json
                 );
@@ -330,7 +380,8 @@ export async function runCli(argv: string[]): Promise<number> {
                         acceptScopeChange: Boolean(flags.acceptScopeChange),
                         details,
                         acceptance,
-                        verification
+                        verification,
+                        priority
                     }),
                     json
                 );

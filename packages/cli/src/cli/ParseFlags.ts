@@ -22,6 +22,7 @@ const BOOLEAN_FLAGS: Record<string, string> = {
     "--force": "force",
     "--global": "global",
     "--link": "link",
+    "--replace": "replace",
     "--help": "help",
     "-h": "help"
 };
@@ -39,6 +40,10 @@ const VALUE_FLAGS: Record<string, string> = {
     "--module": "module",
     "--acceptance": "acceptance",
     "--verification": "verification",
+    "--priority": "priority",
+    "--objective": "objective",
+    "--in-scope": "inScope",
+    "--out-of-scope": "outOfScope",
     "--auto-update": "autoUpdate",
     "--update-interval": "updateInterval"
 };
