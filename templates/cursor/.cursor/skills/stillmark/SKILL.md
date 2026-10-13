@@ -28,6 +28,8 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 - Task criteria go through flags, not hand edits: `plan add "<title>" --acceptance "<a>\n<b>" --verification "<check>"` (`--acceptance` also works on `roadmap add`).
 - Scope per plan, never copied from the previous one: `plan init "<objective>" --in-scope "<a>\n<b>" --out-of-scope "<c>"`, or later `plan scope --in-scope "<d>"` (appends; `--replace` overwrites; no flags shows it).
 - Priority: `--priority=critical|high|medium|low` on `plan add`, `roadmap add`, and `add`; change later with `plan priority <task> <level>` or `roadmap priority "<item>" <level>`. Default is `medium`.
+- Finished work: `roadmap done "<item>"` moves an existing item to `## Done` (checked, `status: done`); `roadmap add "<description>" --done` records work that was never listed. To backfill the past, read `git log --date=short --format="%h %ad %s"`, group commits into user-visible features, and run one command per feature with `--commit=<sha>` of the commit that finished it, so the `done:` date is the real delivery date.
+- Dates: on by default, items get `added:` / `done:` (`YYYY-MM-DD`). `--date=YYYY-MM-DD` sets one by hand; `roadmap done` on an item already done with `--date`/`--commit` fixes its date. Off with `config set --roadmap-dates=false`.
 - Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `update`, `long-running`.
 
 ## Auto-update (start of every `/stillmark`)

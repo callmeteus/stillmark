@@ -23,6 +23,7 @@ const BOOLEAN_FLAGS: Record<string, string> = {
     "--global": "global",
     "--link": "link",
     "--replace": "replace",
+    "--done": "done",
     "--help": "help",
     "-h": "help"
 };
@@ -45,7 +46,10 @@ const VALUE_FLAGS: Record<string, string> = {
     "--in-scope": "inScope",
     "--out-of-scope": "outOfScope",
     "--auto-update": "autoUpdate",
-    "--update-interval": "updateInterval"
+    "--update-interval": "updateInterval",
+    "--date": "date",
+    "--commit": "commit",
+    "--roadmap-dates": "roadmapDates"
 };
 
 /**

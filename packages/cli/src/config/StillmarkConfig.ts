@@ -35,8 +35,16 @@ export interface GitConfig {
     commitMessage?: string;
 }
 
+export interface RoadmapConfig {
+    /**
+     * When true, roadmap items get `added:` and `done:` dates (YYYY-MM-DD) in their metadata line.
+     */
+    dates: boolean;
+}
+
 export interface StillmarkConfig {
     git: GitConfig;
+    roadmap: RoadmapConfig;
     sharing: SharingConfig;
     learned: LearnedConfig;
     /**
@@ -64,6 +72,7 @@ const DEFAULT_CONFIG: StillmarkConfig = {
         autoCommit: false,
         autoPush: false
     },
+    roadmap: { dates: true },
     sharing: { ...DEFAULT_SHARING },
     learned: { ...DEFAULT_LEARNED },
     detail: {},
@@ -78,6 +87,7 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
         return {
             ...DEFAULT_CONFIG,
             git: { ...DEFAULT_CONFIG.git },
+            roadmap: { ...DEFAULT_CONFIG.roadmap },
             sharing: { ...DEFAULT_SHARING },
             learned: { ...DEFAULT_LEARNED },
             detail: {},
@@ -93,6 +103,9 @@ export function loadConfig(paths: ProjectPaths): StillmarkConfig {
             autoCommit: parsed.git?.autoCommit ?? DEFAULT_CONFIG.git.autoCommit,
             autoPush: parsed.git?.autoPush ?? DEFAULT_CONFIG.git.autoPush,
             commitMessage: parsed.git?.commitMessage
+        },
+        roadmap: {
+            dates: typeof parsed.roadmap?.dates === "boolean" ? parsed.roadmap.dates : DEFAULT_CONFIG.roadmap.dates
         },
         sharing: {
             firstRunPrompted:

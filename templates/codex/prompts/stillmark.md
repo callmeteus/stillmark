@@ -1,6 +1,6 @@
 # Stillmark (Codex)
 
-Run `stillmark` from the project root with `--json` for all planning operations. ROADMAP.md is public; `.stillmark/plans/TASK_PLAN.md` is private and local. Classify ambiguous adds with `stillmark classify`. Do not run git yourself; use Stillmark config for optional roadmap commits.
+Run `stillmark` from the project root with `--json` for all planning operations. ROADMAP.md is public; `.stillmark/plans/TASK_PLAN.md` is private and local. Classify ambiguous adds with `stillmark classify`. Record finished work with `stillmark roadmap done "<item>"` or `stillmark roadmap add "<description>" --done`; add `--commit=<sha>` when backfilling so the `done:` date comes from git (dates are on by default; `config set --roadmap-dates=false` turns them off). Do not run git yourself; use Stillmark config for optional roadmap commits.
 
 **Clickable links (mandatory):** every reply that creates, changes, shows, or mentions a plan, findings, progress, roadmap, or coverage file must include a clickable markdown link to it. Paste the JSON `link` field verbatim, or build `[TASK_PLAN.md](<absolute path, forward slashes>)` from `location`. Never only a path in backticks.
 

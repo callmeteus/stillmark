@@ -6,7 +6,10 @@ import {
     insertAfterLine,
     nextId,
     parseRoadmap,
-    spliceLines
+    setMetaField,
+    spliceLines,
+    todayIsoDate,
+    type RoadmapItem
 } from "../documents";
 import { findDuplicateRoadmap } from "../guards";
 import { scanForSensitiveContent } from "../guards/PrivacyGuard";
@@ -38,19 +41,73 @@ export interface AddRoadmapOptions {
      * Acceptance criteria written as indented `  - ` lines; allowed in compact and extended.
      */
     acceptance?: string[];
+    /**
+     * Records work that is already finished: checked item with `status: done` under `## Done`.
+     */
+    done?: boolean;
+    /**
+     * `YYYY-MM-DD` for the `added:` (or `done:` with `done`) field; defaults to today.
+     * Ignored when `roadmap.dates` is off.
+     */
+    date?: string;
 }
+
+const DONE_SECTION = "Done";
+const DEFERRED_SECTION = "Deferred";
 
 function formatRoadmapItem(
     id: string,
     title: string,
     priority: string,
     details: string[],
-    acceptance: string[]
+    acceptance: string[],
+    done: boolean,
+    date: string | undefined
 ): string {
     const detailBlock = details.map((line) => `\n  ${line}`).join("");
     const acceptanceBlock = acceptance.map((line) => `\n  - ${line}`).join("");
+    const box = done ? "x" : " ";
+    const status = done ? "done" : "planned";
+    const dateField = date ? ` · ${done ? "done" : "added"}: ${date}` : "";
 
-    return `- [ ] **${id}** ${title}\n  priority: ${priority} · status: planned${detailBlock}${acceptanceBlock}`;
+    return `- [${box}] **${id}** ${title}\n  priority: ${priority} · status: ${status}${dateField}${detailBlock}${acceptanceBlock}`;
+}
+
+/**
+ * Moves an item to the end of a section (created at the end of the file when missing),
+ * rewriting its checkbox and status while keeping priority, other fields, and any indented lines.
+ */
+function moveItemToSection(
+    raw: string,
+    item: RoadmapItem,
+    sectionTitle: string,
+    status: string,
+    checked: boolean,
+    fields: Record<string, string> = {}
+): string {
+    let working = spliceLines(raw, item.itemSpan, "");
+
+    if (!parseRoadmap(working).sections.some((s) => s.title === sectionTitle)) {
+        working = `${working.trimEnd()}\n\n## ${sectionTitle}\n`;
+    }
+
+    const section = parseRoadmap(working).sections.find((s) => s.title === sectionTitle);
+    const original = raw.split(/\r?\n/).slice(item.itemSpan.startLine, item.itemSpan.endLine);
+    const meta = Object.entries(fields).reduce(
+        (line, [key, value]) => setMetaField(line, key, value),
+        item.metadataLine
+            ? item.metadataLine.trim().replace(/status:\s*[\w-]+/, `status: ${status}`)
+            : `priority: medium · status: ${status}`
+    );
+    const extra = original.slice(item.metadataLine ? 2 : 1);
+    const block = [`- [${checked ? "x" : " "}] **${item.id}** ${item.title}`, `  ${meta}`, ...extra].join("\n");
+    const at = section
+        ? section.items.length > 0
+            ? section.items[section.items.length - 1].itemSpan.endLine - 1
+            : section.headerSpan.endLine
+        : working.split(/\r?\n/).length - 1;
+
+    return insertAfterLine(working, at, block);
 }
 
 /**
@@ -107,7 +164,8 @@ export async function addRoadmapItem(
         };
     }
 
-    const sectionName = options.section ?? "Backlog";
+    const done = Boolean(options.done);
+    const sectionName = options.section ?? (done ? DONE_SECTION : "Backlog");
     let section = doc.sections.find(
         (s) => s.title.toLowerCase() === sectionName.toLowerCase()
     );
@@ -130,7 +188,8 @@ export async function addRoadmapItem(
     const ids = allRoadmapIds(parseRoadmap(updated));
     const id = nextId("R", ids);
     const priority = options.priority ?? "medium";
-    const block = formatRoadmapItem(id, options.description, priority, details, options.acceptance ?? []);
+    const date = config.roadmap.dates ? options.date ?? todayIsoDate() : undefined;
+    const block = formatRoadmapItem(id, options.description, priority, details, options.acceptance ?? [], done, date);
     const insertAt =
         section.items.length > 0
             ? section.items[section.items.length - 1].itemSpan.endLine - 1
@@ -179,10 +238,17 @@ export interface UpdateRoadmapOptions {
     priority?: string;
     status?: string;
     defer?: boolean;
+    /** Check the item, set `status: done`, and move it to `## Done`. */
+    done?: boolean;
+    /**
+     * Explicit `YYYY-MM-DD` for `done:`; defaults to today. On an item that is already done,
+     * an explicit date rewrites its `done:` field in place (used to backfill dates from commits).
+     */
+    date?: string;
 }
 
 /**
- * Update roadmap item metadata or defer to Deferred section.
+ * Update roadmap item metadata, defer it to Deferred, or mark it done.
  */
 export function updateRoadmapItem(
     paths: ProjectPaths,
@@ -196,32 +262,59 @@ export function updateRoadmapItem(
         return { ok: false, changed: false, summary: "Roadmap item not found" };
     }
 
-    if (options.defer) {
-        const without = spliceLines(raw, item.itemSpan, "");
-        const deferredSection = doc.sections.find((s) => s.title === "Deferred");
-        let working = without;
+    if (options.done) {
+        const datesOn = loadConfig(paths).roadmap.dates;
 
-        if (!deferredSection) {
-            working = `${working.trimEnd()}\n\n## Deferred\n`;
+        if (item.checked && item.sectionTitle === DONE_SECTION) {
+            if (datesOn && options.date && item.metadataLine) {
+                const meta = setMetaField(item.metadataLine, "done", options.date);
+
+                if (meta !== item.metadataLine) {
+                    fs.writeFileSync(paths.roadmap, spliceLines(raw, item.metadataSpan, meta), "utf8");
+
+                    return {
+                        ok: true,
+                        changed: true,
+                        action: "roadmap done",
+                        location: paths.roadmap,
+                        itemId: item.id,
+                        summary: `Set ${item.id} done date to ${options.date}`
+                    };
+                }
+            }
+
+            return {
+                ok: true,
+                changed: false,
+                action: "roadmap done",
+                location: paths.roadmap,
+                itemId: item.id,
+                summary: `${item.id} is already done`
+            };
         }
 
-        const redoc = parseRoadmap(working);
-        const def = redoc.sections.find((s) => s.title === "Deferred");
-        const meta = item.metadataLine.replace(/status:\s*\w+/, "status: deferred");
-        const block = `- [ ] **${item.id}** ${item.title}\n  ${meta || "priority: medium · status: deferred"}`;
-        const at = def
-            ? def.items.length > 0
-                ? def.items[def.items.length - 1].itemSpan.endLine - 1
-                : def.headerSpan.endLine
-            : working.split(/\r?\n/).length - 1;
+        const fields: Record<string, string> = datesOn ? { done: options.date ?? todayIsoDate() } : {};
 
-        working = insertAfterLine(working, at, block);
-        fs.writeFileSync(paths.roadmap, working, "utf8");
+        fs.writeFileSync(paths.roadmap, moveItemToSection(raw, item, DONE_SECTION, "done", true, fields), "utf8");
+
+        return {
+            ok: true,
+            changed: true,
+            action: "roadmap done",
+            location: paths.roadmap,
+            itemId: item.id,
+            summary: `Marked ${item.id} done in ## ${DONE_SECTION}${fields.done ? ` on ${fields.done}` : ""}`
+        };
+    }
+
+    if (options.defer) {
+        fs.writeFileSync(paths.roadmap, moveItemToSection(raw, item, DEFERRED_SECTION, "deferred", false), "utf8");
 
         return {
             ok: true,
             changed: true,
             action: "roadmap defer",
+            location: paths.roadmap,
             itemId: item.id,
             summary: `Deferred ${item.id}`
         };
@@ -230,22 +323,15 @@ export function updateRoadmapItem(
     let meta = item.metadataLine || "  priority: medium · status: planned";
 
     if (options.priority) {
-        meta = meta.replace(/priority:\s*\w+/, `priority: ${options.priority}`);
-
-        if (!/priority:/.test(meta)) {
-            meta = `${meta} · priority: ${options.priority}`;
-        }
+        meta = setMetaField(meta, "priority", options.priority);
     }
 
     if (options.status) {
-        meta = meta.replace(/status:\s*[\w-]+/, `status: ${options.status}`);
-
-        if (!/status:/.test(meta)) {
-            meta = `${meta} · status: ${options.status}`;
-        }
+        meta = setMetaField(meta, "status", options.status);
     }
 
-    const updated = spliceLines(raw, item.metadataSpan, meta.trimStart());
+    // The parser only treats indented lines as item metadata.
+    const updated = spliceLines(raw, item.metadataSpan, `  ${meta.trimStart()}`);
     fs.writeFileSync(paths.roadmap, updated, "utf8");
 
     return {

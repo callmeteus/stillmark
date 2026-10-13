@@ -10,7 +10,8 @@ const COMMAND_USAGE: Record<string, string[]> = {
     classify: ["stillmark classify \"<text>\""],
     roadmap: [
         "stillmark roadmap",
-        "stillmark roadmap add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--allow-sensitive] [--git|--no-git]",
+        "stillmark roadmap add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--done] [--date=YYYY-MM-DD|--commit=<ref>] [--allow-sensitive] [--git|--no-git]",
+        "stillmark roadmap done \"<item>\" [--date=YYYY-MM-DD|--commit=<ref>]",
         "stillmark roadmap defer \"<item>\"",
         "stillmark roadmap priority <item> critical|high|medium|low"
     ],
@@ -23,7 +24,7 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark plan blocked <task> <blocker>"
     ],
     add: [
-        "stillmark add \"<description>\" [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--verification \"<text>\"] [--accept-scope-change]"
+        "stillmark add \"<description>\" [--done] [--date=YYYY-MM-DD|--commit=<ref>] [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--verification \"<text>\"] [--accept-scope-change]"
     ],
     move: ["stillmark move \"<item>\" to plan|roadmap [--confirm]"],
     coverage: [
@@ -35,7 +36,8 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark config status",
         "stillmark config set --design-system=true|false [--prompted]",
         "stillmark config set --detail=compact|extended|inherit [--module=coverage|roadmap|plan]",
-        "stillmark config set --auto-update=true|false [--update-interval=<hours>]"
+        "stillmark config set --auto-update=true|false [--update-interval=<hours>]",
+        "stillmark config set --roadmap-dates=true|false"
     ],
     git: ["stillmark git commit-style [\"<summary>\"]"],
     install: [

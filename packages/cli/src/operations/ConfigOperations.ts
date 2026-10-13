@@ -144,6 +144,27 @@ export function setConfigUpdate(
     };
 }
 
+/**
+ * Turns roadmap `added:` / `done:` dates on or off in `stillmark.config.json`.
+ */
+export function setConfigRoadmapDates(
+    paths: ProjectPaths,
+    dates: boolean
+): OperationResult & { config: StillmarkConfig } {
+    const config = loadConfig(paths);
+
+    config.roadmap = { ...config.roadmap, dates };
+    writeConfig(paths, config);
+
+    return {
+        ok: true,
+        changed: true,
+        action: "config-set",
+        summary: dates ? "Roadmap dates are on" : "Roadmap dates are off",
+        config
+    };
+}
+
 export interface SetConfigSharingOptions {
     shareDesignSystem: boolean;
     markPrompted: boolean;

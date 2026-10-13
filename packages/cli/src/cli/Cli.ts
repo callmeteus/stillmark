@@ -41,6 +41,7 @@ import type { OperationResult } from "../results/OperationResult";
 import { installTemplates } from "../update";
 import { helpResult, unknownOptionsResult } from "./Help";
 import { hasScopeFlags, priorityFlag, runPlanScope } from "./PlanCommands";
+import { roadmapDateFlag, runConfigSetRoadmapDates } from "./RoadmapCommands";
 import { parseFlags } from "./ParseFlags";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
@@ -113,6 +114,14 @@ export async function runCli(argv: string[]): Promise<number> {
 
     if (priorityError) {
         output(priorityError, json);
+
+        return 1;
+    }
+
+    const { date, error: dateError } = await roadmapDateFlag(paths, flags, gitRunner);
+
+    if (dateError) {
+        output(dateError, json);
 
         return 1;
     }
@@ -205,13 +214,22 @@ export async function runCli(argv: string[]): Promise<number> {
                         gitRunner,
                         details,
                         acceptance,
-                        priority
+                        priority,
+                        done: Boolean(flags.done),
+                        date
                     }),
                     json,
                     paths.roadmap
                 );
 
                 return 0;
+            }
+
+            if (sub === "done" && positional[2]) {
+                const result = updateRoadmapItem(paths, { query: positional.slice(2).join(" "), done: true, date });
+                output(result, json, paths.roadmap);
+
+                return result.ok ? 0 : 1;
             }
 
             if (sub === "defer" && positional[2]) {
@@ -339,13 +357,13 @@ export async function runCli(argv: string[]): Promise<number> {
                 hasActivePlan: fs.existsSync(paths.taskPlan)
             });
 
-            if (classified.needsClarification) {
+            if (classified.needsClarification && !flags.done) {
                 output(classified, json);
 
                 return 1;
             }
 
-            const dest = classified.summary;
+            const dest = flags.done ? "roadmap" : classified.summary;
 
             if (dest === "roadmap" && verification.length > 0) {
                 output(
@@ -369,7 +387,9 @@ export async function runCli(argv: string[]): Promise<number> {
                         gitRunner,
                         details,
                         acceptance,
-                        priority
+                        priority,
+                        done: Boolean(flags.done),
+                        date
                     }),
                     json
                 );
@@ -429,6 +449,13 @@ export async function runCli(argv: string[]): Promise<number> {
                 );
 
                 return 0;
+            }
+
+            if (sub === "set" && flags.roadmapDates !== undefined) {
+                const result = runConfigSetRoadmapDates(paths, flags);
+                output(result, json);
+
+                return result.ok ? 0 : 1;
             }
 
             if (sub === "set" && hasUpdateConfigFlags(flags)) {

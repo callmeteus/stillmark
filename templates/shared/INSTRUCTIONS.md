@@ -22,6 +22,9 @@ If `needsClarification` is true, ask exactly one concise question. Do not duplic
 stillmark init
 stillmark roadmap add "<description>" [--priority=critical|high|medium|low] --json
 stillmark roadmap priority "<item>" critical|high|medium|low --json
+stillmark roadmap done "<item>" [--date=YYYY-MM-DD|--commit=<sha>] --json
+stillmark roadmap add "<finished work>" --done [--commit=<sha>] [--priority=high] --json
+stillmark config set --roadmap-dates=true|false --json
 stillmark plan init "<objective>" [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] --json
 stillmark plan scope [--objective "<text>"] [--in-scope "<a>\n<b>"] [--out-of-scope "<c>"] [--replace] --json
 stillmark plan add "<description>" [--priority=critical|high|medium|low] [--acceptance "<criterion>\n<criterion>"] [--verification "<check>"] --json
@@ -46,7 +49,11 @@ stillmark update apply --json
 
 Run `stillmark <command> --help` to see the options; unknown options are refused, never written as text. Pass acceptance criteria and verification through `--acceptance` / `--verification` (split lines with `\n`) instead of editing `(define)` by hand. A fresh plan with `(Not set)` / `(define)` scope does not block `plan add`.
 
-Each new plan gets its own scope: set objective, in scope, and out of scope with `plan init ... --in-scope/--out-of-scope` or `plan scope` (appends; `--replace` overwrites; no flags shows the current scope). Never reuse the scope of a previous plan. Set priority with `--priority` when adding, or `plan priority` / `roadmap priority` afterwards; without the flag the task is `medium`.
+Each new plan gets its own scope: set objective, in scope, and out of scope with `plan init ... --in-scope/--out-of-scope` or `plan scope` (appends; `--replace` overwrites; no flags shows the current scope). Never reuse the scope of a previous plan.
+
+Finished work goes to `## Done` as a checked item with `status: done`: `roadmap done "<item>"` for an existing item, `roadmap add "<description>" --done` for work that was never on the roadmap. To backfill history ("add everything already done"), read `git log --date=short --format="%h %ad %s"` and the code, group commits into user-visible features, mark matching items with `roadmap done`, and add the rest with `--done` (one command per feature, no secrets or internal details). Pass `--commit=<sha>` of the commit that finished each feature (usually the last one in the group) so the delivery date is the real one; the CLI reads the date from git.
+
+Roadmap dates are on by default (`roadmap.dates` in `stillmark.config.json`): new items get `added: YYYY-MM-DD`, finished items `done: YYYY-MM-DD`. `roadmap done` on an item already done with `--date` / `--commit` fixes its date. Turn dates off with `config set --roadmap-dates=false` when the user asks. Set priority with `--priority` when adding, or `plan priority` / `roadmap priority` afterwards; without the flag the task is `medium`.
 
 ## Auto-update
 
