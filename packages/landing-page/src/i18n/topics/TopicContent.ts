@@ -22,6 +22,7 @@ export enum TopicId {
     GIT = "GIT",
     NOTIFY = "NOTIFY",
     README = "README",
+    CHANGELOG = "CHANGELOG",
     SETTINGS = "SETTINGS"
 }
 

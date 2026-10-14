@@ -6,20 +6,23 @@ import { resolveProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
 import { parseAgentFinish, setNotifyHook, notifyHookInstalled, NotifyHookAgents, type NotifyHookAgent } from "./AgentHooks";
 import { discoverTelegramChat, sendToChannels, type NotifyDelivery, type NotifyStatus } from "./Channels";
+import type { ToastRunner } from "./DesktopToast";
 import {
     loadNotifyConfig,
     maskChannel,
     notifyConfigPath,
+    NotifyChannelTypes,
     writeNotifyConfig,
     type NotifyChannel,
     type NotifyChannelType
 } from "./NotifyConfig";
 
 /**
- * Optional home directory override (tests); defaults to the current user's home.
+ * Optional overrides for tests: home directory (defaults to the current user's home) and desktop toasts.
  */
 export interface NotifyContext {
     homeDir?: string;
+    toast?: ToastRunner;
 }
 
 export interface AddNotifyChannelOptions {
@@ -112,7 +115,8 @@ export async function addNotifyChannel(options: AddNotifyChannelOptions, context
 
             channel.chatId = found.chatId;
         }
-    } else {
+    } else
+    if (options.type !== "desktop") {
         const error = validateUrl(options.type, options.url);
 
         if (error) {
@@ -132,7 +136,9 @@ export async function addNotifyChannel(options: AddNotifyChannelOptions, context
         ok: true,
         changed: true,
         action: "notify add",
-        summary: `${replaced ? "Updated" : "Added"} ${options.type} channel "${name}" in ${file} (outside every repository). Run stillmark notify test ${name}`,
+        summary: options.type === "desktop"
+            ? `${replaced ? "Updated" : "Added"} desktop notifications "${name}" in ${file}. Run stillmark notify test ${name} to see one`
+            : `${replaced ? "Updated" : "Added"} ${options.type} channel "${name}" in ${file} (outside every repository). Run stillmark notify test ${name}`,
         channel: maskChannel(channel)
     };
 }
@@ -189,10 +195,10 @@ export function listNotify(context: NotifyContext = {}): OperationResult & {
         changed: false,
         action: "notify list",
         summary: config.channels.length === 0
-            ? "No notification channels yet. Add one with stillmark notify add telegram|discord|slack|webhook"
+            ? `No notification channels yet. Add one with stillmark notify add ${NotifyChannelTypes.join("|")}`
             : [
                 `${config.enabled ? "On" : "Paused"}: ${config.channels.map((channel) => `${channel.name} (${channel.type})`).join(", ")}`,
-                hooked.length > 0 ? `finish hook in ${hooked.join(", ")}` : "no agent finish hook yet (stillmark notify hook install --agent=cursor|claude)"
+                hooked.length > 0 ? `finish hook in ${hooked.join(", ")}` : `no agent finish hook yet (stillmark notify hook install --agent=${NotifyHookAgents.join("|")})`
             ].join("; "),
         location: notifyConfigPath(context.homeDir),
         enabled: config.enabled,
@@ -244,7 +250,7 @@ export async function sendNotify(options: SendNotifyOptions, context: NotifyCont
         agent: options.agent,
         summary: options.summary,
         language: projectLanguage(root)
-    });
+    }, context.toast);
 
     return {
         ok: deliveries.every((delivery) => delivery.ok),
@@ -256,11 +262,12 @@ export async function sendNotify(options: SendNotifyOptions, context: NotifyCont
 }
 
 /**
- * `stillmark notify run-hook --agent=<agent>`: called by the agent's finish hook with its JSON on stdin.
+ * `stillmark notify run-hook --agent=<agent>`: called by the agent's finish hook with its JSON
+ * (on stdin for Cursor and Claude Code, as the last argument for Codex).
  * Never throws and never blocks the agent; failures are only reported in the result.
  */
 export async function runNotifyHook(
-    stdin: string,
+    payload: string,
     agent: string,
     fallbackRoot: string,
     context: NotifyContext = {}
@@ -272,7 +279,7 @@ export async function runNotifyHook(
             return { ok: true, changed: false, action: "notify hook", summary: "No active channels" };
         }
 
-        const finish = parseAgentFinish(stdin);
+        const finish = parseAgentFinish(payload);
 
         return await sendNotify(
             { status: finish.status, root: finish.root ?? fallbackRoot, summary: finish.summary, agent },
@@ -284,11 +291,21 @@ export async function runNotifyHook(
 }
 
 /**
- * `stillmark notify hook install|remove|status --agent=cursor|claude`.
+ * `stillmark notify hook install|remove|status --agent=cursor|claude|codex`.
  */
 export function manageNotifyHook(action: string | undefined, agent: NotifyHookAgent, context: NotifyContext = {}): OperationResult {
     if (action === "install" || action === "remove") {
         const result = setNotifyHook(agent, action === "install", context.homeDir);
+
+        if (result.conflict) {
+            return {
+                ok: false,
+                changed: false,
+                action: `notify hook ${action}`,
+                summary: `Codex already runs another program when it finishes (${result.conflict} in ${result.file}) and accepts only one; Stillmark left it untouched. Remove that line to use Stillmark notifications instead`,
+                location: result.file
+            };
+        }
 
         return {
             ok: true,

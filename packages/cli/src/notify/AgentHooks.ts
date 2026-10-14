@@ -3,13 +3,14 @@ import os from "node:os";
 import path from "node:path";
 
 import type { NotifyStatus } from "./Channels";
+import { codexConfigFile, codexHookState, setCodexHook } from "./CodexNotify";
 
 /**
  * Agents whose finish event Stillmark can hook automatically.
  */
-export type NotifyHookAgent = "cursor" | "claude";
+export type NotifyHookAgent = "cursor" | "claude" | "codex";
 
-export const NotifyHookAgents: readonly NotifyHookAgent[] = ["cursor", "claude"];
+export const NotifyHookAgents: readonly NotifyHookAgent[] = ["cursor", "claude", "codex"];
 
 const HOOK_MARKER = "stillmark notify run-hook";
 
@@ -25,6 +26,10 @@ function hookCommand(agent: NotifyHookAgent): string {
 }
 
 function hooksFile(agent: NotifyHookAgent, homeDir: string): string {
+    if (agent === "codex") {
+        return codexConfigFile(homeDir);
+    }
+
     return agent === "cursor"
         ? path.join(homeDir, ".cursor", "hooks.json")
         : path.join(homeDir, ".claude", "settings.json");
@@ -50,6 +55,10 @@ function isOurs(command: string | undefined): boolean {
  * Whether the Stillmark finish hook is present for an agent.
  */
 export function notifyHookInstalled(agent: NotifyHookAgent, homeDir: string = os.homedir()): boolean {
+    if (agent === "codex") {
+        return codexHookState(homeDir).installed;
+    }
+
     const data = readJson(hooksFile(agent, homeDir));
     const hooks = (data.hooks ?? {}) as Record<string, unknown[]>;
 
@@ -63,8 +72,17 @@ export function notifyHookInstalled(agent: NotifyHookAgent, homeDir: string = os
 /**
  * Adds or removes the finish hook in the user-level agent settings, keeping every other hook untouched.
  * Cursor: `stop` in `~/.cursor/hooks.json`. Claude Code: `Stop` and `Notification` in `~/.claude/settings.json`.
+ * Codex: top-level `notify` in `~/.codex/config.toml`, reported as `conflict` when another program owns it.
  */
-export function setNotifyHook(agent: NotifyHookAgent, install: boolean, homeDir: string = os.homedir()): { file: string; changed: boolean } {
+export function setNotifyHook(
+    agent: NotifyHookAgent,
+    install: boolean,
+    homeDir: string = os.homedir()
+): { file: string; changed: boolean; conflict?: string } {
+    if (agent === "codex") {
+        return setCodexHook(install, homeDir);
+    }
+
     const file = hooksFile(agent, homeDir);
     const before = notifyHookInstalled(agent, homeDir);
 
@@ -194,8 +212,8 @@ export function summarizeReply(text: string | undefined, maxLength = 400): strin
 }
 
 /**
- * Reads the hook payload of Cursor (`stop`) or Claude Code (`Stop`, `Notification`).
- * A final reply ending with a question counts as waiting for the user.
+ * Reads the hook payload of Cursor (`stop`), Claude Code (`Stop`, `Notification`), or Codex
+ * (`agent-turn-complete`). A final reply ending with a question counts as waiting for the user.
  */
 export function parseAgentFinish(raw: string): AgentFinish {
     let input: Record<string, unknown> = {};
@@ -213,7 +231,9 @@ export function parseAgentFinish(raw: string): AgentFinish {
         return { status: "waiting", root, summary: typeof input.message === "string" ? input.message : undefined };
     }
 
-    const reply = lastAssistantText(typeof input.transcript_path === "string" ? input.transcript_path : undefined);
+    const reply = input.type === "agent-turn-complete"
+        ? typeof input["last-assistant-message"] === "string" ? input["last-assistant-message"] : undefined
+        : lastAssistantText(typeof input.transcript_path === "string" ? input.transcript_path : undefined);
     const summary = summarizeReply(reply);
     const status: NotifyStatus = input.status === "error"
         ? "failed"

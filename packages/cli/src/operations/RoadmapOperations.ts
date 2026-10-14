@@ -24,6 +24,7 @@ import {
     type GitOverride
 } from "../config";
 import { GitRunner, resolveCommitMessage } from "../git";
+import { addChangelogEntry, roadmapEntryGroup } from "../changelog";
 
 export interface AddRoadmapOptions {
     description: string;
@@ -71,6 +72,20 @@ function formatRoadmapItem(
     const dateField = date ? ` · ${done ? "done" : "added"}: ${date}` : "";
 
     return `- [${box}] **${id}** ${title}\n  priority: ${priority} · status: ${status}${dateField}${detailBlock}${acceptanceBlock}`;
+}
+
+/**
+ * Lists work finished today under Unreleased when the project keeps a CHANGELOG.md.
+ * Backfilled dates are left to `changelog sync`, which places them in the right release.
+ */
+function listInChangelog(paths: ProjectPaths, title: string, date: string | undefined): string {
+    if (date !== undefined && date !== todayIsoDate()) {
+        return "";
+    }
+
+    const result = addChangelogEntry(paths, title, { onlyIfExists: true, group: roadmapEntryGroup(title) });
+
+    return result.changed ? "; listed under Unreleased in CHANGELOG.md" : "";
 }
 
 /**
@@ -228,7 +243,7 @@ export async function addRoadmapItem(
         action: "roadmap add",
         location: paths.roadmap,
         itemId: id,
-        summary: `Added ${id} to ## ${section.title}`,
+        summary: `Added ${id} to ## ${section.title}${done ? listInChangelog(paths, options.description, options.date) : ""}`,
         git: gitResult
     };
 }
@@ -303,7 +318,7 @@ export function updateRoadmapItem(
             action: "roadmap done",
             location: paths.roadmap,
             itemId: item.id,
-            summary: `Marked ${item.id} done in ## ${DONE_SECTION}${fields.done ? ` on ${fields.done}` : ""}`
+            summary: `Marked ${item.id} done in ## ${DONE_SECTION}${fields.done ? ` on ${fields.done}` : ""}${listInChangelog(paths, item.title, options.date)}`
         };
     }
 

@@ -1,3 +1,4 @@
+import { ChangelogTopic } from "./Changelog";
 import { CoverageTopic } from "./Coverage";
 import { DesignTopic } from "./Design";
 import { GitTopic } from "./Git";
@@ -23,6 +24,7 @@ export const Topics: TopicDefinition[] = [
     CoverageTopic,
     DesignTopic,
     ReadmeTopic,
+    ChangelogTopic,
     GitTopic,
     NotifyTopic
 ];

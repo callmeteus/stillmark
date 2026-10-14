@@ -21,9 +21,11 @@ description: >-
 
 ## CLI mirror
 
-`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `readme`, `long-running`.
+`/stillmark <args>` = `stillmark <args> --json`. Strip a duplicate leading `stillmark `. Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `long-running`.
 
-**Notifications.** Per user in `~/.stillmark/notify.json`, never in the repo. Telegram: bot from @BotFather, user messages it once, then `stillmark notify add telegram --token=<t> --json` (chat found by itself). Discord/Slack channel webhooks: `notify add discord|slack --url=<webhook>`; generic JSON: `notify add webhook --url=<https>`. Every finish: `stillmark notify hook install --agent=claude --json` (Stop and Notification hooks in `~/.claude/settings.json`; then do not also run `notify send`). Check with `notify test [<name>]`; `notify off|on`, `notify remove <name>`, `notify` lists (masked).
+**CHANGELOG.md.** Public, plain language for users in `language.resolved.changelog`, never file names or secrets. `stillmark changelog --json` previews; `changelog sync` creates or updates it from version tags (or `package.json` version bumps), done roadmap items by `done:` date, and `feat`/`fix`/`perf` commits for releases without roadmap items, never rewriting released sections. With the file in place, `roadmap done` lists the item under Unreleased; anything else: `changelog add "<text>" [--group=fixed]`. Reword unclear Unreleased entries, then `changelog check --json` until clean; backfill `undated` items with `roadmap done "<item>" --commit=<ref>`.
+
+**Notifications.** Per user in `~/.stillmark/notify.json`, never in the repo. Telegram: bot from @BotFather, user messages it once, then `stillmark notify add telegram --token=<t> --json` (chat found by itself). Discord/Slack channel webhooks: `notify add discord|slack --url=<webhook>`; generic JSON: `notify add webhook --url=<https>`; native notification on this computer: `notify add desktop`. Every finish: `stillmark notify hook install --agent=claude --json` (Stop and Notification hooks in `~/.claude/settings.json`; then do not also run `notify send`). Check with `notify test [<name>]`; `notify off|on`, `notify remove <name>`, `notify` lists (masked).
 
 ## Modes
 

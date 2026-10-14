@@ -2,14 +2,6 @@
 
 ## Backlog
 
-- [ ] **R-023** Generate and maintain CHANGELOG.md, including retroactive history
-  priority: medium · status: planned · added: 2026-10-13
-  - Created and updated by the CLI like ROADMAP.md and COVERAGE.md, with validation
-  - Backfills past releases from git history, tags, and roadmap Done items, dated by commit
-  - User-visible changes only, in plain language, no internal details or secrets
-  - Updates incrementally without rewriting existing entries
-- [ ] **R-025** Desktop toast notifications and an automatic Codex finish hook
-  priority: low · status: planned · added: 2026-10-13
 ## Deferred
 
 ## Done
@@ -81,3 +73,11 @@
   - English and Portuguese with the same content
 - [x] **R-027** Turn TODO and FIXME comments in the code into roadmap items, with stillmark roadmap todos and init --todos
   priority: medium · status: done · done: 2026-10-13
+- [x] **R-023** Generate and maintain CHANGELOG.md, including retroactive history
+  priority: medium · status: done · added: 2026-10-13 · done: 2026-10-13
+  - Created and updated by the CLI like ROADMAP.md and COVERAGE.md, with validation
+  - Backfills past releases from git history, tags, and roadmap Done items, dated by commit
+  - User-visible changes only, in plain language, no internal details or secrets
+  - Updates incrementally without rewriting existing entries
+- [x] **R-025** Desktop toast notifications and an automatic Codex finish hook
+  priority: low · status: done · added: 2026-10-13 · done: 2026-10-13

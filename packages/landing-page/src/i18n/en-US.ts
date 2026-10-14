@@ -203,7 +203,7 @@ export const enUS = {
     docs: {
         meta: {
             title: "Stillmark docs",
-            description: "What Stillmark does, topic by topic: install, settings, roadmap, plan, coverage, design, README, git, and notifications."
+            description: "What Stillmark does, topic by topic: install, settings, roadmap, plan, coverage, design, README, changelog, git, and notifications."
         },
         title: "Start with Stillmark",
         lead: "Stillmark keeps a few project files current while your AI agent works. Install it once, then ask for changes in plain words.",

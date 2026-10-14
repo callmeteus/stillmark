@@ -43,6 +43,7 @@ import { priorityFlag, runPlanCommand } from "./PlanCommands";
 import { roadmapDateFlag, runConfigSetRoadmapDates } from "./RoadmapCommands";
 import { runConfigSetAutoPush, runConfigSetStripAttribution, runGitCommand, syncAttributionHook } from "./GitCommands";
 import { runCavemanCommand, runConfigSetCaveman } from "./CavemanCommands";
+import { runChangelogCommand } from "./ChangelogCommands";
 import { runConfigSetLanguage } from "./LanguageCommands";
 import { runNotifyCommand, runNotifyHookCommand } from "./NotifyCommands";
 import { parseFlags } from "./ParseFlags";
@@ -510,7 +511,7 @@ export async function runCli(argv: string[]): Promise<number> {
 
         if (cmd === "notify") {
             if (sub === "run-hook") {
-                return runNotifyHookCommand(paths, flags);
+                return runNotifyHookCommand(paths, flags, positional[2]);
             }
 
             const result = await runNotifyCommand(paths, positional, flags);
@@ -522,6 +523,13 @@ export async function runCli(argv: string[]): Promise<number> {
         if (cmd === "caveman") {
             const result = runCavemanCommand(paths, positional, flags);
             output(result, json);
+
+            return result.ok ? 0 : 1;
+        }
+
+        if (cmd === "changelog") {
+            const result = await runChangelogCommand(paths, positional, flags, gitRunner);
+            output(result, json, paths.changelog);
 
             return result.ok ? 0 : 1;
         }
@@ -652,7 +660,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | config | classify | roadmap | plan | git | notify | caveman | readme | coverage | add | move | install | update | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | changelog | git | notify | caveman | readme | coverage | add | move | install | update | long-running"
             },
             json
         );

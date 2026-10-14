@@ -1,3 +1,4 @@
+import { showDesktopToast, type ToastRunner } from "./DesktopToast";
 import type { NotifyChannel } from "./NotifyConfig";
 
 /**
@@ -125,9 +126,20 @@ function requestFor(channel: NotifyChannel, message: NotifyMessage): { url: stri
 
 /**
  * Sends one message to every channel in parallel; one failing channel never stops the others.
+ * Desktop channels show the status line as the title and the summary as the body.
  */
-export async function sendToChannels(channels: NotifyChannel[], message: NotifyMessage): Promise<NotifyDelivery[]> {
+export async function sendToChannels(
+    channels: NotifyChannel[],
+    message: NotifyMessage,
+    toast: ToastRunner = showDesktopToast
+): Promise<NotifyDelivery[]> {
     return Promise.all(channels.map(async (channel) => {
+        if (channel.type === "desktop") {
+            const [title, ...body] = formatNotifyText(message).split("\n");
+
+            return { name: channel.name, type: channel.type, ...(await toast(title, body.join("\n"))) };
+        }
+
         const request = requestFor(channel, message);
 
         if (!request) {

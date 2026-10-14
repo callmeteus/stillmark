@@ -27,6 +27,12 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark plan priority <task> critical|high|medium|low",
         "stillmark plan blocked <task> <blocker>"
     ],
+    changelog: [
+        "stillmark changelog [status]   (previews what sync would add)",
+        "stillmark changelog sync   (creates CHANGELOG.md from tags or package version bumps, done roadmap items, and feat/fix commits; never rewrites released entries)",
+        "stillmark changelog add \"<what changed>\" [--group=added|changed|deprecated|removed|fixed|security]",
+        "stillmark changelog check"
+    ],
     add: [
         "stillmark add \"<description>\" [--done] [--date=YYYY-MM-DD|--commit=<ref>] [--priority=critical|high|medium|low] [--details \"<text>\"] [--acceptance \"<text>\"] [--verification \"<text>\"] [--accept-scope-change]"
     ],
@@ -51,9 +57,10 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark notify [list]",
         "stillmark notify add telegram --token=<bot token> [--chat-id=<id>] [--name=<name>]   (chat found by itself after you message the bot)",
         "stillmark notify add discord|slack|webhook --url=<webhook url> [--name=<name>]",
+        "stillmark notify add desktop [--name=<name>]   (native notification on this computer; nothing to configure)",
         "stillmark notify test [<name>] | notify remove <name> | notify on|off",
         "stillmark notify send \"<text>\" [--status=done|failed|waiting|stopped]",
-        "stillmark notify hook install|remove|status --agent=cursor|claude   (notifies every time the agent finishes)"
+        "stillmark notify hook install|remove|status --agent=cursor|claude|codex   (notifies every time the agent finishes)"
     ],
     caveman: [
         "stillmark caveman [stats]",

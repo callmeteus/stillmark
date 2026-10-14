@@ -14,3 +14,4 @@ export * from "./notify";
 export * from "./update";
 export * from "./readme";
 export * from "./todos";
+export * from "./changelog";

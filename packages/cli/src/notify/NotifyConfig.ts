@@ -3,14 +3,15 @@ import os from "node:os";
 import path from "node:path";
 
 /**
- * Where a notification goes.
+ * Where a notification goes. `desktop` is a native notification on the computer running the agent.
  */
-export type NotifyChannelType = "telegram" | "discord" | "slack" | "webhook";
+export type NotifyChannelType = "telegram" | "discord" | "slack" | "webhook" | "desktop";
 
-export const NotifyChannelTypes: readonly NotifyChannelType[] = ["telegram", "discord", "slack", "webhook"];
+export const NotifyChannelTypes: readonly NotifyChannelType[] = ["telegram", "discord", "slack", "webhook", "desktop"];
 
 /**
  * One delivery target. Secrets (bot token, webhook URL) live only in the user's home directory.
+ * Desktop channels have no settings beyond their name.
  */
 export interface NotifyChannel {
     name: string;

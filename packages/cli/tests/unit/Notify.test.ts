@@ -23,6 +23,7 @@ beforeEach(() => {
     home = fs.mkdtempSync(path.join(os.tmpdir(), "stillmark-home-"));
     vi.stubEnv("HOME", home);
     vi.stubEnv("USERPROFILE", home);
+    vi.stubEnv("CODEX_HOME", "");
     requests = [];
     respond = (): Response => new Response("{}", { status: 200 });
     vi.stubGlobal("fetch", vi.fn(async (url: string, init?: { body?: string }) => {
@@ -238,12 +239,12 @@ describe("agent finish hooks", () => {
 
             await cli(root, "notify");
 
-            expect(lastJson().hooks).toEqual({ cursor: false, claude: true });
+            expect(lastJson().hooks).toEqual({ cursor: false, claude: true, codex: false });
 
             await cli(root, "notify", "hook", "status", "--agent=claude");
 
             expect(lastJson().installed).toBe(true);
-            expect(await cli(root, "notify", "hook", "install", "--agent=codex")).toBe(1);
+            expect(await cli(root, "notify", "hook", "install", "--agent=gemini")).toBe(1);
         } finally {
             cleanup();
         }

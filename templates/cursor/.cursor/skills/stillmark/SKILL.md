@@ -36,7 +36,7 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 - Finished work: `roadmap done "<item>"` moves an existing item to `## Done` (checked, `status: done`); `roadmap add "<description>" --done` records work that was never listed. To backfill the past, read `git log --date=short --format="%h %ad %s"`, group commits into user-visible features, and run one command per feature with `--commit=<sha>` of the commit that finished it, so the `done:` date is the real delivery date.
 - Code TODOs: `roadmap todos --json` lists the `TODO` / `FIXME` comments in the code (git-ignored files and build output skipped) with their files and whether the roadmap already has each (`onRoadmap`); it writes nothing. `roadmap todos --add --json` puts every new one in `## Backlog`, `FIXME` as `high`, skipping duplicates and anything that looks like a secret; running it again adds nothing. When the comments are vague or in another language than `language.resolved.roadmap`, list them and add the ones worth tracking with `roadmap add "<clear title>"` instead. `init --todos` does the `--add` right after setting up.
 - Dates: on by default, items get `added:` / `done:` (`YYYY-MM-DD`). `--date=YYYY-MM-DD` sets one by hand; `roadmap done` on an item already done with `--date`/`--commit` fixes its date. Off with `config set --roadmap-dates=false`.
-- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
+- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
 
 ## Auto-update (start of every `/stillmark`)
 
@@ -107,13 +107,22 @@ Compressing agent context (rules, `AGENTS.md`, skills, learnings; never ROADMAP,
 3. Write the README in `language`, following `header`, the `outline` order, and each `hint`. When restructuring, move existing content into the matching section (`existing`) instead of rewriting it. Only state what `facts` or the current README support; skip an optional section rather than invent content.
 4. `stillmark readme check [--file=...] --json` and fix every issue (missing title or required section, empty section, heading jump, TODO or placeholder text, script or make target that does not exist, broken relative link, fact lost from the previous version). `stillmark readme restore --json` puts the previous README back when the user asks.
 
+## CHANGELOG.md
+
+Public, for the people who use the project: what they notice, in plain language and in `language.resolved.changelog`; never file names, env vars, internal details, or secrets. Headings (`## [Unreleased]`, `## [1.2.0] - YYYY-MM-DD`, `### Added|Changed|Deprecated|Removed|Fixed|Security`) stay in English for the CLI.
+
+1. `stillmark changelog --json` previews; `stillmark changelog sync --json` creates it from history (releases from version tags, or version bumps of the project `package.json` when there are no tags; entries from done roadmap items by their `done:` date, or from `feat` / `fix` / `perf` commits for releases without roadmap items). Later syncs add only what is new and move Unreleased entries into a release when a new tag appears. Released sections are never rewritten.
+2. When CHANGELOG.md exists, `roadmap done` and `roadmap add --done` (finished today) list the item under Unreleased by themselves. Anything else: `stillmark changelog add "<what users notice>" [--group=fixed] --json`.
+3. After a sync, read the new entries and reword unclear or technical Unreleased ones by hand; then `stillmark changelog check --json` until `ok` is true and no warnings remain. `undated` lists done roadmap items without a date: backfill with `roadmap done "<item>" --commit=<ref>` and sync again.
+
 ## Notifications when the agent finishes
 
 Channels are per user, stored in `~/.stillmark/notify.json` (never in the repo); sending goes out from the user's own computer. Never paste tokens or webhook URLs into repo files, roadmap items, or commit messages.
 
 - **Telegram (bot):** the user creates a bot with @BotFather, sends any message to it, then `stillmark notify add telegram --token=<token> --json` (the chat is found by itself; `--chat-id` when it is a group or channel).
 - **Discord / Slack (channel webhook):** `stillmark notify add discord --url=<webhook> --json` (channel settings, Integrations, Webhooks) or `stillmark notify add slack --url=https://hooks.slack.com/services/... --json`. Generic JSON: `notify add webhook --url=<https url>`. `--name=<name>` keeps several of the same type.
-- **Every finish, automatically:** `stillmark notify hook install --agent=cursor --json` adds a `stop` hook to `~/.cursor/hooks.json` (Claude Code: `--agent=claude`, `Stop` and `Notification`). It sends finished, failed, stopped, or waiting for you (final reply ending in a question), with the first lines of the final reply. Do not also run `notify send` at the end when the hook is installed.
+- **Desktop:** `stillmark notify add desktop --json` shows a native notification on this computer (Windows, macOS, Linux with `notify-send`); nothing to configure.
+- **Every finish, automatically:** `stillmark notify hook install --agent=cursor --json` adds a `stop` hook to `~/.cursor/hooks.json` (Claude Code: `--agent=claude`, `Stop` and `Notification`; Codex: `--agent=codex`, top-level `notify` in `~/.codex/config.toml`, and when `ok` is false because another program owns it, tell the user and leave it). It sends finished, failed, stopped, or waiting for you (final reply ending in a question), with the first lines of the final reply. Do not also run `notify send` at the end when the hook is installed.
 - After adding a channel, run `stillmark notify test [<name>] --json` and report what arrived. "pausa as notificações" = `notify off`, "volta" = `notify on`; `notify` lists channels (masked) and hooks; `notify remove <name>`.
 
 When the user asks for notifications, ask (`AskQuestion`) which channels to set up and whether to notify on every finish (hook), then ask for each secret in chat.
@@ -124,7 +133,7 @@ Let `text` = message after `/stillmark` (trimmed). Strip optional leading `still
 
 | Input pattern | Mode | Action |
 |---------------|------|--------|
-| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
+| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
 | Starts with `coverage` | **Coverage** | See [Coverage mode](#coverage-mode-embedded) and `reference/coverage.md` |
 | Starts with `design` | **Design** | Design pipeline; rest is brief |
 | Browser element attached | **Design** | Map selection to project source |

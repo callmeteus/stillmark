@@ -28,6 +28,7 @@ export interface ProjectPaths {
     config: string;
     gitignore: string;
     coverage: string;
+    changelog: string;
 }
 
 /**
@@ -79,6 +80,7 @@ export function resolveProjectPaths(root: string): ProjectPaths {
         readmeDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "readme"),
         config: path.join(normalized, "stillmark.config.json"),
         gitignore: path.join(normalized, ".gitignore"),
-        coverage: path.join(normalized, "COVERAGE.md")
+        coverage: path.join(normalized, "COVERAGE.md"),
+        changelog: path.join(normalized, "CHANGELOG.md")
     };
 }

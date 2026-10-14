@@ -212,6 +212,12 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Reads finished, failed, stopped, and waiting from the hook payload with a short summary
 - [x] [edge] The hook sends without channels or offline without ever throwing
 - [x] [edge] Keeps notifications short and skips code blocks in the summary
+- [x] [security] Desktop notification command per platform with the text kept out of the script
+- [x] [happy] Adds a desktop channel with nothing to configure and shows status as title, summary as body
+- [x] [edge] Reports a missing notification program without stopping the other channels
+- [x] [happy] Installs the Codex notify program at the top of config.toml once and removes it leaving the rest as written
+- [x] [sad] Never replaces another Codex notify program and ignores notify keys inside tables
+- [x] [happy] Reads the Codex event from the last argument: folder, last reply, and questions as waiting
 ## 11. Landing page
 
 ### `packages/landing-page`
@@ -219,6 +225,7 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Astro build produces a static GitHub Pages artifact
 - [ ] [happy] Locale toggle switches every message between English and Portuguese
 - [ ] [happy] Copy buttons copy the install prompt and show the copied state
+- [x] [happy] Every topic, including changelog, builds its docs page
 
 ## 12. README generator
 
@@ -233,3 +240,18 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [edge] Ignores placeholders inside code and badge URLs
 - [x] [happy] Restore brings the previous README back
 - [x] [edge] Keeps the backup during a rewrite and refreshes it after a passing check
+
+## 13. Changelog
+
+### `packages/cli/src/changelog`
+- [x] [happy] Keeps only feat, fix, and perf commits as entries, in sentence case
+- [x] [edge] Creates a changelog with only Unreleased when there is no history, intro in the document language
+- [x] [happy] Previews a sync without writing
+- [x] [happy] Places done roadmap items in the release that shipped them, newest release first
+- [x] [security] Falls back to feat and fix commits for releases without roadmap items and leaves secrets out
+- [x] [happy] Adds new work to Unreleased, moves it into a new tag, and never rewrites released text
+- [x] [edge] Uses version bumps of the project package.json when there are no tags
+- [x] [sad] Reports done roadmap items without a date when releases exist
+- [x] [happy] Adds plain entries under Unreleased by group, once, and refuses secrets
+- [x] [happy] Lists roadmap items finished today only when the project keeps a changelog
+- [x] [sad] Check finds structure errors, personal data, and technical wording

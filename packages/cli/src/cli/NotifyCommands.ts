@@ -19,6 +19,7 @@ import type { OperationResult } from "../results/OperationResult";
 const USAGE = [
     "Usage: stillmark notify [list]",
     `notify add ${NotifyChannelTypes.join("|")} [--token=<bot token> --chat-id=<id>] [--url=<webhook>] [--name=<name>]`,
+    "notify add desktop [--name=<name>]",
     "notify remove <name> | notify test [<name>] | notify on|off",
     `notify send "<text>" [--status=${NotifyStatuses.join("|")}]`,
     `notify hook install|remove|status --agent=${NotifyHookAgents.join("|")}`
@@ -118,12 +119,17 @@ export async function runNotifyCommand(
 }
 
 /**
- * `stillmark notify run-hook --agent=<agent>`: sends the finish notification and prints `{}` for the agent.
+ * `stillmark notify run-hook --agent=<agent> ['<json>']`: sends the finish notification and prints `{}` for the agent.
+ * Codex passes its event JSON as the last argument; Cursor and Claude Code pipe it on stdin.
  */
-export async function runNotifyHookCommand(paths: ProjectPaths, flags: Record<string, string | boolean>): Promise<number> {
-    const stdin = await readStdin().catch(() => "");
+export async function runNotifyHookCommand(
+    paths: ProjectPaths,
+    flags: Record<string, string | boolean>,
+    payloadArg?: string
+): Promise<number> {
+    const payload = payloadArg ?? await readStdin().catch(() => "");
 
-    await runNotifyHook(stdin, optional(flags.agent) ?? "agent", paths.root);
+    await runNotifyHook(payload, optional(flags.agent) ?? "agent", paths.root);
     console.log("{}");
 
     return 0;

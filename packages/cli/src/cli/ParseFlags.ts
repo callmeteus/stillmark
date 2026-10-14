@@ -65,7 +65,8 @@ const VALUE_FLAGS: Record<string, string> = {
     "--status": "status",
     "--message": "message",
     "--template": "template",
-    "--file": "file"
+    "--file": "file",
+    "--group": "group"
 };
 
 /**
