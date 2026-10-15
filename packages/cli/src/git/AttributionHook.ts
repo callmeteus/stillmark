@@ -32,6 +32,7 @@ awk '
 `;
 
 export interface AttributionHookStatus {
+    
     /** False outside a git work tree. */
     gitRepo: boolean;
     /** Absolute hooks directory (honors `core.hooksPath`). */

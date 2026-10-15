@@ -2,6 +2,7 @@
  * A README section shared by several templates.
  */
 export interface ReadmeSection {
+    
     id: string;
     /**
      * English heading; agents translate it to the docs language.
@@ -21,6 +22,7 @@ export interface ReadmeSection {
  * One section slot inside a template.
  */
 export interface ReadmeTemplateSection {
+    
     id: string;
     required: boolean;
 }
@@ -29,6 +31,7 @@ export interface ReadmeTemplateSection {
  * A README layout the user can pick.
  */
 export interface ReadmeTemplate {
+    
     id: string;
     name: string;
     bestFor: string;

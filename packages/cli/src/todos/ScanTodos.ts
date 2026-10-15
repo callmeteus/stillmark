@@ -16,6 +16,7 @@ export enum TodoTag {
  * One place in the code where a TODO / FIXME comment appears.
  */
 export interface TodoLocation {
+    
     /** Path relative to the project root, with forward slashes. */
     file: string;
     /** 1-based line number. */
@@ -27,6 +28,7 @@ export interface TodoLocation {
  * are merged into one entry with every location.
  */
 export interface TodoComment {
+    
     tag: TodoTag;
     text: string;
     locations: TodoLocation[];

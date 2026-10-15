@@ -5,6 +5,7 @@ export type GitResultStatus =
     | "failed";
 
 export interface GitResult {
+    
     status: GitResultStatus;
     detail?: string;
 }
@@ -13,12 +14,14 @@ import type { CoverageValidationResult } from "../coverage/ValidateCoverage";
 import type { CoverageUpdateHints } from "../coverage/CoverageUpdateHints";
 
 export interface CommitMessageSuggestion {
+    
     message: string;
     template: string;
     learned: boolean;
 }
 
 export interface OperationResult {
+    
     ok: boolean;
     changed: boolean;
     action?: string;

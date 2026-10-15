@@ -4,6 +4,7 @@ import { estimateTokens } from "./CavemanRules";
  * What a compressed file broke compared with its readable original.
  */
 export interface CavemanIssue {
+    
     kind: "frontmatter" | "code-block" | "heading" | "inline-code" | "url" | "path" | "size";
     detail: string;
 }

@@ -42,6 +42,13 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark coverage check|uncheck \"<case substring>\"",
         "stillmark coverage add \"<### heading match>\" \"<case>\" --tag=<tag> [--checked] [--details \"<text>\"]"
     ],
+    design: [
+        "stillmark design   (modes: create, review, mixed)",
+        "stillmark design create \"<brief>\"   (new UI: macrostructure, theme, anti-slop)",
+        "stillmark design build|study|redesign \"<brief>\"   (same as create)",
+        "stillmark design review|critique|audit \"<surface>\"   (critique and audit; no edits unless the user asks)",
+        "stillmark design polish \"<scope>\" | stillmark design \"<free text>\"   (mixed implement + review)"
+    ],
     config: [
         "stillmark config status",
         "stillmark config set --design-system=true|false [--prompted]",
@@ -76,7 +83,8 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark readme restore [--file=README.md]"
     ],
     git: [
-        "stillmark git push   (pushes local commits; lists uncommitted files without committing them)",
+        "stillmark git push [--with-commit] [--message \"<subject>\"] [summary]",
+        "  (pushes local commits; when needsCommit is true, ask the user or rerun with --with-commit)",
         "stillmark git message-style [\"<summary>\"]",
         "stillmark git hook [status|install|remove]",
         "stillmark git setup-files",

@@ -9,6 +9,7 @@ import { resolveTemplatesDir } from "./Install";
  * One link created by `install --link`.
  */
 export interface LinkedEntry {
+    
     target: string;
     link: string;
     kind: "junction" | "dir" | "file";

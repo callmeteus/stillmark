@@ -12,6 +12,7 @@ export const NotifyStatuses: readonly NotifyStatus[] = ["done", "failed", "waiti
  * What a notification says.
  */
 export interface NotifyMessage {
+    
     status: NotifyStatus;
     /**
      * Project folder name.
@@ -33,6 +34,7 @@ export interface NotifyMessage {
  * Delivery outcome per channel. Never contains secrets.
  */
 export interface NotifyDelivery {
+    
     name: string;
     type: NotifyChannel["type"];
     ok: boolean;

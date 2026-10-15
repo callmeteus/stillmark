@@ -4,6 +4,7 @@ import type { GitRunner } from "./GitRunner";
  * What `stillmark git push` found and did.
  */
 export interface PushPendingResult {
+    
     gitRepo: boolean;
     branch?: string;
     /**
@@ -19,6 +20,10 @@ export interface PushPendingResult {
      * Changed or untracked files left out of the push because they are not committed.
      */
     uncommitted: string[];
+    /**
+     * True when there is pending work the user may want to commit before another push attempt.
+     */
+    needsCommit: boolean;
     detail?: string;
 }
 
@@ -30,7 +35,14 @@ export async function pushPending(root: string, runner: GitRunner): Promise<Push
     const top = await runner.capture(root, ["rev-parse", "--show-toplevel"]);
 
     if (!top.ok) {
-        return { gitRepo: false, ahead: 0, pushed: false, uncommitted: [], detail: "Not a git repository" };
+        return {
+            gitRepo: false,
+            ahead: 0,
+            pushed: false,
+            uncommitted: [],
+            needsCommit: false,
+            detail: "Not a git repository"
+        };
     }
 
     const cwd = top.stdout.trim();
@@ -39,7 +51,8 @@ export async function pushPending(root: string, runner: GitRunner): Promise<Push
     const branch = (await runner.capture(cwd, ["rev-parse", "--abbrev-ref", "HEAD"])).stdout.trim();
     const upstreamResult = await runner.capture(cwd, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]);
     const upstream = upstreamResult.ok ? upstreamResult.stdout.trim() : undefined;
-    const base = { gitRepo: true, branch, upstream, uncommitted };
+    const needsCommit = uncommitted.length > 0;
+    const base = { gitRepo: true, branch, upstream, uncommitted, needsCommit };
 
     if (upstream === undefined) {
         const remotes = (await runner.capture(cwd, ["remote"])).stdout.split(/\r?\n/).filter(Boolean);

@@ -5,6 +5,7 @@ import { applyLocale } from "./locale/applyLocale";
 
 declare global {
     interface Window {
+        
         __STILLMARK_LOCALE__?: LocaleBundle;
     }
 }

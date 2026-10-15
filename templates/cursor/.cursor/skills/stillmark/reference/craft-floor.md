@@ -1,6 +1,6 @@
 # Craft floor (Stillmark design)
 
-Read this immediately before editing UI source. Project `DESIGN.md`, `PRODUCT.md`, and surface briefs override generic habits.
+Read this immediately before editing UI source, after `reference/design-pipeline.md` when you are in design mode. Project `DESIGN.md`, `PRODUCT.md`, and surface briefs override generic habits.
 
 ## Verify (one batched round)
 

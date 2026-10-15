@@ -40,6 +40,7 @@ export function writeTaskPlan(paths: ProjectPaths, raw: string): void {
 }
 
 export interface AddPlanOptions {
+    
     description: string;
     acceptScopeChange?: boolean;
     priority?: string;
@@ -251,6 +252,7 @@ export function addPlanTask(
 }
 
 export interface UpdatePlanOptions {
+    
     query: string;
     priority?: string;
     status?: string;

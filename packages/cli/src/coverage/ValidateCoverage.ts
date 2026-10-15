@@ -77,6 +77,7 @@ export const COVERAGE_DETAIL_PATTERN = /^ {2}\S/;
  * Options for coverage validation.
  */
 export interface CoverageValidationOptions {
+    
     /**
      * `extended` allows indented detail lines right under a case; `compact` (default) rejects them.
      */
@@ -87,6 +88,7 @@ export interface CoverageValidationOptions {
  * Per-area checkbox counts from validation.
  */
 export interface CoverageAreaStats {
+    
     number: number;
     title: string;
     checked: number;
@@ -97,6 +99,7 @@ export interface CoverageAreaStats {
  * Result of validating COVERAGE.md content.
  */
 export interface CoverageValidationResult {
+    
     valid: boolean;
     errors: string[];
     warnings: string[];

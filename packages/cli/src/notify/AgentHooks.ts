@@ -122,6 +122,7 @@ export function setNotifyHook(
  * What the agent passed to the finish hook on stdin, reduced to what a notification needs.
  */
 export interface AgentFinish {
+    
     status: NotifyStatus;
     root?: string;
     summary?: string;

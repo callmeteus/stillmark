@@ -18,6 +18,7 @@ export type ReadmeIssueKind =
  * One problem found in a README.
  */
 export interface ReadmeIssue {
+    
     kind: ReadmeIssueKind;
     detail: string;
     line?: number;
@@ -27,6 +28,7 @@ export interface ReadmeIssue {
  * A heading of the README and the catalog section it maps to.
  */
 export interface ReadmeHeading {
+    
     level: number;
     text: string;
     line: number;
@@ -34,6 +36,7 @@ export interface ReadmeHeading {
 }
 
 interface ParsedReadme {
+    
     headings: ReadmeHeading[];
     /**
      * Lines outside fenced code blocks, inline code removed, with 1-based line numbers.

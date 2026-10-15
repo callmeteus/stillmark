@@ -43,6 +43,7 @@ const INTRO: Record<string, string> = {
  * One line of a release section that the CLI understands.
  */
 export interface ChangelogEntry {
+    
     /** Group heading the bullet sits under, as written. */
     heading?: string;
     text: string;
@@ -54,6 +55,7 @@ export interface ChangelogEntry {
  * One `## [version] - date` section, kept as raw lines so untouched releases are written back verbatim.
  */
 export interface ChangelogSection {
+    
     version: string;
     date?: string;
     lines: string[];
@@ -63,6 +65,7 @@ export interface ChangelogSection {
  * CHANGELOG.md split into the text before the first release and one block per release.
  */
 export interface ChangelogDocument {
+    
     preamble: string[];
     sections: ChangelogSection[];
 }
@@ -71,6 +74,7 @@ export interface ChangelogDocument {
  * An entry to write: plain-language text and its group.
  */
 export interface NewChangelogEntry {
+    
     group: ChangeGroup;
     text: string;
 }

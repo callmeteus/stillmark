@@ -27,6 +27,7 @@ import { GitRunner, resolveCommitMessage } from "../git";
 import { addChangelogEntry, roadmapEntryGroup } from "../changelog";
 
 export interface AddRoadmapOptions {
+    
     description: string;
     section?: string;
     priority?: string;
@@ -249,6 +250,7 @@ export async function addRoadmapItem(
 }
 
 export interface UpdateRoadmapOptions {
+    
     query: string;
     priority?: string;
     status?: string;

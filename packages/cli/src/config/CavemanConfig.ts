@@ -9,6 +9,7 @@ export const CavemanLevels: readonly CavemanLevel[] = ["off", "lite", "full", "u
  * `caveman` block of stillmark.config.json.
  */
 export interface CavemanConfig {
+    
     /**
      * Reply style level. Off by default because the rules themselves cost input tokens on every turn.
      */

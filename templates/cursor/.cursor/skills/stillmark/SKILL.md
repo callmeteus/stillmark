@@ -1,16 +1,23 @@
 ---
 name: stillmark
 description: >-
-  Single Stillmark entry: every CLI command and COVERAGE.md workflow through
-  /stillmark, plus embedded design (browser selection, UI feedback). Do not use
-  a separate /coverage slash command.
+  The only Stillmark entry: every CLI command, COVERAGE.md, and design through
+  /stillmark. No separate /coverage, /design, or other Stillmark slash commands.
 ---
 
 # Stillmark
 
-**Only entry point:** `/stillmark` (not `/coverage`, not `/stillmark-design`).
+**Only user-facing slash:** `/stillmark` (not `/coverage`, not `/design`, not `/stillmark-design`). Coverage and design are **sub-modes**: `/stillmark coverage …`, `/stillmark design …`.
 
-**You are reading this skill, so Stillmark is already installed.** Never run `stillmark install` and never copy skill, command, or prompt files into the repo unless the user explicitly asks to install. Setting a repo up is only `stillmark init --json`.
+## One entry, many modes (never extra slashes)
+
+Stillmark is **one** skill named `stillmark` with playbooks under `reference/`. Planning, coverage, design, and readme are arguments **after** `/stillmark`, not their own slash commands or skills.
+
+- **Never** create or document `/coverage`, `/design`, `/stillmark-design`, or sibling skills (`coverage`, `design`, …).
+- **Never** add `commands/coverage.md`, `commands/design.md`, or other Stillmark slash files besides the shipped `commands/stillmark.md` (which only wires `/stillmark`).
+- Redirect users who ask for `/coverage` or `/design` to `/stillmark coverage …` or `/stillmark design …`.
+
+**You are reading this skill, so Stillmark is already installed.** Never run `stillmark install` and never copy skill or prompt files into the repo unless the user explicitly asks to install. Setting a repo up is only `stillmark init --json`.
 
 All file-backed operations run `stillmark … --json` from the **project root**. The text after `/stillmark` is the instruction.
 
@@ -36,7 +43,7 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 - Finished work: `roadmap done "<item>"` moves an existing item to `## Done` (checked, `status: done`); `roadmap add "<description>" --done` records work that was never listed. To backfill the past, read `git log --date=short --format="%h %ad %s"`, group commits into user-visible features, and run one command per feature with `--commit=<sha>` of the commit that finished it, so the `done:` date is the real delivery date.
 - Code TODOs: `roadmap todos --json` lists the `TODO` / `FIXME` comments in the code (git-ignored files and build output skipped) with their files and whether the roadmap already has each (`onRoadmap`); it writes nothing. `roadmap todos --add --json` puts every new one in `## Backlog`, `FIXME` as `high`, skipping duplicates and anything that looks like a secret; running it again adds nothing. When the comments are vague or in another language than `language.resolved.roadmap`, list them and add the ones worth tracking with `roadmap add "<clear title>"` instead. `init --todos` does the `--add` right after setting up.
 - Dates: on by default, items get `added:` / `done:` (`YYYY-MM-DD`). `--date=YYYY-MM-DD` sets one by hand; `roadmap done` on an item already done with `--date`/`--commit` fixes its date. Off with `config set --roadmap-dates=false`.
-- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
+- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `design`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
 
 ## Auto-update (start of every `/stillmark`)
 
@@ -135,7 +142,7 @@ Let `text` = message after `/stillmark` (trimmed). Strip optional leading `still
 |---------------|------|--------|
 | Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
 | Starts with `coverage` | **Coverage** | See [Coverage mode](#coverage-mode-embedded) and `reference/coverage.md` |
-| Starts with `design` | **Design** | Design pipeline; rest is brief |
+| Starts with `design` | **Design** | `stillmark design … --json`, then playbooks from JSON |
 | Browser element attached | **Design** | Map selection to project source |
 | UI critique without planning intent | **Design** | Targeted visual fix |
 | Mentions COVERAGE.md, checklist, "marca coberto", test cases, NOTFIXED | **Coverage** | `reference/coverage.md` free-text workflow |
@@ -144,7 +151,7 @@ Let `text` = message after `/stillmark` (trimmed). Strip optional leading `still
 
 Do **not** tell users to run `/coverage`. Redirect: *"Use `/stillmark coverage …`"*.
 
-Playbooks: `reference/coverage.md`, `reference/craft-floor.md`, etc. (`.cursor/skills/stillmark/reference/`).
+Playbooks: `reference/coverage.md`, `reference/design-pipeline.md`, `reference/craft-floor.md`, etc. (`.cursor/skills/stillmark/reference/`).
 
 ## Coverage mode (embedded)
 
@@ -170,14 +177,21 @@ After every COVERAGE.md edit: `stillmark coverage validate --json` until `ok`.
 
 ## Design mode (embedded)
 
-Triggered by `design …`, browser selection, or obvious UI critique. Load `reference/craft-floor.md` before edits.
+Triggered by `design …`, browser selection, or obvious UI critique.
 
-1. **Project preview only** (not third-party sites).
-2. Map DOM → source; fix scope the user described.
-3. Run app; one inspection pass (desktop + narrow width).
+1. Run `stillmark design <same words as after /stillmark> --json` from the project root.
+2. Load every path in JSON `playbooks` (see `reference/design-pipeline.md`).
+3. **`mode: create`** (`design create`, `build`, `study`, `redesign`): new UI per `design-create.md` (macrostructure, theme, anti-slop).
+4. **`mode: review`** (`design review`, `critique`, `audit`): diagnosis per `design-review.md`; no edits unless the user asks to fix.
+5. **`mode: mixed`** (free text, `polish`, browser selection): `design-mixed.md` blends create taste + review pass.
+6. **Project preview only** for implementation. Map DOM → source; one browser pass after implementing.
 
 ```text
-/stillmark design hero
+/stillmark design create landing for a small-batch honey farm
+/stillmark design critique checkout
+/stillmark design audit pricing page
+/stillmark design polish hero spacing
+/stillmark design fix card spacing
 /stillmark ta uma bosta arruma     (+ selection on local preview)
 ```
 
@@ -194,7 +208,7 @@ Before a commit the user asked for, run `stillmark git hook install --json` (ide
 
 Defaults for every commit the user asks for: no agent markers in the message (no `(t)`), no agent co-author, and push right after (`git.autoPush`, on by default; off with `stillmark config set --auto-push=false`, or skip when the user says not to push). `/stillmark git commit` means: stage the pending work, commit with a message from `git message-style`, then push.
 
-`/stillmark git push` runs `stillmark git push --json`: it pushes local commits (setting `origin` as upstream on the first push) and never commits. When `uncommitted` is not empty, ask with `AskQuestion` whether to commit those files first, showing the proposed message (commit with it, commit with a message the user types, push only what is committed); after committing, run `stillmark git push --json` again.
+`/stillmark git push` runs `stillmark git push --json` (trailing words after `push` become the commit summary; `no-t` only means no `(t)` in the subject). It pushes local commits (setting `origin` as upstream on the first push). When `needsCommit` is true, you **must** use `AskQuestion` before any git write: show `proposedMessage` from the JSON (commit with it, commit with a custom message, or cancel). After the user agrees, run `stillmark git push --with-commit [--message \"...\"] [summary] --json` once (hook install first if you are about to commit). Do not dump manual `git add`/`git commit` unless the user refuses Stillmark git commands.
 
 ## Examples (CLI via slash)
 

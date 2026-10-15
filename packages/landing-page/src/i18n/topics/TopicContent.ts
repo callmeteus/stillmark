@@ -40,6 +40,7 @@ export enum MarkKind {
  * The red-pen mark on one line of a file excerpt, with its margin note.
  */
 export interface ExcerptMark {
+    
     line: number;
     kind: MarkKind;
     note: string;
@@ -49,6 +50,7 @@ export interface ExcerptMark {
  * One capability shown as a notebook entry: what you say, what runs, what changes.
  */
 export interface TopicExample {
+    
     title: string;
     say: string;
     run: string;
@@ -71,6 +73,7 @@ export enum ContrastTone {
  * One line of a contrast scene.
  */
 export interface ContrastLine {
+    
     text: string;
     tone: ContrastTone;
 }
@@ -79,6 +82,7 @@ export interface ContrastLine {
  * One side of the "without / with Stillmark" slider: a small window (chat, phone, file) and a caption under it.
  */
 export interface ContrastScene {
+    
     frame: string;
     lines: ContrastLine[];
     caption: string;
@@ -88,6 +92,7 @@ export interface ContrastScene {
  * What working looks like without Stillmark and with it, shown in the before/after slider.
  */
 export interface TopicContrast {
+    
     without: ContrastScene;
     with: ContrastScene;
 }
@@ -96,6 +101,7 @@ export interface TopicContrast {
  * One row of a topic's command list.
  */
 export interface TopicCommand {
+    
     command: string;
     description: string;
 }
@@ -104,6 +110,7 @@ export interface TopicCommand {
  * Localized copy of a guide topic.
  */
 export interface TopicCopy {
+    
     label: string;
     title: string;
     lead: string;
@@ -117,6 +124,7 @@ export interface TopicCopy {
  * A docs topic: identity, URL slug, sidebar group, and copy per locale.
  */
 export interface TopicDefinition {
+    
     id: TopicId;
     slug: string;
     group: TopicGroup;

@@ -9,6 +9,7 @@ import { writeTaskPlan } from "./PlanOperations";
  * Inputs for `stillmark plan scope`.
  */
 export interface SetPlanScopeOptions {
+    
     objective?: string;
     inScope?: string[];
     outOfScope?: string[];
@@ -22,6 +23,7 @@ export interface SetPlanScopeOptions {
  * Current objective and scope lists, placeholders excluded.
  */
 export interface PlanScopePayload {
+    
     objective: string;
     inScope: string[];
     outOfScope: string[];

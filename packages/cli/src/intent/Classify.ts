@@ -2,6 +2,7 @@ import type { PlanningDestination } from "../documents";
 import type { OperationResult } from "../results/OperationResult";
 
 export interface ClassifyInput {
+    
     text: string;
     explicitDestination?: PlanningDestination;
     hasActivePlan: boolean;

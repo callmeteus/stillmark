@@ -16,7 +16,7 @@ All notable changes to this project are listed here, newest first.
 - Notify the user when the agent finishes working (Telegram, Discord, webhooks)
 - README.md generator and refactorer with selectable templates
 - Push right after every commit by default, configurable with config set --auto-push
-- Landing site that explains everything the agent does, like impeccable.style
+- Landing site that explains everything the agent does, with docs-style topic guides
 - Turn TODO and FIXME comments in the code into roadmap items, with stillmark roadmap todos and init --todos
 - Generate and maintain CHANGELOG.md, including retroactive history
 - Desktop toast notifications and an automatic Codex finish hook

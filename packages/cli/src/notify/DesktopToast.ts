@@ -4,6 +4,7 @@ import { spawn } from "node:child_process";
  * Program, arguments, and extra environment that show one desktop notification.
  */
 export interface ToastCommand {
+    
     command: string;
     args: string[];
     env?: Record<string, string>;

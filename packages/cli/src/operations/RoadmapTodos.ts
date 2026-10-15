@@ -13,6 +13,7 @@ import { addRoadmapItem } from "./RoadmapOperations";
  * A code comment as reported by `roadmap todos`: where it is, and whether the roadmap already has it.
  */
 export interface RoadmapTodo extends TodoComment {
+    
     /** Roadmap ID of the matching item, when the TODO is already on the roadmap. */
     onRoadmap?: string;
     /** Roadmap ID created by `--add`. */
@@ -25,10 +26,12 @@ export interface RoadmapTodo extends TodoComment {
  * Result of `roadmap todos`: every TODO / FIXME found, plus what `--add` did with each.
  */
 export interface RoadmapTodosResult extends OperationResult {
+    
     todos: RoadmapTodo[];
 }
 
 export interface RoadmapTodosOptions {
+    
     /** Add every TODO not on the roadmap yet to `## Backlog`. */
     add?: boolean;
     gitOverride?: GitOverride;

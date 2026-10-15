@@ -1,11 +1,13 @@
 /** Line span in source file (0-based, end exclusive). */
 export interface LineSpan {
+    
     startLine: number;
     endLine: number;
 }
 
 /** Parsed roadmap checklist item. */
 export interface RoadmapItem {
+    
     id: string;
     title: string;
     checked: boolean;
@@ -20,6 +22,7 @@ export interface RoadmapItem {
 
 /** Parsed task plan task block. */
 export interface PlanTask {
+    
     id: string;
     title: string;
     status: string;
@@ -38,6 +41,7 @@ export interface PlanTask {
 
 /** Parsed task plan document. */
 export interface TaskPlanDocument {
+    
     raw: string;
     objective: string;
     inScope: string[];
@@ -48,11 +52,13 @@ export interface TaskPlanDocument {
 
 /** Parsed roadmap document. */
 export interface RoadmapDocument {
+    
     raw: string;
     sections: RoadmapSection[];
 }
 
 export interface RoadmapSection {
+    
     title: string;
     headerSpan: LineSpan;
     items: RoadmapItem[];

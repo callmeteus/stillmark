@@ -14,7 +14,7 @@ You manage project planning and test-coverage checklists through the Stillmark C
 
 **README generator and refactorer.** Never write a README from memory. `stillmark readme plan [--file=<path>/README.md] --json` reads the real project (`facts.runCommands` with ready script commands, workspaces, bin, env var names, linkable files), backs up the current README, and returns the template `outline`, `factsToKeep`, and `instructions`. When `needsClarification` is true, ask the user which of the returned `templates` to use (suggested first), then run `readme plan --template=<id>` again. Write the README in `language` with only the facts from the payload, moving existing content into matching sections; then `stillmark readme check --json` until `issues` is empty (missing sections, placeholders, commands that do not exist, broken links, lost facts). `stillmark readme restore --json` brings the previous version back; `stillmark readme templates --json` lists the layouts and their sources.
 
-If you are reading these instructions, Stillmark is already installed for your agent. Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
+If you are reading these instructions, Stillmark is already installed for your agent. The only Stillmark slash is **`/stillmark`**; never create `/coverage`, `/design`, `/stillmark-design`, or sibling skills for those modes (use `/stillmark coverage …`, `/stillmark design …` instead). Setting up a repo is only `stillmark init --json`; never run `stillmark install` or copy skill files into the repo unless the user explicitly asks to install.
 
 ## Destinations
 
@@ -113,7 +113,7 @@ Use **only `/stillmark`** (not `/coverage`). Mirror the CLI: `/stillmark <args>`
 
 UI work uses the same **stillmark** skill, not a separate slash command:
 
-- `/stillmark design …` for explicit design tasks.
+- `/stillmark design …` for explicit design tasks: run `stillmark design … --json` first (`create` = new UI, `review|critique|audit` = diagnosis only, else mixed). See `reference/design-pipeline.md`.
 - `/stillmark <feedback>` when the user **selects an element in the Cursor browser preview** (e.g. "ta uma bosta arruma") - map the selection to project source, fix, run, inspect once.
 - Only the **local project dev preview** is editable; external sites in the browser are not your codebase.
 
@@ -149,7 +149,7 @@ After each operation, report what changed, item IDs, and file paths from the JSO
 
 Never run `git commit` or `git push` yourself unless the user asks for a commit. Stillmark git integration follows `stillmark.config.json`: `autoCommit` (default off) commits roadmap changes automatically; per-call `--git` or `--no-git`.
 
-Push: `git.autoPush` is on by default. When the user asks for a commit (or Stillmark commits), push right after; skip the push only when the user says so or `autoPush` is off (`stillmark config set --auto-push=false`). Report whether the push worked. `stillmark git push --json` pushes local commits (setting `origin` as upstream on the first push) and never commits; when `uncommitted` is not empty, ask whether to commit those files first (proposed message from `git message-style`), then run it again.
+Push: `git.autoPush` is on by default. When the user asks for a commit (or Stillmark commits), push right after; skip the push only when the user says so or `autoPush` is off (`stillmark config set --auto-push=false`). Report whether the push worked. `stillmark git push --json` pushes local commits (setting `origin` as upstream on the first push). When `needsCommit` is true, the JSON includes `proposedMessage`: use `AskQuestion` (commit with it, custom message, or cancel); after the user agrees, run `stillmark git push --with-commit [--message \"...\"] [summary] --json` (never commit without that grant). Trailing words and tokens like `no-t` feed the subject; `--message` wins.
 
 Commit subjects: Stillmark checks recent `git log` only to see whether the repo uses conventional commits; if so it writes `docs: …` for planning documents and `chore: …` for setup, otherwise the plain summary. It never copies a scope from history (such as `(t)` or `(auth)`). Preview with `stillmark git message-style "<summary>" --json`. Override with `git.commitMessage` and `{summary}` in config when needed.
 

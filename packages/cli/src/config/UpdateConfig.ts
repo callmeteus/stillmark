@@ -2,6 +2,7 @@
  * Automatic update checks run by the agent through `stillmark update`.
  */
 export interface UpdateConfig {
+    
     /**
      * When false, `stillmark update` only checks with `--force`.
      */

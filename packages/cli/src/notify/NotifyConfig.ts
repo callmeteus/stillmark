@@ -14,6 +14,7 @@ export const NotifyChannelTypes: readonly NotifyChannelType[] = ["telegram", "di
  * Desktop channels have no settings beyond their name.
  */
 export interface NotifyChannel {
+    
     name: string;
     type: NotifyChannelType;
     /**
@@ -34,6 +35,7 @@ export interface NotifyChannel {
  * `~/.stillmark/notify.json`: shared by every project of this user, never inside a repository.
  */
 export interface NotifyConfig {
+    
     enabled: boolean;
     channels: NotifyChannel[];
 }

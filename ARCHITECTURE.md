@@ -51,6 +51,8 @@ Per-call overrides: `--git`, `--no-git`.
 
 Root `templates/` is copied into `packages/cli/dist/templates` at build time. Design playbooks live under `stillmark/reference/` inside the Cursor and Claude skill trees. `stillmark install --agent <id>` copies the matching subtree into the target project.
 
+**Agent migrations** (`packages/cli/src/migrations/`) run before each template copy on install and on `update apply`. Each migration has a stable `id`, targets specific agents, and is idempotent (safe to re-run). Add new one-way cleanups to the chain in `AgentMigrationRunner.ts` (for example `RemoveSplitStillmarkAgentFiles` drops legacy `/coverage` and `/design` command files and split skills).
+
 ## Testing
 
 Vitest unit tests under `packages/cli/tests/unit/` cover incremental writes, classification, scope, privacy, git behavior, moves, long-running state, and adapter instructions.

@@ -2,6 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { AgentMigrationRunner } from "../migrations/AgentMigrationRunner";
+import type { AppliedAgentMigration } from "../migrations/AgentMigrationTypes";
+
 export type AgentId = "cursor" | "claude" | "codex";
 
 /**
@@ -18,6 +21,7 @@ export const AgentIds: AgentId[] = ["cursor", "claude", "codex"];
  * One packaged template file and where it lands in the project.
  */
 export interface AgentTemplateFile {
+    
     src: string;
     dest: string;
 }
@@ -119,9 +123,10 @@ export function installAgent(
     root: string,
     agent: AgentId,
     scope: InstallScope = "project"
-): { installed: string[]; linked: string[] } {
+): { installed: string[]; linked: string[]; migrations: AppliedAgentMigration[] } {
     const installed: string[] = [];
     const linked: string[] = [];
+    const migrations = AgentMigrationRunner.runForAgent(root, agent);
 
     for (const file of agentTemplateFiles(root, agent, scope)) {
         if (isLinkedPath(file.dest, root)) {
@@ -132,7 +137,11 @@ export function installAgent(
         }
     }
 
-    return { installed, linked };
+    return {
+        installed,
+        linked,
+        migrations
+    };
 }
 
 function normalizedContent(file: string): string {

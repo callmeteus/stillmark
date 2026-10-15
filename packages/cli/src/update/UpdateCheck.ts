@@ -32,6 +32,7 @@ const HOUR_MS = 60 * 60 * 1000;
  * Inputs for `stillmark update` (check) and `stillmark update apply`.
  */
 export interface UpdateOptions {
+    
     /**
      * Check the registry even when disabled or not due yet.
      */
@@ -52,6 +53,7 @@ export interface UpdateOptions {
  * JSON payload for `stillmark update`.
  */
 export interface UpdateCheckResult extends OperationResult {
+    
     /**
      * True when the registry was contacted during this run.
      */

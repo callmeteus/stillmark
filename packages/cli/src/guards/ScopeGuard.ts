@@ -2,6 +2,7 @@ import type { TaskPlanDocument } from "../documents";
 import { normalizeTitle, tokenSimilarity } from "./Duplicates";
 
 export interface ScopeGuardResult {
+    
     allowed: boolean;
     reason?: "outOfScope" | "uncertain";
     message?: string;

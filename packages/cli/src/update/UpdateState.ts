@@ -8,6 +8,7 @@ import type { ProjectPaths } from "../paths/ProjectPaths";
  * Global installs keep their own copy in `~/.stillmark/UPDATE.json` (only `templatesVersion` is used there).
  */
 export interface UpdateState {
+    
     /**
      * ISO timestamp of the last registry check (successful or not).
      */

@@ -1,9 +1,11 @@
 import { loadConfig, resolveLanguage, writeConfig } from "../config";
 import {
     attributionHookStatus,
+    commitAllPending,
     commitSetupFiles,
     installAttributionHook,
     listSetupFiles,
+    pushCommitSummaryFromTokens,
     pushPending,
     removeAttributionHook,
     resolveCommitMessage,
@@ -108,6 +110,103 @@ export async function runGitHook(
 }
 
 /**
+ * Resolves the commit subject for `git push --with-commit` from flags, trailing words, or defaults.
+ */
+async function resolvePushCommitMessage(
+    paths: ProjectPaths,
+    runner: GitRunner,
+    flags: Record<string, string | boolean>,
+    rest: string[]
+): Promise<{ message: string; language: string }> {
+    const { language, summary: fallbackSummary } = commitSummary(paths, "update");
+    const fromFlags = typeof flags.message === "string" ? flags.message.trim() : "";
+    const fromRest = pushCommitSummaryFromTokens(rest);
+    const summary = fromFlags || fromRest || fallbackSummary;
+    const config = loadConfig(paths);
+    const resolved = await resolveCommitMessage(paths.root, summary, config.git.commitMessage, runner);
+
+    return { message: resolved.message, language };
+}
+
+/**
+ * `stillmark git push [--with-commit] [--message "<subject>"] [summary words]`.
+ */
+async function runGitPush(
+    paths: ProjectPaths,
+    rest: string[],
+    runner: GitRunner,
+    flags: Record<string, string | boolean>
+): Promise<OperationResult> {
+    const withCommit = flags.withCommit === true;
+    const config = loadConfig(paths);
+    let committed = false;
+    let commitMessage: string | undefined;
+    let commitLanguage: string | undefined;
+
+    if (withCommit) {
+        if (config.git.stripAgentAttribution) {
+            await installAttributionHook(paths.root, runner);
+        }
+
+        const resolved = await resolvePushCommitMessage(paths, runner, flags, rest);
+
+        commitMessage = resolved.message;
+        commitLanguage = resolved.language;
+        const commit = await commitAllPending(paths.root, runner, commitMessage);
+
+        if (!commit.committed && commit.detail !== "Nothing to commit") {
+            return {
+                ok: false,
+                changed: false,
+                action: "git push",
+                summary: commit.detail ?? "Commit failed",
+                committed: false,
+                commitMessage,
+                commitLanguage
+            } as OperationResult;
+        }
+
+        if (commit.committed) {
+            committed = true;
+        }
+    }
+
+    const result = await pushPending(paths.root, runner);
+    const pending = result.needsCommit
+        ? `${result.uncommitted.length} uncommitted file(s); use AskQuestion (commit with proposed message, custom message, or cancel) or rerun with --with-commit after the user agrees`
+        : "";
+    const outcome = !result.gitRepo || result.detail
+        ? result.detail ?? "Push failed"
+        : result.pushed
+            ? `Pushed ${result.ahead} commit(s) of ${result.branch} to ${result.upstream ?? `origin/${result.branch}`}`
+            : `Nothing to push; ${result.branch} matches ${result.upstream}`;
+
+    let proposedMessage: string | undefined;
+
+    if (result.needsCommit) {
+        const resolved = await resolvePushCommitMessage(paths, runner, flags, rest);
+
+        proposedMessage = resolved.message;
+        commitLanguage = resolved.language;
+    }
+
+    const commitNote = committed ? `Committed with: ${commitMessage}` : "";
+    const summaryParts = [outcome, commitNote, pending].filter(Boolean);
+
+    return {
+        ok: result.gitRepo && result.detail === undefined,
+        changed: result.pushed || committed,
+        action: "git push",
+        summary: summaryParts.join(". "),
+        proposedMessage,
+        commitLanguage,
+        committed: withCommit ? committed : undefined,
+        commitMessage: withCommit ? commitMessage : undefined,
+        ...result
+    } as OperationResult;
+}
+
+/**
  * `stillmark git <sub> ...`: `push`, `hook [status|install|remove]`, `setup-files`, `setup-commit`,
  * or `message-style [summary]` (alias `suggest`).
  */
@@ -174,23 +273,7 @@ export async function runGitCommand(
     }
 
     if (sub === "push") {
-        const result = await pushPending(paths.root, runner);
-        const pending = result.uncommitted.length > 0
-            ? `${result.uncommitted.length} uncommitted file(s) left out; ask the user whether to commit them (message from stillmark git message-style), then run stillmark git push again`
-            : "";
-        const outcome = !result.gitRepo || result.detail
-            ? result.detail ?? "Push failed"
-            : result.pushed
-                ? `Pushed ${result.ahead} commit(s) of ${result.branch} to ${result.upstream ?? `origin/${result.branch}`}`
-                : `Nothing to push; ${result.branch} matches ${result.upstream}`;
-
-        return {
-            ok: result.gitRepo && result.detail === undefined,
-            changed: result.pushed,
-            action: "git push",
-            summary: [outcome, pending].filter(Boolean).join(". "),
-            ...result
-        } as OperationResult;
+        return runGitPush(paths, rest, runner, flags);
     }
 
     if (sub === "message-style" || sub === "suggest") {
@@ -211,7 +294,7 @@ export async function runGitCommand(
     return {
         ok: false,
         changed: false,
-        summary: "Usage: stillmark git push | git message-style [summary] | git hook [status|install|remove] | git setup-files | git setup-commit [--message \"<msg>\"]"
+        summary: "Usage: stillmark git push [--with-commit] [--message \"<msg>\"] [summary] | git message-style [summary] | git hook [status|install|remove] | git setup-files | git setup-commit [--message \"<msg>\"]"
     };
 }
 

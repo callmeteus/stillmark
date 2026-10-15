@@ -20,6 +20,7 @@ import { globalUpdateStatePath, recordTemplatesVersion, recordTemplatesVersionFi
  * Inputs for `stillmark install`.
  */
 export interface InstallTemplatesOptions {
+    
     /**
      * Install into the home directory so every project gets the skill.
      */

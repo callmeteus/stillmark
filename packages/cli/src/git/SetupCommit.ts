@@ -7,6 +7,7 @@ import type { GitRunner } from "./GitRunner";
 export const SetupDocuments = ["DESIGN.md", "PRODUCT.md"] as const;
 
 export interface SetupFiles {
+    
     /** False outside a git work tree. */
     gitRepo: boolean;
     /** Repository top level (git paths below are relative to it). */
@@ -16,6 +17,7 @@ export interface SetupFiles {
 }
 
 export interface SetupCommitResult extends SetupFiles {
+    
     committed: boolean;
     detail?: string;
 }

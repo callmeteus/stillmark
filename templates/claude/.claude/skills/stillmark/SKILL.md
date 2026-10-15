@@ -1,11 +1,15 @@
 ---
 name: stillmark
 description: >-
-  Single Stillmark entry: every CLI command and COVERAGE.md workflow through
-  /stillmark, plus embedded design. Do not use a separate /coverage slash command.
+  The only Stillmark entry: CLI, COVERAGE.md, and design through /stillmark.
+  No separate /coverage, /design, or other Stillmark slash commands.
 ---
 
 # Stillmark
+
+**Only user-facing slash:** `/stillmark` (not `/coverage`, not `/design`, not `/stillmark-design`). Modes are `/stillmark coverage …`, `/stillmark design …`.
+
+Stillmark is **one** skill named `stillmark` with playbooks under `reference/`. Never create sibling skills or extra slash commands for coverage or design.
 
 **Only entry point:** `/stillmark`. Follow shared Stillmark instructions. Run `stillmark … --json` from the project root.
 
@@ -33,7 +37,7 @@ description: >-
 |---------|------|
 | CLI verbs above | Run `stillmark <text> --json` |
 | `coverage …` or COVERAGE/test checklist intent | `reference/coverage.md` (help, update, free text, or `stillmark coverage …`) |
-| `design …`, browser selection, UI critique | Design; `reference/craft-floor.md` |
+| `design …`, browser selection, UI critique | `stillmark design … --json`, then JSON `playbooks` (`design-pipeline.md`) |
 | Else | `stillmark classify "<text>" --json` |
 
 Never use `/coverage`. Playbooks under `reference/` (`.claude/skills/stillmark/reference/`).
@@ -48,4 +52,4 @@ First run: `stillmark config status --json`; when `needsFirstRunPrompt`, use `As
 
 Detail level: `detail` in that payload says `compact` (item line only) or `extended` (indented details via `--details "<text>"`) per `coverage`, `roadmap`, `plan`. Defaults: coverage and roadmap compact, plan extended. "Deixa compacto/extenso" = `stillmark config set --detail=compact|extended [--module=coverage|roadmap|plan] --json`.
 
-Git: never commit without user grant; `stillmark git message-style` for preview. Before a granted commit run `stillmark git hook install --json`: the `commit-msg` hook removes `Co-Authored-By: Claude`, "Generated with Claude Code", and Cursor trailers (default on; `config set --strip-attribution=false` turns it off). Commits the user asks for never carry agent markers such as `(t)` and are pushed right after (`git.autoPush`, default on; `config set --auto-push=false` turns it off, or skip when the user says not to push). `/stillmark git push` = `stillmark git push --json`: pushes local commits, never commits; when `uncommitted` is not empty, ask whether to commit them first, then run it again.
+Git: never commit without user grant; `stillmark git message-style` for preview. Before a granted commit run `stillmark git hook install --json`: the `commit-msg` hook removes `Co-Authored-By: Claude`, "Generated with Claude Code", and Cursor trailers (default on; `config set --strip-attribution=false` turns it off). Commits the user asks for never carry agent markers such as `(t)` and are pushed right after (`git.autoPush`, default on; `config set --auto-push=false` turns it off, or skip when the user says not to push). `/stillmark git push` = `stillmark git push --json`: pushes local commits; when `needsCommit` is true, ask with `AskQuestion` and use `proposedMessage`, then `stillmark git push --with-commit` after the user agrees (trailing words or `--message` for the subject; `no-t` is not part of the message).

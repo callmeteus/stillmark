@@ -19,4 +19,5 @@ if (b) {
 - Relative imports without `.js` or `/index`; cross-module imports go through the folder barrel (`from "../documents"`).
 - Files in PascalCase inside kebab-case folders; `src/` root holds only `index.ts`. Keep files under 700 lines (split `Cli.ts` branches into `*Commands.ts`).
 - Blank line between a declaration and the `if` that uses it, and around control-flow blocks.
+- Blank line after `{` before the first member of an `interface` (including Astro `interface Props`), same as expanded object literals.
 - No em dash anywhere; use a hyphen.

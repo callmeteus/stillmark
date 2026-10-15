@@ -17,6 +17,7 @@ import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
 
 export interface SharingStatusPayload {
+    
     needsFirstRunPrompt: boolean;
     firstRunPrompted: boolean;
     shareDesignSystem: boolean;
@@ -31,6 +32,7 @@ export interface SharingStatusPayload {
 }
 
 export interface LanguageStatusPayload {
+    
     /**
      * True until a language was chosen for this repo; agents must ask the user once.
      */
@@ -42,6 +44,7 @@ export interface LanguageStatusPayload {
 }
 
 export interface CavemanStatusPayload {
+    
     level: CavemanLevel;
     /**
      * Reply rules agents must follow; empty when the level is `off`.
@@ -129,6 +132,7 @@ export function setConfigCaveman(
 }
 
 export interface SetConfigLanguageOptions {
+    
     /**
      * Normalized language tag, or `inherit` to remove the override.
      */
@@ -170,6 +174,7 @@ export function setConfigLanguage(
 }
 
 export interface SetConfigDetailOptions {
+    
     /**
      * New level, or `inherit` to remove the override so the module (or global) falls back to defaults.
      */
@@ -214,6 +219,7 @@ export function setConfigDetail(
  * Partial update of the `update` block; omitted fields keep their current value.
  */
 export interface SetConfigUpdateOptions {
+    
     auto?: boolean;
     intervalHours?: number;
 }
@@ -267,6 +273,7 @@ export function setConfigRoadmapDates(
 }
 
 export interface SetConfigSharingOptions {
+    
     shareDesignSystem: boolean;
     markPrompted: boolean;
 }

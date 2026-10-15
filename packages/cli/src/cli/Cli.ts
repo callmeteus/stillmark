@@ -11,6 +11,7 @@ import {
 } from "../config";
 import { isPriority, parseTaskPlan } from "../documents";
 import { GitRunner } from "../git";
+import { runDesignCommand } from "../design";
 import { classifyIntent } from "../intent";
 import { applyPlanChange } from "../long-running";
 import {
@@ -51,6 +52,7 @@ import { runReadmeCommand } from "./ReadmeCommands";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
 export interface CliOptions {
+    
     json: boolean;
     root: string;
     gitOverride: GitOverride;
@@ -630,6 +632,12 @@ export async function runCli(argv: string[]): Promise<number> {
             return 1;
         }
 
+        if (cmd === "design") {
+            output(runDesignCommand(positional), json);
+
+            return 0;
+        }
+
         if (cmd === "move" && positional[1] && positional[2] === "to") {
             const target = positional[3];
             const item = positional[1];
@@ -660,7 +668,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | config | classify | roadmap | plan | changelog | git | notify | caveman | readme | coverage | add | move | install | update | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | changelog | git | notify | caveman | readme | coverage | design | add | move | install | update | long-running"
             },
             json
         );

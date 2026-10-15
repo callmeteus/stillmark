@@ -7,6 +7,7 @@ import { sanitizeLanguageConfig, type LanguageConfig } from "./LanguageConfig";
 import { DefaultUpdateConfig, sanitizeUpdateConfig, type UpdateConfig } from "./UpdateConfig";
 
 export interface SharingConfig {
+    
     /**
      * True after the user answered the first-run sharing question (yes or no).
      */
@@ -18,6 +19,7 @@ export interface SharingConfig {
 }
 
 export interface LearnedConfig {
+    
     /**
      * Folder for design learning markdown (default `.stillmark/learnings/design`).
      */
@@ -29,6 +31,7 @@ export interface LearnedConfig {
 }
 
 export interface GitConfig {
+    
     autoCommit: boolean;
     /**
      * When true (default), commits made by Stillmark or requested by the user are pushed right after.
@@ -46,6 +49,7 @@ export interface GitConfig {
 }
 
 export interface RoadmapConfig {
+    
     /**
      * When true, roadmap items get `added:` and `done:` dates (YYYY-MM-DD) in their metadata line.
      */
@@ -53,6 +57,7 @@ export interface RoadmapConfig {
 }
 
 export interface StillmarkConfig {
+    
     git: GitConfig;
     roadmap: RoadmapConfig;
     sharing: SharingConfig;

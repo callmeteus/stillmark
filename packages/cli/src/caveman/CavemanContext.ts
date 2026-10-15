@@ -11,6 +11,7 @@ import { compareCompressed, type CavemanIssue } from "./CavemanVerify";
  * One compressed file tracked in the caveman manifest.
  */
 export interface CavemanManifestEntry {
+    
     /**
      * Project-relative path of the compressed file (forward slashes).
      */
@@ -28,6 +29,7 @@ export interface CavemanManifestEntry {
 }
 
 interface CavemanManifest {
+    
     files: Record<string, CavemanManifestEntry>;
 }
 

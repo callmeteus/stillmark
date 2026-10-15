@@ -7,6 +7,7 @@ import { addPlanTask } from "../operations/PlanOperations";
 import type { OperationResult } from "../results/OperationResult";
 
 export interface LongRunningState {
+    
     revision: number;
     activeTaskId: string | null;
     completed: string[];
@@ -94,6 +95,7 @@ export function resolveNextActionableTask(
 }
 
 export interface ApplyPlanChangeInput {
+    
     description: string;
     acceptScopeChange?: boolean;
 }

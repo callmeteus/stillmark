@@ -12,6 +12,7 @@ import { findReadmeSection, findReadmeTemplate, ReadmeTemplates, type ReadmeTemp
  * One section of the outline an agent fills in.
  */
 export interface ReadmeOutlineSection {
+    
     id: string;
     heading: string;
     required: boolean;
@@ -23,6 +24,7 @@ export interface ReadmeOutlineSection {
 }
 
 interface ReadmeState {
+    
     /**
      * `pending` is true from `readme plan` until a passing `readme check`; a new plan refreshes the backup only after that.
      */

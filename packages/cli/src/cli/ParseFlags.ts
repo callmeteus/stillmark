@@ -2,6 +2,7 @@
  * Parsed argv: flags by name, remaining words, and options the CLI does not know.
  */
 export interface ParsedArgs {
+    
     flags: Record<string, string | boolean>;
     positional: string[];
     /**
@@ -28,7 +29,8 @@ const BOOLEAN_FLAGS: Record<string, string> = {
     "--add": "add",
     "--todos": "todos",
     "--help": "help",
-    "-h": "help"
+    "-h": "help",
+    "--with-commit": "withCommit"
 };
 
 /**

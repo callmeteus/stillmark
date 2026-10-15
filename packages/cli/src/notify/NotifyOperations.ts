@@ -21,11 +21,13 @@ import {
  * Optional overrides for tests: home directory (defaults to the current user's home) and desktop toasts.
  */
 export interface NotifyContext {
+    
     homeDir?: string;
     toast?: ToastRunner;
 }
 
 export interface AddNotifyChannelOptions {
+    
     type: NotifyChannelType;
     name?: string;
     token?: string;
@@ -208,6 +210,7 @@ export function listNotify(context: NotifyContext = {}): OperationResult & {
 }
 
 export interface SendNotifyOptions {
+    
     status: NotifyStatus;
     root: string;
     summary?: string;

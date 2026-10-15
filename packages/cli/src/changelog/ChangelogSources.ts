@@ -20,6 +20,7 @@ export enum ReleaseSource {
  * A past release: version label, release date, and the git ref that marks it.
  */
 export interface ReleasePoint {
+    
     version: string;
     date: string;
     ref: string;
@@ -29,6 +30,7 @@ export interface ReleasePoint {
  * Entries for one release, or for Unreleased when `release` is undefined.
  */
 export interface ChangelogBucket {
+    
     release?: ReleasePoint;
     entries: NewChangelogEntry[];
 }
@@ -37,6 +39,7 @@ export interface ChangelogBucket {
  * Everything the history says should be in CHANGELOG.md.
  */
 export interface ChangelogHistory {
+    
     source: ReleaseSource;
     /** Version file whose bumps marked releases, when `source` is `PACKAGE_VERSION`. */
     versionFile?: string;

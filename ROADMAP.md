@@ -65,7 +65,7 @@
   - Keeps accurate existing facts (ports, env vars, URLs) and never invents commands
 - [x] **R-026** Push right after every commit by default, configurable with config set --auto-push
   priority: medium · status: done · done: 2026-10-13
-- [x] **R-019** Landing site that explains everything the agent does, like impeccable.style
+- [x] **R-019** Landing site that explains everything the agent does, with docs-style topic guides
   priority: medium · status: done · added: 2026-10-13 · done: 2026-10-13
   - Every agent capability explained with a concrete example (what you say, what Stillmark does, what changes)
   - All commands documented, including the full design mode

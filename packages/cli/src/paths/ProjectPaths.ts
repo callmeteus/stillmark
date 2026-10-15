@@ -4,6 +4,7 @@ import path from "node:path";
  * Resolved paths for a Stillmark project root.
  */
 export interface ProjectPaths {
+    
     root: string;
     roadmap: string;
     stillmarkDir: string;

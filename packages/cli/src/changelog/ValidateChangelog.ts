@@ -10,6 +10,7 @@ import { ChangeGroupHeadings, parseChangelog, sectionEntries, UNRELEASED } from 
  * One problem found by `changelog check`. Errors fail the check; warnings are entries to reword.
  */
 export interface ChangelogIssue {
+    
     level: "error" | "warning";
     /** Release the problem is in, when it is inside one. */
     version?: string;
@@ -17,6 +18,7 @@ export interface ChangelogIssue {
 }
 
 export interface ChangelogCheckResult extends OperationResult {
+    
     issues: ChangelogIssue[];
 }
 

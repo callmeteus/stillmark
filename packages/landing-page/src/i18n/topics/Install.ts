@@ -41,8 +41,8 @@ export const InstallTopic: TopicDefinition = {
                         "  skills/stillmark/SKILL.md",
                         "  skills/stillmark/reference/"
                     ],
-                    mark: { line: 1, kind: MarkKind.CIRCLE, note: "Adds /stillmark to the chat." },
-                    result: "Your editor learns the /stillmark command and the skill behind it. Claude Code and Codex install the same way with --agent claude or --agent codex."
+                    mark: { line: 1, kind: MarkKind.CIRCLE, note: "Only /stillmark, not /design or /coverage." },
+                    result: "Your editor learns /stillmark and the skill behind it (coverage and design stay inside /stillmark, not separate slashes). Claude Code and Codex install the same way with --agent claude or --agent codex."
                 },
                 {
                     title: "Every project at once",
@@ -75,7 +75,7 @@ export const InstallTopic: TopicDefinition = {
             commands: [
                 { command: "npx stillmark@latest init", description: "Create the roadmap, the private plan folder, and the settings file" },
                 { command: "npx stillmark@latest init --todos", description: "Same, and put the TODO and FIXME comments already in the code on the roadmap" },
-                { command: "stillmark install --agent cursor|claude|codex", description: "Add the /stillmark command and skill to your editor" },
+                { command: "stillmark install --agent cursor|claude|codex", description: "Add /stillmark to your editor (one slash; no separate /coverage or /design)" },
                 { command: "stillmark install --agent cursor --global", description: "Install once for every project on this computer (--force keeps a project copy too)" },
                 { command: "stillmark update", description: "Look for a new version now and then, once a day by default (--force checks right away)" },
                 { command: "stillmark update apply", description: "Refresh the installed agent files to the latest version" }
@@ -114,8 +114,8 @@ export const InstallTopic: TopicDefinition = {
                         "  skills/stillmark/SKILL.md",
                         "  skills/stillmark/reference/"
                     ],
-                    mark: { line: 1, kind: MarkKind.CIRCLE, note: "Coloca /stillmark no chat." },
-                    result: "O editor aprende o comando /stillmark e a skill por trás dele. Claude Code e Codex instalam do mesmo jeito, com --agent claude ou --agent codex."
+                    mark: { line: 1, kind: MarkKind.CIRCLE, note: "Só /stillmark, não /design nem /coverage." },
+                    result: "O editor aprende /stillmark e a skill por trás (coverage e design ficam dentro do /stillmark, sem slash separado). Claude Code e Codex instalam do mesmo jeito, com --agent claude ou --agent codex."
                 },
                 {
                     title: "Todos os projetos de uma vez",
@@ -148,7 +148,7 @@ export const InstallTopic: TopicDefinition = {
             commands: [
                 { command: "npx stillmark@latest init", description: "Cria o roadmap, a pasta privada do plano e o arquivo de configurações" },
                 { command: "npx stillmark@latest init --todos", description: "O mesmo, e já coloca no roadmap os comentários TODO e FIXME que estão no código" },
-                { command: "stillmark install --agent cursor|claude|codex", description: "Adiciona o comando /stillmark e a skill ao seu editor" },
+                { command: "stillmark install --agent cursor|claude|codex", description: "Adiciona /stillmark ao editor (um slash; sem /coverage ou /design separados)" },
                 { command: "stillmark install --agent cursor --global", description: "Instala uma vez para todos os projetos deste computador (--force mantém também uma cópia no projeto)" },
                 { command: "stillmark update", description: "Procura versão nova de tempos em tempos, uma vez por dia por padrão (--force confere na hora)" },
                 { command: "stillmark update apply", description: "Atualiza os arquivos do agente instalados para a versão mais recente" }

@@ -26,6 +26,7 @@ import { plainEntryText, readChangelogHistory, ReleaseSource } from "./Changelog
  * Result of `changelog sync` (and of `changelog`, which previews the same sync).
  */
 export interface ChangelogSyncResult extends OperationResult {
+    
     created: boolean;
     releasesAdded: string[];
     entriesAdded: number;
@@ -40,6 +41,7 @@ export interface ChangelogSyncResult extends OperationResult {
 }
 
 export interface SyncChangelogOptions {
+    
     /** Report what would change without writing (plain `stillmark changelog`). */
     dryRun?: boolean;
     gitRunner?: GitRunner;
@@ -197,6 +199,7 @@ export async function syncChangelog(paths: ProjectPaths, options: SyncChangelogO
 }
 
 export interface AddChangelogEntryOptions {
+    
     group?: ChangeGroup;
     /** Only write when CHANGELOG.md already exists (used when a roadmap item is marked done). */
     onlyIfExists?: boolean;

@@ -4,7 +4,6 @@ dist-release/
 .astro/
 .DS_Store
 *.log
-.impeccable/
 
 # Published by .github/workflows/pages.yml (artifact deploy), not stored on master
 /index.html

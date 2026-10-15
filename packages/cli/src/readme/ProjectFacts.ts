@@ -5,6 +5,7 @@ import path from "node:path";
  * A workspace package found under the README's directory.
  */
 export interface WorkspaceFact {
+    
     dir: string;
     name?: string;
     description?: string;
@@ -16,6 +17,7 @@ export interface WorkspaceFact {
  * Facts read from the project files next to a README. Agents write only what is listed here.
  */
 export interface ProjectFacts {
+    
     /**
      * Directory of the README, relative to the project root ("." for the root).
      */
@@ -54,6 +56,7 @@ export interface ProjectFacts {
 }
 
 interface PackageJson {
+    
     name?: string;
     description?: string;
     version?: string;

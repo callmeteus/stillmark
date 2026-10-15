@@ -73,7 +73,7 @@ describe("git push", () => {
         }
     });
 
-    it("never commits pending work and lists it so the agent can ask", async () => {
+    it("sets needsCommit and proposedMessage without committing until --with-commit", async () => {
         const { root, cleanup } = createTempProject();
         const remote = fs.mkdtempSync(path.join(path.dirname(root), "stillmark-remote-"));
 
@@ -90,9 +90,37 @@ describe("git push", () => {
             fs.writeFileSync(path.join(root, "novo.txt"), "novo\n");
 
             expect(await cli(root, "git", "push")).toBe(0);
+            expect(lastJson()).toMatchObject({
+                needsCommit: true,
+                pushed: false,
+                ahead: 0
+            });
             expect(lastJson().uncommitted).toEqual(expect.arrayContaining(["a.txt", "novo.txt"]));
-            expect(String(lastJson().summary)).toContain("ask the user");
+            expect(String(lastJson().proposedMessage)).toBeTruthy();
+            expect(String(lastJson().summary)).toContain("AskQuestion");
             expect(git(root, "rev-parse", "HEAD").trim()).toBe(head);
+        } finally {
+            cleanup();
+            fs.rmSync(remote, { recursive: true, force: true });
+        }
+    });
+
+    it("commits pending work and pushes when --with-commit is set", async () => {
+        const { root, cleanup } = createTempProject();
+        const remote = fs.mkdtempSync(path.join(path.dirname(root), "stillmark-remote-"));
+
+        try {
+            git(remote, "init", "-q", "--bare");
+            git(root, "init", "-q", "-b", "main");
+            git(root, "remote", "add", "origin", remote);
+            commitFile(root, "a.txt", "primeiro");
+            await cli(root, "git", "push");
+
+            fs.writeFileSync(path.join(root, "b.txt"), "novo\n");
+
+            expect(await cli(root, "git", "push", "--with-commit", "segundo arquivo")).toBe(0);
+            expect(lastJson()).toMatchObject({ committed: true, pushed: true, needsCommit: false });
+            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toContain("segundo");
         } finally {
             cleanup();
             fs.rmSync(remote, { recursive: true, force: true });

@@ -15,6 +15,7 @@ export const DetailModules: readonly DetailModule[] = ["coverage", "roadmap", "p
  * and `global` wins over the built-in default of each module.
  */
 export interface DetailConfig {
+    
     global?: DetailLevel;
     coverage?: DetailLevel;
     roadmap?: DetailLevel;

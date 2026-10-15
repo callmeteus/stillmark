@@ -10,7 +10,7 @@ This command running means Stillmark is already installed. Setting up the repo i
 
 Any terminal command `stillmark <args>` works as `/stillmark <args>` with `--json` appended.
 
-Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
+Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `design`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
 
 `/stillmark notify ...` sets up Telegram, Discord, Slack, webhook, or desktop notifications when the agent finishes (see the skill); secrets stay in the user's home, never in the repo.
 
@@ -18,7 +18,7 @@ Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverag
 
 `/stillmark readme` creates or restructures a README from the real project: `readme plan`, ask which template when `needsClarification`, write it, then `readme check` until clean (see the skill).
 
-`/stillmark git push` pushes local commits; when it lists `uncommitted` files, ask whether to commit them first, then push again.
+`/stillmark git push` pushes local commits. When `needsCommit` is true, ask with `AskQuestion` and show `proposedMessage`; after the user agrees, `stillmark git push --with-commit` (optional summary or `--message`).
 
 Start each run with `stillmark update --json`; when `updateAvailable` is true, run `recommended` first (see the skill).
 
@@ -28,7 +28,7 @@ Start each run with `stillmark update --json`; when `updateAvailable` is true, r
 
 ## Design (embedded)
 
-`design …`, browser selection on the **local dev preview**, or casual UI feedback. See `reference/craft-floor.md`.
+`/stillmark design …` (not a separate `/design` slash). Run `stillmark design … --json` first; load JSON `playbooks`. `design create` = new UI; `design review|critique|audit` = diagnosis only; other text = mixed. Browser selection on the **local dev preview** uses mixed mode. See `reference/design-pipeline.md`.
 
 ## Report
 

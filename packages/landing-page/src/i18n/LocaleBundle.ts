@@ -16,6 +16,7 @@ export const SiteMessagesByLocale: Record<LocaleId, SiteMessages> = {
  * Page title and description.
  */
 export interface PageMeta {
+    
     title: string;
     description: string;
 }
@@ -26,6 +27,7 @@ export interface PageMeta {
  * `toc` holds the topic labels shown in the docs sidebar and the home topic picker.
  */
 export interface PageMessages {
+    
     meta: PageMeta;
     ui: SiteMessages["ui"];
     toc: Record<string, string>;
@@ -36,6 +38,7 @@ export interface PageMessages {
  * Copy for both locales plus the install guide URL of each.
  */
 export interface LocaleBundle {
+    
     messages: Record<LocaleId, PageMessages>;
     installUrls: Record<LocaleId, string>;
 }
@@ -51,6 +54,7 @@ function tocLabels(locale: LocaleId): Record<string, string> {
  * One topic as listed in an index: label, title, and one-line summary.
  */
 export interface TopicSummary {
+    
     label: string;
     title: string;
     summary: string;

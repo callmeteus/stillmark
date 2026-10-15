@@ -1,6 +1,6 @@
 # Product
 
-<!-- impeccable:product-schema 1 -->
+<!-- stillmark:product-schema 1 -->
 
 ## Platform
 
