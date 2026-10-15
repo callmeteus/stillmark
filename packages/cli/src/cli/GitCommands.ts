@@ -120,8 +120,13 @@ async function resolvePushCommitMessage(
 ): Promise<{ message: string; language: string }> {
     const { language, summary: fallbackSummary } = commitSummary(paths, "update");
     const fromFlags = typeof flags.message === "string" ? flags.message.trim() : "";
+
+    if (fromFlags) {
+        return { message: fromFlags, language };
+    }
+
     const fromRest = pushCommitSummaryFromTokens(rest);
-    const summary = fromFlags || fromRest || fallbackSummary;
+    const summary = fromRest || fallbackSummary;
     const config = loadConfig(paths);
     const resolved = await resolveCommitMessage(paths.root, summary, config.git.commitMessage, runner);
 

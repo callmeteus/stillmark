@@ -118,9 +118,9 @@ describe("git push", () => {
 
             fs.writeFileSync(path.join(root, "b.txt"), "novo\n");
 
-            expect(await cli(root, "git", "push", "--with-commit", "segundo arquivo")).toBe(0);
+            expect(await cli(root, "git", "push", "--with-commit", "--message=feat: segundo arquivo")).toBe(0);
             expect(lastJson()).toMatchObject({ committed: true, pushed: true, needsCommit: false });
-            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toContain("segundo");
+            expect(git(remote, "log", "-1", "--format=%s", "main").trim()).toBe("feat: segundo arquivo");
         } finally {
             cleanup();
             fs.rmSync(remote, { recursive: true, force: true });
