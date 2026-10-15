@@ -4,8 +4,14 @@ All notable changes to this project are listed here, newest first.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-15
+
 ### Added
 
+- Design modes under `/stillmark design` (create, review, mixed) with dedicated playbooks
+- Agent template migrations that remove legacy split slash commands
+- Smarter `stillmark git push` with `needsCommit`, `proposedMessage`, and `--with-commit`
+- Update checks on GitHub releases when the CLI is not on npm yet, with install hints in JSON
 - Finished work on the roadmap with delivery dates from commits
 - Guided first-run setup, setup-only commit, and agent attribution stripping
 - Commit messages without copied scopes and with user confirmation
