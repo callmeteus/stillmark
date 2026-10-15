@@ -11,13 +11,14 @@ import {
 import { loadConfig } from "../config";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
+import { compareVersions, PackageName, readPackageVersion, type LatestVersionFetcher } from "./PackageVersion";
 import {
-    compareVersions,
-    fetchLatestVersion,
-    PackageName,
-    readPackageVersion,
-    type LatestVersionFetcher
-} from "./PackageVersion";
+    buildCliInstallHints,
+    recommendedCliUpgradeCommand,
+    resolveLatestRelease,
+    type CliInstallHints,
+    type ReleaseChannel
+} from "./ReleaseChannels";
 import {
     globalUpdateStatePath,
     loadUpdateState,
@@ -61,6 +62,14 @@ export interface UpdateCheckResult extends OperationResult {
     skipped?: "disabled" | "not-due";
     current: string;
     latest: string | null;
+    /**
+     * `npm` or `github` when `latest` came from the last successful check.
+     */
+    latestChannel: ReleaseChannel | null;
+    /**
+     * Global install URLs (GitHub is the fallback while the package is not on npm).
+     */
+    install: CliInstallHints;
     cliOutdated: boolean;
     outdatedAgents: AgentId[];
     /**
@@ -74,6 +83,10 @@ export interface UpdateCheckResult extends OperationResult {
     recommended: string | null;
     nextCheckAt: string | null;
     error?: string;
+    /**
+     * Why npm was skipped when `latestChannel` is `github`.
+     */
+    npmFallbackNote?: string;
 }
 
 function isBehind(version: string | undefined, target: string): boolean {
@@ -104,8 +117,8 @@ export function outdatedAgents(
 }
 
 /**
- * Checks npm for a newer CLI at most once per configured interval, and compares installed templates
- * (project and global) with the running CLI on every call (local and cheap).
+ * Checks npm and GitHub releases for a newer CLI at most once per configured interval, and compares
+ * installed templates (project and global) with the running CLI on every call (local and cheap).
  */
 export async function checkForUpdates(
     paths: ProjectPaths,
@@ -123,6 +136,8 @@ export async function checkForUpdates(
 
     let skipped: UpdateCheckResult["skipped"];
     let error: string | undefined;
+    let npmFallbackNote: string | undefined;
+    let latestChannel: ReleaseChannel | null = state.latestChannel ?? null;
     let checked = false;
 
     if (!options.force && !config.update.auto) {
@@ -135,15 +150,30 @@ export async function checkForUpdates(
         state.lastCheckAt = now.toISOString();
 
         try {
-            state.latestVersion = await (options.fetchLatest ?? fetchLatestVersion)(PackageName);
+            if (options.fetchLatest) {
+                state.latestVersion = await options.fetchLatest(PackageName);
+                latestChannel = "npm";
+            } else {
+                const resolved = await resolveLatestRelease(PackageName);
+
+                state.latestVersion = resolved.version;
+                latestChannel = resolved.channel;
+
+                if (resolved.npmError !== undefined) {
+                    npmFallbackNote = resolved.npmError;
+                }
+            }
         } catch (err) {
             error = err instanceof Error ? err.message : String(err);
+            latestChannel = null;
         }
 
+        state.latestChannel = latestChannel ?? undefined;
         writeUpdateState(paths, state);
     }
 
     const latest = state.latestVersion ?? null;
+    const install = buildCliInstallHints(latest, latestChannel ?? state.latestChannel ?? null);
     const cliOutdated = latest !== null && compareVersions(latest, current) > 0;
     const agents = outdatedAgents(paths.root, "project", state.templatesVersion, current);
     const globalAgents = outdatedAgents(homeDir, "global", globalState.templatesVersion, current);
@@ -154,8 +184,8 @@ export async function checkForUpdates(
 
     let recommended: string | null = null;
 
-    if (templatesBehindLatest) {
-        recommended = `npx -y ${PackageName}@${latest} update apply --json`;
+    if (templatesBehindLatest && latest !== null && latestChannel !== null) {
+        recommended = recommendedCliUpgradeCommand(latest, latestChannel);
     } else
     if (agents.length > 0 || globalAgents.length > 0) {
         recommended = `${PackageName} update apply --json`;
@@ -168,9 +198,11 @@ export async function checkForUpdates(
     const parts: string[] = [];
 
     if (cliOutdated) {
+        const where = latestChannel === "github" ? "on GitHub releases" : "on npm";
+
         parts.push(recommended === null
             ? `agent files already use Stillmark ${latest}; the installed CLI is still ${current}`
-            : `Stillmark ${latest} is available (running ${current})`);
+            : `Stillmark ${latest} is available ${where} (running ${current})`);
     }
 
     if (agents.length > 0) {
@@ -188,7 +220,14 @@ export async function checkForUpdates(
     }
 
     if (error !== undefined) {
-        parts.push(`registry check failed: ${error}`);
+        parts.push(`version check failed: ${error}`);
+    } else
+    if (npmFallbackNote !== undefined && latestChannel === "github") {
+        parts.push(`npm unavailable (${npmFallbackNote}); using GitHub releases`);
+    }
+
+    if (checked && latest !== null && latestChannel === "github") {
+        parts.push(`install: ${install.githubLatest}`);
     }
 
     return {
@@ -200,13 +239,16 @@ export async function checkForUpdates(
         skipped,
         current,
         latest,
+        latestChannel: latestChannel ?? state.latestChannel ?? null,
+        install,
         cliOutdated,
         outdatedAgents: agents,
         outdatedGlobalAgents: globalAgents,
         updateAvailable: recommended !== null,
         recommended,
         nextCheckAt,
-        error
+        error,
+        npmFallbackNote
     };
 }
 

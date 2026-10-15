@@ -2,15 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-/**
- * npm package name of the CLI.
- */
-export const PackageName = "stillmark";
-
-const REGISTRY_TIMEOUT_MS = 3000;
+export { PackageName } from "./ReleaseChannels";
 
 /**
- * Resolves the latest published version of a package.
+ * Resolves the latest published version of a package (npm only; tests and custom injectors).
  */
 export type LatestVersionFetcher = (packageName: string) => Promise<string>;
 
@@ -26,7 +21,7 @@ export function readPackageVersion(): string {
         if (fs.existsSync(candidate)) {
             const pkg = JSON.parse(fs.readFileSync(candidate, "utf8")) as { name?: string; version?: string };
 
-            if (pkg.name === PackageName && pkg.version) {
+            if (pkg.name === StillmarkPackageName && pkg.version) {
                 return pkg.version;
             }
         }
@@ -69,23 +64,9 @@ export function compareVersions(a: string, b: string): number {
     return left.prerelease ? -1 : 1;
 }
 
+import { fetchLatestFromNpm, PackageName as StillmarkPackageName } from "./ReleaseChannels";
+
 /**
  * Read `latest` from the public npm registry.
  */
-export const fetchLatestVersion: LatestVersionFetcher = async (packageName) => {
-    const response = await fetch(`https://registry.npmjs.org/${packageName}/latest`, {
-        signal: AbortSignal.timeout(REGISTRY_TIMEOUT_MS)
-    });
-
-    if (!response.ok) {
-        throw new Error(`npm registry answered ${response.status} for ${packageName}`);
-    }
-
-    const body = (await response.json()) as { version?: unknown };
-
-    if (typeof body.version !== "string") {
-        throw new Error(`npm registry returned no version for ${packageName}`);
-    }
-
-    return body.version;
-};
+export const fetchLatestVersion: LatestVersionFetcher = fetchLatestFromNpm;

@@ -13,6 +13,7 @@ import {
 } from "../adapters";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
+import { buildCliInstallHints, type CliInstallHints } from "./ReleaseChannels";
 import { readPackageVersion } from "./PackageVersion";
 import { globalUpdateStatePath, recordTemplatesVersion, recordTemplatesVersionFile } from "./UpdateState";
 
@@ -51,7 +52,7 @@ export function installTemplates(
     paths: ProjectPaths,
     agent: string | undefined,
     options: InstallTemplatesOptions = {}
-): OperationResult & { scope?: InstallScope; installed: string[]; linked: string[] } {
+): OperationResult & { scope?: InstallScope; installed: string[]; linked: string[]; cliInstall?: CliInstallHints } {
     if (!AgentIds.includes(agent as AgentId)) {
         return {
             ok: false,
@@ -92,7 +93,8 @@ export function installTemplates(
             location: linked.join(", "),
             scope,
             installed: [],
-            linked
+            linked,
+            cliInstall: buildCliInstallHints(null, null)
         };
     }
 
@@ -115,6 +117,7 @@ export function installTemplates(
         location: installed.join(", "),
         scope,
         installed,
-        linked
+        linked,
+        cliInstall: buildCliInstallHints(null, null)
     };
 }

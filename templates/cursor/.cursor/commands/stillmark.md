@@ -20,7 +20,7 @@ Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverag
 
 `/stillmark git push` pushes local commits. When `needsCommit` is true, ask with `AskQuestion` and show `proposedMessage`; after the user agrees, `stillmark git push --with-commit` (optional summary or `--message`).
 
-Start each run with `stillmark update --json`; when `updateAvailable` is true, run `recommended` first (see the skill).
+Start each run with `stillmark update --json` (npm, then GitHub releases); when `updateAvailable` is true, run `recommended` first (see the skill).
 
 ## Coverage (embedded)
 

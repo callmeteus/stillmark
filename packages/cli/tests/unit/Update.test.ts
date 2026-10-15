@@ -88,6 +88,8 @@ describe("checkForUpdates", () => {
             expect(result.checked).toBe(true);
             expect(result.cliOutdated).toBe(true);
             expect(result.recommended).toBe("npx -y stillmark@0.2.0 update apply --json");
+            expect(result.latestChannel).toBe("npm");
+            expect(result.install.githubLatest).toContain("github.com/callmeteus/stillmark/releases/latest/download/stillmark.tgz");
             expect(result.nextCheckAt).toBe("2026-10-13T12:00:00.000Z");
             expect(loadUpdateState(paths).latestVersion).toBe("0.2.0");
         } finally {

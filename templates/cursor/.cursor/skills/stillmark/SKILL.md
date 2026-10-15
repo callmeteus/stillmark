@@ -53,7 +53,7 @@ Before handling the request, run:
 stillmark update --json
 ```
 
-It contacts npm at most once per `update.intervalHours` (default 24h) and returns at once otherwise, so it is cheap to call every time. When `updateAvailable` is **true**, run the command in `recommended` (`stillmark update apply --json` or `npx -y stillmark@<version> update apply --json`), tell the user in one line what was updated, then re-read this skill if its files changed and continue with the original request. Ignore `error` (offline, registry down) and keep going. Do not run `npm install` or edit `package.json` yourself; if the summary says the installed CLI is older, just mention it.
+It checks **npm**, then **GitHub releases** (fallback while the CLI is not on npm), at most once per `update.intervalHours` (default 24h). Read `latestChannel`, `install.githubLatest`, and `recommended` from JSON. When `updateAvailable` is **true**, run `recommended` verbatim (npm `npx` or GitHub `npm install -g …/stillmark.tgz && stillmark update apply --json`), tell the user in one line, re-read this skill if its files changed, then continue. Ignore `error` only when both channels failed. Fresh CLI install for humans: `install.githubLatest` or the install guide URL.
 
 User controls: "para de atualizar sozinho" = `stillmark config set --auto-update=false --json`; "verifica a cada 6 horas" = `stillmark config set --update-interval=6 --json`; "procura atualização agora" = `stillmark update --force --json`.
 

@@ -91,7 +91,7 @@ Roadmap dates are on by default (`roadmap.dates` in `stillmark.config.json`): ne
 
 ## Auto-update
 
-Start every `/stillmark` with `stillmark update --json`. It contacts the npm registry at most once per `update.intervalHours` (default 24) and answers from the local cache (`.stillmark/plans/UPDATE.json`) otherwise. When `updateAvailable` is true, run the `recommended` command: `stillmark update apply --json` refreshes installed agent files from the running CLI, and `npx -y stillmark@<version> update apply --json` does the same with a newer published CLI. Tell the user in one line, then continue with the request. Ignore `error`. Never run `npm install` or edit `package.json` on your own.
+Start every `/stillmark` with `stillmark update --json`. It checks **npm first**, then **GitHub releases** when npm has no package or is unreachable, at most once per `update.intervalHours` (default 24) and answers from the local cache (`.stillmark/plans/UPDATE.json`) otherwise. JSON fields: `latestChannel` (`npm` | `github`), `install.githubLatest` (global install from GitHub), `install.npmGlobal`, and `recommended` (upgrade plus `update apply`). When `updateAvailable` is true, run `recommended` verbatim (may be `npx -y stillmark@<version> update apply --json` or `npm install -g https://github.com/callmeteus/stillmark/releases/download/v<version>/stillmark.tgz && stillmark update apply --json`). Tell the user in one line, then continue. Ignore `error` only when both channels failed. Never run `npm install` on your own except by running the exact `recommended` line the user approved.
 
 ## Detail level (compact or extended)
 

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import type { ProjectPaths } from "../paths/ProjectPaths";
+import type { ReleaseChannel } from "./ReleaseChannels";
 
 /**
  * Local, gitignored cache under `.stillmark/plans/UPDATE.json`.
@@ -17,6 +18,10 @@ export interface UpdateState {
      * Latest version reported by the registry on the last successful check.
      */
     latestVersion?: string;
+    /**
+     * Whether `latestVersion` came from npm or GitHub releases.
+     */
+    latestChannel?: ReleaseChannel;
     /**
      * CLI version that last installed or refreshed the agent templates.
      */
