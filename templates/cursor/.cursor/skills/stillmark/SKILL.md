@@ -43,7 +43,7 @@ Anything valid on the terminal as `stillmark <args>` is valid as:
 - Finished work: `roadmap done "<item>"` moves an existing item to `## Done` (checked, `status: done`); `roadmap add "<description>" --done` records work that was never listed. To backfill the past, read `git log --date=short --format="%h %ad %s"`, group commits into user-visible features, and run one command per feature with `--commit=<sha>` of the commit that finished it, so the `done:` date is the real delivery date.
 - Code TODOs: `roadmap todos --json` lists the `TODO` / `FIXME` comments in the code (git-ignored files and build output skipped) with their files and whether the roadmap already has each (`onRoadmap`); it writes nothing. `roadmap todos --add --json` puts every new one in `## Backlog`, `FIXME` as `high`, skipping duplicates and anything that looks like a secret; running it again adds nothing. When the comments are vague or in another language than `language.resolved.roadmap`, list them and add the ones worth tracking with `roadmap add "<clear title>"` instead. `init --todos` does the `--add` right after setting up.
 - Dates: on by default, items get `added:` / `done:` (`YYYY-MM-DD`). `--date=YYYY-MM-DD` sets one by hand; `roadmap done` on an item already done with `--date`/`--commit` fixes its date. Off with `config set --roadmap-dates=false`.
-- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `design`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
+- Supported top-level verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `design`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `text`, `update`, `long-running`.
 
 ## Auto-update (start of every `/stillmark`)
 
@@ -122,6 +122,22 @@ Public, for the people who use the project: what they notice, in plain language 
 2. When CHANGELOG.md exists, `roadmap done` and `roadmap add --done` (finished today) list the item under Unreleased by themselves. Anything else: `stillmark changelog add "<what users notice>" [--group=fixed] --json`.
 3. After a sync, read the new entries and reword unclear or technical Unreleased ones by hand; then `stillmark changelog check --json` until `ok` is true and no warnings remain. `undated` lists done roadmap items without a date: backfill with `roadmap done "<item>" --commit=<ref>` and sync again.
 
+## Writing: clear text, never invented
+
+Applies to everything you write for the project or the user: roadmap items, plan tasks, coverage cases, CHANGELOG entries, READMEs, DESIGN/PRODUCT, commit messages, PR text, and reports.
+
+- **Never invent.** Every name, number, date, version, quote, source, example, or result comes from the code, the history, the existing text, or the user. When a sentence needs a detail you do not have, keep it vague, drop the claim, or ask. Keep the meaning: negations, conditions, limits, and uncertainty stay; "may", "must", and "will" are not interchangeable. Code, commands, paths, URLs, IDs, and numbers stay exactly as they are.
+- **Write plainly.** Lead with what the reader needs. One idea per sentence, the actor before the action, one name for one thing, plain words and verbs ("is", "has", "uses"). No filler ("it's important to note that", "é importante destacar que"), staged openers ("here's the thing", "a verdade é que"), punchline closers ("let that sink in", "simples assim"), "not X, but Y" contrasts ("não é X, é Y"), inflated importance, sales words, em dashes, or decorative emoji.
+- **Portuguese:** every accent, no gerundismo ("vou estar enviando" becomes "vou enviar"), headings capitalize only the first word and proper names.
+
+The CLI detects the language of each paragraph and applies the English or Portuguese catalog (other languages get the shared rules), so mixed files work:
+
+1. `stillmark text check <file> --json` (or `text check --json -- "<text>"`) lists `issues` with `line`, `excerpt`, `fix`, and `severity`. HIGH and MEDIUM make `ok` false; LOW are warnings worth a look. Run it on long text you wrote before handing it over.
+2. "clarifica esse texto", "tira a cara de IA", "humaniza o README" = `stillmark text rewrite <file> --json`: keeps the original under `.stillmark/plans/text/` and returns `issues`, `rules` for the detected language, and `instructions`. Rewrite the file in the same language, then `stillmark text check <file> --json` until `ok` is true; while a rewrite is open, the check also flags facts lost or added compared with the original (`fact-lost`, `possible-invention`). `stillmark text restore <file> --json` brings the original back.
+3. `stillmark text rules [--language=pt-BR] --json` returns the full rules for one language (default `language.resolved.docs`); `--language` on any `text` command skips detection. Text pasted in chat: check it, rewrite it following those rules, and show the result.
+
+ROADMAP.md, COVERAGE.md, CHANGELOG.md, and plans are refused by `text rewrite`: reword their entries through their commands (Unreleased changelog entries by hand), then `text check` the file.
+
 ## Notifications when the agent finishes
 
 Channels are per user, stored in `~/.stillmark/notify.json` (never in the repo); sending goes out from the user's own computer. Never paste tokens or webhook URLs into repo files, roadmap items, or commit messages.
@@ -140,7 +156,8 @@ Let `text` = message after `/stillmark` (trimmed). Strip optional leading `still
 
 | Input pattern | Mode | Action |
 |---------------|------|--------|
-| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
+| Starts with `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `text`, `update`, `long-running` | **CLI** | `stillmark <text> --json` |
+| Asks to clarify, simplify, or "de-AI" a text or file | **Writing** | [Writing](#writing-clear-text-never-invented): `text rewrite <file>` or `text check` |
 | Starts with `coverage` | **Coverage** | See [Coverage mode](#coverage-mode-embedded) and `reference/coverage.md` |
 | Starts with `design` | **Design** | `stillmark design … --json`, then playbooks from JSON |
 | Browser element attached | **Design** | Map selection to project source |

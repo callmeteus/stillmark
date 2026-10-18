@@ -205,7 +205,7 @@ export const ptBR: SiteMessages = {
     docs: {
         meta: {
             title: "Documentação do Stillmark",
-            description: "O que o Stillmark faz, tópico por tópico: instalação, configurações, roadmap, plano, cobertura, design, README, changelog, git e notificações."
+            description: "O que o Stillmark faz, tópico por tópico: instalação, configurações, roadmap, plano, cobertura, design, README, changelog, escrita clara, git e notificações."
         },
         title: "Comece com o Stillmark",
         lead: "O Stillmark mantém alguns arquivos do projeto em dia enquanto o seu agente de IA trabalha. Instale uma vez e peça mudanças em palavras simples.",

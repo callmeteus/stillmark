@@ -82,6 +82,12 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark readme check [--template=<id>] [--file=README.md]   (sections, unknown commands, broken links, leftovers, lost facts)",
         "stillmark readme restore [--file=README.md]"
     ],
+    text: [
+        "stillmark text check <file>|\"<text>\" [--language=en|pt-BR]   (marks of generated text, with the rules of the detected language; during a rewrite also lost or invented facts)",
+        "stillmark text rewrite <file> [--language=en|pt-BR]   (keeps the original, then the agent rewrites the file)",
+        "stillmark text restore <file>",
+        "stillmark text rules [--language=en|pt-BR]   (writing rules, including never inventing facts)"
+    ],
     git: [
         "stillmark git push [--with-commit] [--message \"<subject>\"] [summary]",
         "  (pushes local commits; when needsCommit is true, ask the user or rerun with --with-commit)",

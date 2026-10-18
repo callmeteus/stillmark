@@ -23,6 +23,7 @@ export enum TopicId {
     NOTIFY = "NOTIFY",
     README = "README",
     CHANGELOG = "CHANGELOG",
+    WRITING = "WRITING",
     SETTINGS = "SETTINGS"
 }
 

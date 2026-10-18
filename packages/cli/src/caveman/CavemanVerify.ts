@@ -1,3 +1,14 @@
+import {
+    FENCE_RE,
+    FRONTMATTER_RE,
+    HEADING_RE,
+    INLINE_CODE_RE,
+    LINK_TARGET_RE,
+    normalizeNewlines as normalize,
+    PATH_RE,
+    uniqueMatches as matches,
+    URL_RE
+} from "../markdown";
 import { estimateTokens } from "./CavemanRules";
 
 /**
@@ -7,22 +18,6 @@ export interface CavemanIssue {
     
     kind: "frontmatter" | "code-block" | "heading" | "inline-code" | "url" | "path" | "size";
     detail: string;
-}
-
-const FRONTMATTER_RE = /^---\n[\s\S]*?\n---(?:\n|$)/;
-const FENCE_RE = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm;
-const HEADING_RE = /^#{1,6}[ \t]+.+$/gm;
-const INLINE_CODE_RE = /`[^`\n]+`/g;
-const URL_RE = /https?:\/\/[^\s)>\]"'`]+/g;
-const LINK_TARGET_RE = /\]\(([^)\s]+)/g;
-const PATH_RE = /(?:[\w@~.-]+[\\/])+[\w@.-]+\.[a-z0-9]+/gi;
-
-function normalize(text: string): string {
-    return text.replace(/\r\n/g, "\n");
-}
-
-function matches(text: string, re: RegExp, group = 0): string[] {
-    return [...new Set([...text.matchAll(re)].map((match) => match[group].trim()))];
 }
 
 function missing(kind: CavemanIssue["kind"], expected: string[], compressed: string): CavemanIssue[] {

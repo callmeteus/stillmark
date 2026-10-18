@@ -226,6 +226,7 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [ ] [happy] Locale toggle switches every message between English and Portuguese
 - [ ] [happy] Copy buttons copy the install prompt and show the copied state
 - [x] [happy] Every topic, including changelog, builds its docs page
+- [x] [happy] The clear writing topic builds its docs page in both languages
 
 ## 12. README generator
 
@@ -255,3 +256,19 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Adds plain entries under Unreleased by group, once, and refuses secrets
 - [x] [happy] Lists roadmap items finished today only when the project keeps a changelog
 - [x] [sad] Check finds structure errors, personal data, and technical wording
+
+## 14. Clear writing
+
+### `packages/cli/src/text`
+
+- [x] [happy] Detects English, Portuguese, and Spanish, and falls back when the text is too short
+- [x] [happy] Finds English marks of generated text with their line, excerpt, and fix
+- [x] [happy] Uses the Portuguese catalog for Portuguese text
+- [x] [edge] Checks each paragraph of a mixed document with its own language
+- [x] [edge] Ignores code, inline code, URLs, frontmatter, and tables
+- [x] [happy] Leaves clear text alone; long sentences and title-case headings only warn
+- [x] [happy] Rewrite keeps the original and returns the rules and steps for the detected language
+- [x] [security] Check during a rewrite flags lost facts and invented numbers, links, and code
+- [x] [happy] A passing check accepts the rewrite; restore brings the original back
+- [x] [sad] Refuses missing files, other file kinds, and Stillmark-managed documents for rewrite
+- [x] [happy] Writing rules follow the configured or requested language and always forbid inventing facts

@@ -81,3 +81,5 @@
   - Updates incrementally without rewriting existing entries
 - [x] **R-025** Desktop toast notifications and an automatic Codex finish hook
   priority: low · status: done · added: 2026-10-13 · done: 2026-10-13
+- [x] **R-028** Clear writing: text check and rewrite with English and Portuguese rules, and a rule against inventing facts
+  priority: high · status: done · done: 2026-10-18

@@ -17,3 +17,5 @@ export * from "./readme";
 export * from "./todos";
 export * from "./changelog";
 export * from "./migrations";
+export * from "./markdown";
+export * from "./text";

@@ -26,6 +26,10 @@ export interface ProjectPaths {
      * Local README data: backups of READMEs before a rewrite and the chosen template per file.
      */
     readmeDir: string;
+    /**
+     * Local text-clarity data: originals of files being rewritten by `stillmark text rewrite`.
+     */
+    textDir: string;
     config: string;
     gitignore: string;
     coverage: string;
@@ -79,6 +83,7 @@ export function resolveProjectPaths(root: string): ProjectPaths {
         updateState: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "UPDATE.json"),
         cavemanDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "caveman"),
         readmeDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "readme"),
+        textDir: path.join(normalized, STILLMARK_LOCAL_DIR, "plans", "text"),
         config: path.join(normalized, "stillmark.config.json"),
         gitignore: path.join(normalized, ".gitignore"),
         coverage: path.join(normalized, "COVERAGE.md"),

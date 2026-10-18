@@ -49,6 +49,7 @@ import { runConfigSetLanguage } from "./LanguageCommands";
 import { runNotifyCommand, runNotifyHookCommand } from "./NotifyCommands";
 import { parseFlags } from "./ParseFlags";
 import { runReadmeCommand } from "./ReadmeCommands";
+import { runTextCommand } from "./TextCommands";
 import { hasUpdateConfigFlags, runConfigSetUpdate, runUpdateCommand } from "./UpdateCommands";
 
 export interface CliOptions {
@@ -543,6 +544,13 @@ export async function runCli(argv: string[]): Promise<number> {
             return result.ok ? 0 : 1;
         }
 
+        if (cmd === "text") {
+            const result = runTextCommand(paths, positional, flags);
+            output(result, json);
+
+            return result.ok ? 0 : 1;
+        }
+
         if (cmd === "git") {
             const result = await runGitCommand(paths, positional.slice(1), gitRunner, flags);
             output(result, json);
@@ -668,7 +676,7 @@ export async function runCli(argv: string[]): Promise<number> {
                 ok: false,
                 changed: false,
                 summary:
-                    "Usage: stillmark init | config | classify | roadmap | plan | changelog | git | notify | caveman | readme | coverage | design | add | move | install | update | long-running"
+                    "Usage: stillmark init | config | classify | roadmap | plan | changelog | git | notify | caveman | readme | text | coverage | design | add | move | install | update | long-running"
             },
             json
         );

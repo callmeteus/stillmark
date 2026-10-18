@@ -9,6 +9,7 @@ import { ReadmeTopic } from "./Readme";
 import { RoadmapTopic } from "./Roadmap";
 import { SettingsTopic } from "./Settings";
 import { TopicGroup, type TopicDefinition } from "./TopicContent";
+import { WritingTopic } from "./Writing";
 
 export { ContrastTone, MarkKind, TopicGroup, TopicId } from "./TopicContent";
 export type { ContrastLine, ContrastScene, ExcerptMark, TopicCommand, TopicContrast, TopicCopy, TopicDefinition, TopicExample } from "./TopicContent";
@@ -25,6 +26,7 @@ export const Topics: TopicDefinition[] = [
     DesignTopic,
     ReadmeTopic,
     ChangelogTopic,
+    WritingTopic,
     GitTopic,
     NotifyTopic
 ];

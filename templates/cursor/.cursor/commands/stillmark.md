@@ -10,7 +10,9 @@ This command running means Stillmark is already installed. Setting up the repo i
 
 Any terminal command `stillmark <args>` works as `/stillmark <args>` with `--json` appended.
 
-Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `design`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `update`, `long-running`.
+Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverage`, `design`, `changelog`, `config`, `git`, `notify`, `caveman`, `readme`, `text`, `update`, `long-running`.
+
+`/stillmark text check|rewrite <file>` (or "clarifica esse texto") finds and removes the marks of generated text with the rules of the detected language, never inventing facts (see the skill's Writing section, which applies to everything you write).
 
 `/stillmark notify ...` sets up Telegram, Discord, Slack, webhook, or desktop notifications when the agent finishes (see the skill); secrets stay in the user's home, never in the repo.
 
