@@ -16,3 +16,7 @@ dist-release/
 
 # Stillmark
 .stillmark/plans/
+packages/*/.stillmark/plans/
+
+# Impeccable (local design tool data)
+.impeccable/
