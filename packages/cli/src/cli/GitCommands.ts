@@ -3,10 +3,15 @@ import {
     attributionHookStatus,
     commitAllPending,
     commitSetupFiles,
+    CommitType,
+    CommitTypeSource,
+    inferCommitType,
     installAttributionHook,
     listSetupFiles,
+    onlyStillmarkFiles,
     pushCommitSummaryFromTokens,
     pushPending,
+    readPendingChanges,
     removeAttributionHook,
     resolveCommitMessage,
     type AttributionHookStatus,
@@ -110,27 +115,61 @@ export async function runGitHook(
 }
 
 /**
- * Resolves the commit subject for `git push --with-commit` from flags, trailing words, or defaults.
+ * Commit subject proposed for pending changes, or the type to use when the agent still has to write the summary.
  */
-async function resolvePushCommitMessage(
+interface CommitProposal {
+    message?: string;
+    language: string;
+    type?: string;
+    typeSource?: CommitTypeSource;
+    warning?: string;
+    /**
+     * True when nobody gave a summary and the changes are not only Stillmark files: the agent writes one
+     * from the diff instead of Stillmark inventing it.
+     */
+    needsSummary: boolean;
+}
+
+/**
+ * Proposes a commit subject from `--message`, the given summary words, or (only for Stillmark files)
+ * the built-in "update Stillmark" summary. The type follows the pending changes.
+ */
+async function proposeCommitMessage(
     paths: ProjectPaths,
     runner: GitRunner,
     flags: Record<string, string | boolean>,
-    rest: string[]
-): Promise<{ message: string; language: string }> {
+    summaryWords: string
+): Promise<CommitProposal> {
     const { language, summary: fallbackSummary } = commitSummary(paths, "update");
     const fromFlags = typeof flags.message === "string" ? flags.message.trim() : "";
 
     if (fromFlags) {
-        return { message: fromFlags, language };
+        return { message: fromFlags, language, needsSummary: false };
     }
 
-    const fromRest = pushCommitSummaryFromTokens(rest);
-    const summary = fromRest || fallbackSummary;
-    const config = loadConfig(paths);
-    const resolved = await resolveCommitMessage(paths.root, summary, config.git.commitMessage, runner);
+    const changes = await readPendingChanges(paths.root, runner);
+    const summary = summaryWords || (onlyStillmarkFiles(changes) ? fallbackSummary : "");
 
-    return { message: resolved.message, language };
+    if (!summary) {
+        const guess = inferCommitType("", changes);
+
+        return { language, type: guess.type.toLowerCase(), typeSource: guess.source, needsSummary: true };
+    }
+
+    const resolved = await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner, { changes });
+
+    return {
+        message: resolved.message,
+        language,
+        type: resolved.type,
+        typeSource: resolved.typeSource,
+        warning: resolved.warning,
+        needsSummary: false
+    };
+}
+
+function needsSummaryNote(proposal: CommitProposal): string {
+    return `No summary given: read the diff, write one line in ${proposal.language} that says what changed, and pass --message "${proposal.type ?? "feat"}: <summary>" (type inferred from the changed files${proposal.typeSource === CommitTypeSource.DEFAULT ? "; confirm it fits" : ""})`;
 }
 
 /**
@@ -153,10 +192,23 @@ async function runGitPush(
             await installAttributionHook(paths.root, runner);
         }
 
-        const resolved = await resolvePushCommitMessage(paths, runner, flags, rest);
+        const proposal = await proposeCommitMessage(paths, runner, flags, pushCommitSummaryFromTokens(rest));
 
-        commitMessage = resolved.message;
-        commitLanguage = resolved.language;
+        if (proposal.message === undefined) {
+            return {
+                ok: false,
+                changed: false,
+                action: "git push",
+                summary: `Nothing committed. ${needsSummaryNote(proposal)}`,
+                committed: false,
+                commitLanguage: proposal.language,
+                commitType: proposal.type,
+                needsSummary: true
+            } as OperationResult;
+        }
+
+        commitMessage = proposal.message;
+        commitLanguage = proposal.language;
         const commit = await commitAllPending(paths.root, runner, commitMessage);
 
         if (!commit.committed && commit.detail !== "Nothing to commit") {
@@ -186,24 +238,31 @@ async function runGitPush(
             ? `Pushed ${result.ahead} commit(s) of ${result.branch} to ${result.upstream ?? `origin/${result.branch}`}`
             : `Nothing to push; ${result.branch} matches ${result.upstream}`;
 
-    let proposedMessage: string | undefined;
+    const proposal = result.needsCommit
+        ? await proposeCommitMessage(paths, runner, flags, pushCommitSummaryFromTokens(rest))
+        : undefined;
 
-    if (result.needsCommit) {
-        const resolved = await resolvePushCommitMessage(paths, runner, flags, rest);
-
-        proposedMessage = resolved.message;
-        commitLanguage = resolved.language;
+    if (proposal) {
+        commitLanguage = proposal.language;
     }
 
     const commitNote = committed ? `Committed with: ${commitMessage}` : "";
-    const summaryParts = [outcome, commitNote, pending].filter(Boolean);
+    const summaryParts = [
+        outcome,
+        commitNote,
+        pending,
+        proposal?.needsSummary ? needsSummaryNote(proposal) : proposal?.warning
+    ].filter(Boolean);
 
     return {
         ok: result.gitRepo && result.detail === undefined,
         changed: result.pushed || committed,
         action: "git push",
         summary: summaryParts.join(". "),
-        proposedMessage,
+        proposedMessage: proposal?.message,
+        commitType: proposal?.type,
+        commitTypeSource: proposal?.typeSource,
+        needsSummary: proposal?.needsSummary,
         commitLanguage,
         committed: withCommit ? committed : undefined,
         commitMessage: withCommit ? commitMessage : undefined,
@@ -231,7 +290,7 @@ export async function runGitCommand(
         const listed = await listSetupFiles(paths, runner);
         const { language, summary } = commitSummary(paths, "setup");
         const proposedMessage = listed.gitRepo
-            ? (await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner, "chore")).message
+            ? (await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner, { kind: CommitType.CHORE })).message
             : undefined;
 
         return {
@@ -258,7 +317,9 @@ export async function runGitCommand(
 
         const message = typeof flags.message === "string" && flags.message.trim()
             ? flags.message.trim()
-            : (await resolveCommitMessage(paths.root, commitSummary(paths, "setup").summary, config.git.commitMessage, runner, "chore")).message;
+            : (await resolveCommitMessage(paths.root, commitSummary(paths, "setup").summary, config.git.commitMessage, runner, {
+                kind: CommitType.CHORE
+            })).message;
         const result = await commitSetupFiles(paths, runner, message);
         const push = result.committed && config.git.autoPush && result.topLevel
             ? await runner.run(result.topLevel, ["push"])
@@ -282,17 +343,20 @@ export async function runGitCommand(
     }
 
     if (sub === "message-style" || sub === "suggest") {
-        const fallback = commitSummary(paths, "update");
-        const summary = rest.join(" ") || fallback.summary;
-        const resolved = await resolveCommitMessage(paths.root, summary, loadConfig(paths).git.commitMessage, runner);
+        const proposal = await proposeCommitMessage(paths, runner, {}, pushCommitSummaryFromTokens(rest));
 
         return {
             ok: true,
             changed: false,
             action: "git-message-style",
-            summary: resolved.message,
-            commitMessage: resolved,
-            commitLanguage: fallback.language
+            summary: proposal.message === undefined
+                ? needsSummaryNote(proposal)
+                : [proposal.message, proposal.warning].filter(Boolean).join(". "),
+            proposedMessage: proposal.message,
+            commitType: proposal.type,
+            commitTypeSource: proposal.typeSource,
+            needsSummary: proposal.needsSummary,
+            commitLanguage: proposal.language
         } as OperationResult;
     }
 

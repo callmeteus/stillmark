@@ -46,6 +46,8 @@ Auto-update lives in `src/update/`. Agents start every `/stillmark` with `stillm
 
 When `git.commitMessage` is omitted, auto-commits check recent `git log` only for the conventional-commit format: if most subjects follow it, Stillmark uses its own type (`docs:` for planning documents, `chore:` for setup); otherwise the plain summary. Types and scopes from history (such as `(t)`) are never copied, since they describe who or what made a specific change (`stillmark git message-style --json` previews the template). Set `commitMessage` with a `{summary}` placeholder to pin a fixed format.
 
+Commits of user changes (`git push --with-commit`, `git message-style`) take their type from the change itself (`git/CommitType.ts`): a known `type:` already in the summary, then pending files that are all one kind (docs, tests, CI, config), then the summary verb in English, Portuguese, or Spanish, then new source files (`feat`). A configured template keeps its shape but gets the inferred type. Subjects are never cut; over 72 characters only adds a warning. Without a summary, the built-in "update Stillmark" text is used only when every pending file is a Stillmark file; otherwise the result carries `needsSummary` and the inferred `commitType`, and `--with-commit` refuses to commit.
+
 Per-call overrides: `--git`, `--no-git`.
 
 ## Templates

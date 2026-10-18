@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -89,6 +90,7 @@ describe("language config", () => {
         const { root, cleanup } = createTempProject();
 
         try {
+            execFileSync("git", ["init", "-q"], { cwd: root });
             await cli(root, "git", "message-style");
 
             expect(lastJson()).toMatchObject({ summary: "update Stillmark", commitLanguage: "en" });

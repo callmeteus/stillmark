@@ -56,6 +56,22 @@ describe("coverage operations", () => {
         cleanup();
     });
 
+    it("adds a case to a CRLF file without mixing line endings", () => {
+        const { paths, cleanup } = createTempProject();
+        initCoverage(paths);
+        fs.writeFileSync(paths.coverage, fs.readFileSync(paths.coverage, "utf8").replace(/\n/g, "\r\n"), "utf8");
+
+        const added = addCoverageCase(paths, "index.ts", "Returns 404 for unknown routes", { tag: "sad" });
+        const content = fs.readFileSync(paths.coverage, "utf8");
+
+        expect(added.ok).toBe(true);
+        expect(added.coverage?.totalOpen).toBe(3);
+        expect(content).toContain("- [ ] [sad] Returns 404 for unknown routes\r\n");
+        expect(content.replace(/\r\n/g, "")).not.toContain("\n");
+
+        cleanup();
+    });
+
     it("does not recreate an existing file on init", () => {
         const root = fs.mkdtempSync(path.join(os.tmpdir(), "stillmark-cov-"));
         const paths = resolveProjectPaths(root);

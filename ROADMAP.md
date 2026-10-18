@@ -83,3 +83,5 @@
   priority: low · status: done · added: 2026-10-13 · done: 2026-10-13
 - [x] **R-028** Clear writing: text check and rewrite with English and Portuguese rules, and a rule against inventing facts
   priority: high · status: done · done: 2026-10-18
+- [x] **R-029** Commit messages that match the change: the type comes from what changed, never from the last commit, and the text is never cut
+  priority: medium · status: done · done: 2026-10-18

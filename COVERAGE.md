@@ -125,6 +125,7 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [sad] Rejects detail lines in compact mode or away from a case
 - [x] [happy] Accepts and writes indented details in extended mode
 
+- [x] [edge] Adds cases to a CRLF file without mixing line endings
 ## 6. Config and project setup
 
 ### `packages/cli/src/config`
@@ -162,6 +163,10 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Git push sets the upstream on first push, then pushes only new commits
 - [x] [security] Git push never commits and lists uncommitted files
 - [x] [sad] Git push refuses outside git, without a remote, and reports a failed push
+- [x] [happy] Commit type follows the change: docs-only, tests, CI, or config files, then the summary verb, then new source files
+- [x] [edge] Never copies the type of the last commit and keeps a type the summary already has, dropping (t)
+- [x] [edge] Never cuts a long subject; warns over 72 characters instead
+- [x] [sad] Without a summary, asks for one instead of proposing a generic message for changes beyond Stillmark files, and refuses to commit
 ## 8. Install and update
 
 ### `packages/cli/src/update`

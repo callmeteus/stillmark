@@ -4,6 +4,15 @@ All notable changes to this project are listed here, newest first.
 
 ## [Unreleased]
 
+### Added
+
+- Clearer writing: finds the phrases that make text sound machine-written, in English and Portuguese, helps rewrite them, and flags any fact that was lost or made up
+- Commit messages that match the change: the type comes from what changed, never from the last commit, and the text is never cut
+
+### Fixed
+
+- Adding coverage cases on Windows no longer breaks the coverage file
+
 ## [0.2.0] - 2026-10-15
 
 ### Added
@@ -26,7 +35,6 @@ All notable changes to this project are listed here, newest first.
 - Turn TODO and FIXME comments in the code into roadmap items, with stillmark roadmap todos and init --todos
 - Generate and maintain CHANGELOG.md, including retroactive history
 - Desktop toast notifications and an automatic Codex finish hook
-- Clearer writing: finds the phrases that make text sound machine-written, in English and Portuguese, helps rewrite them, and flags any fact that was lost or made up
 
 ## [0.1.0] - 2026-10-12
 

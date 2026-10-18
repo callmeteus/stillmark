@@ -23,7 +23,7 @@ import {
     resolveGitPush,
     type GitOverride
 } from "../config";
-import { GitRunner, resolveCommitMessage } from "../git";
+import { CommitType, GitRunner, resolveCommitMessage } from "../git";
 import { addChangelogEntry, roadmapEntryGroup } from "../changelog";
 
 export interface AddRoadmapOptions {
@@ -222,7 +222,8 @@ export async function addRoadmapItem(
             paths.root,
             options.description,
             config.git.commitMessage,
-            gitRunner
+            gitRunner,
+            { kind: CommitType.DOCS }
         );
         const result = await gitRunner.commitRoadmap(
             paths.root,

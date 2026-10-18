@@ -1,3 +1,4 @@
+import { readPendingChanges } from "./CommitType";
 import type { GitRunner } from "./GitRunner";
 
 /**
@@ -46,8 +47,7 @@ export async function pushPending(root: string, runner: GitRunner): Promise<Push
     }
 
     const cwd = top.stdout.trim();
-    const status = await runner.capture(cwd, ["status", "--porcelain"]);
-    const uncommitted = status.stdout.split(/\r?\n/).filter(Boolean).map((line) => line.slice(3));
+    const uncommitted = (await readPendingChanges(cwd, runner)).map((change) => change.path);
     const branch = (await runner.capture(cwd, ["rev-parse", "--abbrev-ref", "HEAD"])).stdout.trim();
     const upstreamResult = await runner.capture(cwd, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]);
     const upstream = upstreamResult.ok ? upstreamResult.stdout.trim() : undefined;

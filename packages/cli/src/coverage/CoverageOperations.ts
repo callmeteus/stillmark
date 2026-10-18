@@ -8,6 +8,7 @@ import {
     type DetailLevel
 } from "../config";
 import type { GitRunner } from "../git";
+import { normalizeNewlines } from "../markdown";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { OperationResult } from "../results/OperationResult";
 import { buildDefaultCoverage, resolveCoverageProjectName } from "./CoverageTemplate";
@@ -31,19 +32,24 @@ const TEST_PATH_PATTERN =
     /(^|\/)(tests?|__tests__|spec)(\/|$)|\.(test|spec)\.(ts|tsx|js|jsx|mjs|cjs|lua)$|_spec\.lua$/i;
 
 /**
- * Reads COVERAGE.md if present.
+ * Reads COVERAGE.md if present, with LF line endings (git on Windows checks files out with CRLF).
  */
 function readCoverage(paths: ProjectPaths): string | null {
     if (!fs.existsSync(paths.coverage)) {
         return null;
     }
 
-    return fs.readFileSync(paths.coverage, "utf8");
+    return normalizeNewlines(fs.readFileSync(paths.coverage, "utf8"));
 }
 
+/**
+ * Writes COVERAGE.md keeping the line endings the file already uses, so inserted lines never mix LF into a CRLF file.
+ */
 function writeCoverage(paths: ProjectPaths, content: string): void {
+    const crlf = fs.existsSync(paths.coverage) && fs.readFileSync(paths.coverage, "utf8").includes("\r\n");
     const normalized = content.endsWith("\n") ? content : `${content}\n`;
-    fs.writeFileSync(paths.coverage, normalized, "utf8");
+
+    fs.writeFileSync(paths.coverage, crlf ? normalized.replace(/\n/g, "\r\n") : normalized, "utf8");
 }
 
 function validationResult(

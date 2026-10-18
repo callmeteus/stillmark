@@ -20,7 +20,7 @@ Verbs: `init`, `install`, `classify`, `add`, `roadmap`, `plan`, `move`, `coverag
 
 `/stillmark readme` creates or restructures a README from the real project: `readme plan`, ask which template when `needsClarification`, write it, then `readme check` until clean (see the skill).
 
-`/stillmark git push` pushes local commits. When `needsCommit` is true, ask with `AskQuestion` and show `proposedMessage`; after the user agrees, `stillmark git push --with-commit` (optional summary or `--message`).
+`/stillmark git push` pushes local commits. When `needsCommit` is true, ask with `AskQuestion` and show `proposedMessage` as is (its type follows the change; with `needsSummary`, write one line from the diff as `<commitType>: <summary>`); after the user agrees, `stillmark git push --with-commit` (optional summary or `--message`).
 
 Start each run with `stillmark update --json` (npm, then GitHub releases); when `updateAvailable` is true, run `recommended` first (see the skill).
 

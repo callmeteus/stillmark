@@ -96,9 +96,17 @@ describe("git push", () => {
                 ahead: 0
             });
             expect(lastJson().uncommitted).toEqual(expect.arrayContaining(["a.txt", "novo.txt"]));
-            expect(String(lastJson().proposedMessage)).toBeTruthy();
+            expect(lastJson().proposedMessage).toBeUndefined();
+            expect(lastJson().needsSummary).toBe(true);
             expect(String(lastJson().summary)).toContain("AskQuestion");
+            expect(String(lastJson().summary)).toContain("--message");
+
+            expect(await cli(root, "git", "push", "--with-commit")).toBe(1);
+            expect(lastJson()).toMatchObject({ committed: false, needsSummary: true });
             expect(git(root, "rev-parse", "HEAD").trim()).toBe(head);
+
+            expect(await cli(root, "git", "push", "adiciona", "arquivo", "novo")).toBe(0);
+            expect(String(lastJson().proposedMessage)).toBe("adiciona arquivo novo");
         } finally {
             cleanup();
             fs.rmSync(remote, { recursive: true, force: true });

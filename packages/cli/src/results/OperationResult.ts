@@ -12,13 +12,7 @@ export interface GitResult {
 
 import type { CoverageValidationResult } from "../coverage/ValidateCoverage";
 import type { CoverageUpdateHints } from "../coverage/CoverageUpdateHints";
-
-export interface CommitMessageSuggestion {
-    
-    message: string;
-    template: string;
-    learned: boolean;
-}
+import type { ResolvedCommitMessage } from "../git/CommitMessageStyle";
 
 export interface OperationResult {
     
@@ -42,5 +36,8 @@ export interface OperationResult {
     requiresConfirm?: boolean;
     coverage?: CoverageValidationResult;
     coverageUpdate?: CoverageUpdateHints;
-    commitMessage?: CommitMessageSuggestion;
+    /**
+     * Suggestion from `git message-style`, or the subject `git push --with-commit` committed with.
+     */
+    commitMessage?: ResolvedCommitMessage | string;
 }

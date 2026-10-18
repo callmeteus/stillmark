@@ -2,7 +2,7 @@ import fs from "node:fs";
 
 import { loadConfig, resolveDetailLevel, resolveGitEnabled, resolveGitPush, type GitOverride } from "../config";
 import { parseRoadmap } from "../documents";
-import { GitRunner, resolveCommitMessage } from "../git";
+import { CommitType, GitRunner, resolveCommitMessage } from "../git";
 import { findDuplicateRoadmap } from "../guards";
 import type { ProjectPaths } from "../paths/ProjectPaths";
 import type { GitResult, OperationResult } from "../results/OperationResult";
@@ -104,7 +104,9 @@ export async function roadmapTodos(paths: ProjectPaths, options: RoadmapTodosOpt
 
     if (added > 0 && resolveGitEnabled(config, options.gitOverride ?? "default")) {
         const summary = `Add ${added} code TODO${added === 1 ? "" : "s"} to the roadmap`;
-        const resolved = await resolveCommitMessage(paths.root, summary, config.git.commitMessage, gitRunner);
+        const resolved = await resolveCommitMessage(paths.root, summary, config.git.commitMessage, gitRunner, {
+            kind: CommitType.DOCS
+        });
         const result = await gitRunner.commitRoadmap(paths.root, resolved.message, resolveGitPush(config, true));
 
         git = result.status === "failed" ? { status: "failed", detail: result.detail } : { status: result.status };

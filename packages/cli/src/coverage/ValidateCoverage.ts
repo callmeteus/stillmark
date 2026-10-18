@@ -1,4 +1,5 @@
 import type { DetailLevel } from "../config/DetailLevel";
+import { normalizeNewlines } from "../markdown";
 
 /**
  * Allowed case tags on checkbox lines.
@@ -422,7 +423,7 @@ export function validateCoverageFile(
     raw: string,
     options: CoverageValidationOptions = {}
 ): CoverageValidationResult {
-    const lines = raw.replace(/\n$/, "").split("\n");
+    const lines = normalizeNewlines(raw).replace(/\n$/, "").split("\n");
 
     return validateCoverage(lines, options);
 }
