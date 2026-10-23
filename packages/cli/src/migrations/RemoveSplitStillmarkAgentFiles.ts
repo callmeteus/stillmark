@@ -19,7 +19,8 @@ const RELATIVE_PATHS: Record<AgentId, string[]> = {
         ".claude/skills/stillmark-design",
         ".claude/skills/design"
     ],
-    codex: []
+    codex: [],
+    opencode: []
 };
 
 /**

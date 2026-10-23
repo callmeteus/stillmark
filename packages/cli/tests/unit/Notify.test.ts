@@ -24,6 +24,7 @@ beforeEach(() => {
     vi.stubEnv("HOME", home);
     vi.stubEnv("USERPROFILE", home);
     vi.stubEnv("CODEX_HOME", "");
+    vi.stubEnv("XDG_CONFIG_HOME", "");
     requests = [];
     respond = (): Response => new Response("{}", { status: 200 });
     vi.stubGlobal("fetch", vi.fn(async (url: string, init?: { body?: string }) => {
@@ -239,7 +240,7 @@ describe("agent finish hooks", () => {
 
             await cli(root, "notify");
 
-            expect(lastJson().hooks).toEqual({ cursor: false, claude: true, codex: false });
+            expect(lastJson().hooks).toEqual({ cursor: false, claude: true, codex: false, opencode: false });
 
             await cli(root, "notify", "hook", "status", "--agent=claude");
 
@@ -264,6 +265,11 @@ describe("agent finish hooks", () => {
         expect(parseAgentFinish(JSON.stringify({ status: "aborted" })).status).toBe("stopped");
         expect(parseAgentFinish(JSON.stringify({ hook_event_name: "Notification", message: "Claude needs your permission", cwd: "/repo" })))
             .toEqual({ status: "waiting", root: "/repo", summary: "Claude needs your permission" });
+        expect(parseAgentFinish(JSON.stringify({ status: "waiting", root: "/repo", summary: "Posso commitar?" })))
+            .toEqual({ status: "waiting", root: "/repo", summary: "Posso commitar?" });
+        expect(parseAgentFinish(JSON.stringify({ status: "failed", summary: "Provider offline" })))
+            .toEqual({ status: "failed", root: undefined, summary: "Provider offline" });
+        expect(parseAgentFinish(JSON.stringify({ status: "stopped" })).status).toBe("stopped");
         expect(parseAgentFinish("not json").status).toBe("done");
 
         fs.appendFileSync(transcript, `\n${JSON.stringify({ type: "assistant", message: { role: "assistant", content: "Posso commitar?" } })}`);

@@ -4,7 +4,7 @@ import path from "node:path";
 /**
  * Shared filesystem helpers for agent migrations.
  */
-export namespace MigrationFs {
+export const MigrationFs = {
     /**
      * Deletes each relative path under `root` when it exists.
      *
@@ -12,7 +12,7 @@ export namespace MigrationFs {
      * @param relativePaths Paths relative to `root`.
      * @returns Absolute paths that were removed.
      */
-    export function removeRelativePaths(root: string, relativePaths: readonly string[]): string[] {
+    removeRelativePaths(root: string, relativePaths: readonly string[]): string[] {
         const removed: string[] = [];
 
         for (const rel of relativePaths) {
@@ -32,4 +32,4 @@ export namespace MigrationFs {
 
         return removed;
     }
-}
+};

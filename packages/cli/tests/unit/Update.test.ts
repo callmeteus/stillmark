@@ -258,6 +258,108 @@ describe("agent template refresh", () => {
         }
     });
 
+    it("installs the OpenCode command and skill into the project", () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+
+        try {
+            const installed = installTemplates(paths, "opencode", { homeDir: home, currentVersion: "0.1.0" });
+            const command = path.join(root, ".opencode", "commands", "stillmark.md");
+            const skill = path.join(root, ".opencode", "skills", "stillmark", "SKILL.md");
+            const playbook = path.join(root, ".opencode", "skills", "stillmark", "reference", "coverage.md");
+
+            expect(installed.installed).toContain(command);
+            expect(installed.installed).toContain(skill);
+            expect(installed.installed).toContain(playbook);
+            expect(fs.readFileSync(skill, "utf8")).toContain("The only Stillmark entry");
+        } finally {
+            cleanup();
+        }
+    });
+
+    it("installs OpenCode globally under the user config directory", async () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+        const previousXdg = process.env.XDG_CONFIG_HOME;
+
+        try {
+            delete process.env.XDG_CONFIG_HOME;
+            const installed = installTemplates(paths, "opencode", { global: true, homeDir: home, currentVersion: "0.0.1" });
+            const skill = path.join(home, ".config", "opencode", "skills", "stillmark", "SKILL.md");
+
+            expect(installed.scope).toBe("global");
+            expect(installed.installed).toContain(skill);
+            expect(fs.existsSync(path.join(home, ".opencode"))).toBe(false);
+
+            fs.writeFileSync(skill, "old skill\n", "utf8");
+
+            const check = await checkForUpdates(paths, { now: NOW, fetchLatest: fetcher("0.1.0").fetch, currentVersion: "0.1.0", homeDir: home });
+
+            expect(check.outdatedGlobalAgents).toEqual(["opencode"]);
+
+            const applied = applyUpdate(paths, { currentVersion: "0.1.0", homeDir: home });
+
+            expect(applied.updatedGlobalAgents).toEqual(["opencode"]);
+            expect(fs.readFileSync(skill, "utf8")).not.toBe("old skill\n");
+        } finally {
+            if (previousXdg === undefined) {
+                delete process.env.XDG_CONFIG_HOME;
+            } else {
+                process.env.XDG_CONFIG_HOME = previousXdg;
+            }
+
+            cleanup();
+        }
+    });
+
+    it("honors XDG_CONFIG_HOME for global OpenCode installs", () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+        const xdg = path.join(root, "xdg");
+        const previousXdg = process.env.XDG_CONFIG_HOME;
+
+        try {
+            process.env.XDG_CONFIG_HOME = xdg;
+
+            const installed = installTemplates(paths, "opencode", { global: true, homeDir: home });
+            const command = path.join(xdg, "opencode", "commands", "stillmark.md");
+
+            expect(installed.installed).toContain(command);
+            expect(fs.existsSync(path.join(home, ".config", "opencode"))).toBe(false);
+        } finally {
+            if (previousXdg === undefined) {
+                delete process.env.XDG_CONFIG_HOME;
+            } else {
+                process.env.XDG_CONFIG_HOME = previousXdg;
+            }
+
+            cleanup();
+        }
+    });
+
+    it("links OpenCode templates into the project without writing through the link", () => {
+        const { paths, root, cleanup } = createTempProject();
+        const home = path.join(root, "home");
+        const skillDir = path.join(root, ".opencode", "skills", "stillmark");
+        const source = path.join(resolveSourceTemplatesDir(), "opencode", "skills", "stillmark", "SKILL.md");
+        const before = fs.readFileSync(source, "utf8");
+
+        try {
+            const result = installTemplates(paths, "opencode", { homeDir: home, link: true });
+
+            expect(result.ok).toBe(true);
+            expect(fs.lstatSync(skillDir).isSymbolicLink()).toBe(true);
+            expect(fs.readFileSync(path.join(skillDir, "SKILL.md"), "utf8")).toBe(before);
+
+            const copied = installTemplates(paths, "opencode", { homeDir: home });
+
+            expect(copied.installed.some((file) => file.startsWith(skillDir))).toBe(false);
+            expect(fs.readFileSync(source, "utf8")).toBe(before);
+        } finally {
+            cleanup();
+        }
+    });
+
     it("links the source templates in dev mode and never writes through the link", async () => {
         const { paths, root, cleanup } = createTempProject();
         const home = path.join(root, "home");

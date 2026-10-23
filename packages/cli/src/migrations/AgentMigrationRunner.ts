@@ -13,25 +13,25 @@ const MIGRATION_CHAIN: readonly AgentMigration[] = [
 /**
  * Runs registered agent migrations for one install root.
  */
-export namespace AgentMigrationRunner {
+export const AgentMigrationRunner = {
     /**
      * Lists migrations that apply to an agent (for tests and diagnostics).
      *
-     * @param agent Cursor, Claude, or Codex.
+     * @param agent Cursor, Claude, Codex, or OpenCode.
      * @returns Migrations in run order.
      */
-    export function migrationsForAgent(agent: AgentId): readonly AgentMigration[] {
+    migrationsForAgent(agent: AgentId): readonly AgentMigration[] {
         return MIGRATION_CHAIN.filter((migration) => migration.agents.includes(agent));
-    }
+    },
 
     /**
      * Runs every applicable migration in order.
      *
      * @param root Project root or home directory for global installs.
-     * @param agent Cursor, Claude, or Codex.
+     * @param agent Cursor, Claude, Codex, or OpenCode.
      * @returns One entry per migration that ran (including zero removals).
      */
-    export function runForAgent(root: string, agent: AgentId): AppliedAgentMigration[] {
+    runForAgent(root: string, agent: AgentId): AppliedAgentMigration[] {
         const applied: AppliedAgentMigration[] = [];
 
         for (const migration of MIGRATION_CHAIN) {
@@ -50,4 +50,4 @@ export namespace AgentMigrationRunner {
 
         return applied;
     }
-}
+};

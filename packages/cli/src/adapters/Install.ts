@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { AgentMigrationRunner } from "../migrations/AgentMigrationRunner";
 import type { AppliedAgentMigration } from "../migrations/AgentMigrationTypes";
 
-export type AgentId = "cursor" | "claude" | "codex";
+export type AgentId = "cursor" | "claude" | "codex" | "opencode";
 
 /**
  * `project` writes into the repository; `global` writes into the user's home so every project gets the skill.
@@ -15,7 +15,23 @@ export type InstallScope = "project" | "global";
 /**
  * Every agent Stillmark can install templates for.
  */
-export const AgentIds: AgentId[] = ["cursor", "claude", "codex"];
+export const AgentIds: AgentId[] = ["cursor", "claude", "codex", "opencode"];
+
+/**
+ * Project directory OpenCode searches for skills and commands.
+ */
+export const OpenCodeProjectDir = ".opencode";
+
+/**
+ * OpenCode configuration directory for the current user: `$XDG_CONFIG_HOME/opencode` when set, else `<home>/.config/opencode`.
+ *
+ * @param homeDir Home directory used when `XDG_CONFIG_HOME` is not set.
+ */
+export function opencodeConfigRoot(homeDir: string): string {
+    const xdg = process.env.XDG_CONFIG_HOME?.trim();
+
+    return xdg ? path.join(xdg, "opencode") : path.join(homeDir, ".config", "opencode");
+}
 
 /**
  * One packaged template file and where it lands in the project.
@@ -90,6 +106,17 @@ export function agentTemplateFiles(
         }
 
         return files;
+    }
+
+    if (agent === "opencode") {
+        const base = scope === "global"
+            ? opencodeConfigRoot(root)
+            : path.join(root, OpenCodeProjectDir);
+
+        return listFiles(agentDir).map((rel) => ({
+            src: path.join(agentDir, rel),
+            dest: path.join(base, rel)
+        }));
     }
 
     return listFiles(agentDir).map((rel) => ({

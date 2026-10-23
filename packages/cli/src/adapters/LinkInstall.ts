@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { AgentId, InstallScope } from "./Install";
-import { resolveTemplatesDir } from "./Install";
+import { OpenCodeProjectDir, opencodeConfigRoot, resolveTemplatesDir } from "./Install";
 
 /**
  * One link created by `install --link`.
@@ -107,6 +107,17 @@ export function linkAgent(root: string, agent: AgentId, scope: InstallScope = "p
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         removeExisting(dest);
         out.push(linkFile(prompt, dest));
+
+        return out;
+    }
+
+    if (agent === "opencode") {
+        const destDir = scope === "global"
+            ? opencodeConfigRoot(root)
+            : path.join(root, OpenCodeProjectDir);
+
+        fs.mkdirSync(destDir, { recursive: true });
+        linkTree(agentDir, destDir, out);
 
         return out;
     }

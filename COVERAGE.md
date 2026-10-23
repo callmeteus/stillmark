@@ -184,6 +184,7 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [sad] Refuses an unknown agent and ignores agents never installed
 - [x] [happy] Shared instructions contain the required rules
 
+- [x] [happy] Installs OpenCode commands and the skill into .opencode, and global installs under the OpenCode config directory
 ## 9. Caveman mode
 
 ### `packages/cli/src/caveman`
@@ -223,6 +224,8 @@ Items are grouped by area, then by file or route. Each item is one test case, ta
 - [x] [happy] Installs the Codex notify program at the top of config.toml once and removes it leaving the rest as written
 - [x] [sad] Never replaces another Codex notify program and ignores notify keys inside tables
 - [x] [happy] Reads the Codex event from the last argument: folder, last reply, and questions as waiting
+- [x] [sad] Honors XDG_CONFIG_HOME and never replaces an OpenCode plugin it did not write
+- [x] [happy] Installs the OpenCode finish plugin under the config directory once and removes only its own file
 ## 11. Landing page
 
 ### `packages/landing-page`

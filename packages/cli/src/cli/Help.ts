@@ -1,6 +1,8 @@
+import { AgentIds } from "../adapters";
 import type { OperationResult } from "../results/OperationResult";
 
 const GLOBAL_OPTIONS = "Global options: --json, --root=<dir>, --help. Use -- before text that starts with a dash.";
+const AGENT_LIST = AgentIds.join("|");
 
 /**
  * Usage lines per top-level command.
@@ -67,7 +69,7 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark notify add desktop [--name=<name>]   (native notification on this computer; nothing to configure)",
         "stillmark notify test [<name>] | notify remove <name> | notify on|off",
         "stillmark notify send \"<text>\" [--status=done|failed|waiting|stopped]",
-        "stillmark notify hook install|remove|status --agent=cursor|claude|codex   (notifies every time the agent finishes)"
+        "stillmark notify hook install|remove|status --agent=cursor|claude|codex|opencode   (notifies every time the agent finishes)"
     ],
     caveman: [
         "stillmark caveman [stats]",
@@ -97,8 +99,8 @@ const COMMAND_USAGE: Record<string, string[]> = {
         "stillmark git setup-commit [--message \"<msg>\"]"
     ],
     install: [
-        "stillmark install --agent cursor|claude|codex [--global] [--force]   (project copy is skipped when already installed globally; --force keeps one)",
-        "stillmark install --agent cursor|claude|codex [--global] --link   (dev: link the source templates)"
+        `stillmark install --agent ${AGENT_LIST} [--global] [--force]   (project copy is skipped when already installed globally; --force keeps one)`,
+        `stillmark install --agent ${AGENT_LIST} [--global] --link   (dev: link the source templates)`
     ],
     update: [
         "stillmark update [--force]   (checks npm, then GitHub releases; JSON includes install.githubLatest)",

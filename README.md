@@ -22,7 +22,7 @@ Stillmark separates **public strategic planning** (`ROADMAP.md`) from **private 
 |------|------|
 | `packages/cli` | Published `stillmark` npm package (engine + bin) |
 | `packages/landing-page` | Astro marketing site (`en` + `pt-br`) |
-| `templates/` | Cursor, Claude Code, and Codex install templates (stillmark skill includes `reference/` design playbooks) |
+| `templates/` | Cursor, Claude Code, Codex, and OpenCode install templates (stillmark skill includes `reference/` design playbooks) |
 
 ## Get started
 
@@ -38,6 +38,8 @@ Install agent templates from a project root:
 ```bash
 stillmark install --agent cursor
 ```
+
+Also available: `--agent claude`, `--agent codex`, and `--agent opencode`.
 
 ## Development
 

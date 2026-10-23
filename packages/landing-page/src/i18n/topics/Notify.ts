@@ -11,7 +11,7 @@ export const NotifyTopic: TopicDefinition = {
         "en-US": {
             label: "Notify",
             title: "Know when the agent is done",
-            lead: "Get a message on Telegram, Discord, or Slack, or a notification on your own computer, when the agent finishes, fails, or needs an answer from you. Works with Cursor, Claude Code, and Codex. Tokens and links are saved in your home folder, outside every repository.",
+            lead: "Get a message on Telegram, Discord, or Slack, or a notification on your own computer, when the agent finishes, fails, or needs an answer from you. Works with Cursor, Claude Code, Codex, and OpenCode. Tokens and links are saved in your home folder, outside every repository.",
             summary: "A message on Telegram, Discord, Slack, or your desktop when the agent finishes, fails, or needs you.",
             contrast: {
                 without: {
@@ -74,7 +74,7 @@ export const NotifyTopic: TopicDefinition = {
                         "]"
                     ],
                     mark: { line: 1, kind: MarkKind.CIRCLE, note: "Runs when the agent stops." },
-                    result: "Each time the agent stops you get the project name, whether it finished, failed, or is waiting for you, and the start of its last reply. A reply that ends in a question counts as waiting. Claude Code and Codex work the same way with --agent=claude or --agent=codex; if Codex already runs another program when it finishes, that one is left in place."
+                    result: "Each time the agent stops you get the project name, whether it finished, failed, or is waiting for you, and the start of its last reply. A reply that ends in a question counts as waiting. Claude Code, Codex, and OpenCode work the same way with --agent=claude, --agent=codex, or --agent=opencode; if Codex already runs another program when it finishes, that one is left in place."
                 },
                 {
                     title: "Pause for a while",
@@ -98,13 +98,13 @@ export const NotifyTopic: TopicDefinition = {
                 { command: "stillmark notify off", description: "Pause every channel (on resumes them)" },
                 { command: "stillmark notify remove <name>", description: "Delete a channel" },
                 { command: "stillmark notify send \"…\" --status=done", description: "Send your own message: done, failed, waiting, or stopped" },
-                { command: "stillmark notify hook install --agent=cursor|claude|codex", description: "Send a message every time the agent stops (status and remove also work)" }
+                { command: "stillmark notify hook install --agent=cursor|claude|codex|opencode", description: "Send a message every time the agent stops (status and remove also work)" }
             ]
         },
         "pt-BR": {
             label: "Avisos",
             title: "Saiba quando o agente terminou",
-            lead: "Receba uma mensagem no Telegram, Discord ou Slack, ou um aviso no seu próprio computador, quando o agente terminar, falhar ou precisar de uma resposta sua. Funciona com Cursor, Claude Code e Codex. Tokens e links ficam guardados na sua pasta pessoal, fora de qualquer repositório.",
+            lead: "Receba uma mensagem no Telegram, Discord ou Slack, ou um aviso no seu próprio computador, quando o agente terminar, falhar ou precisar de uma resposta sua. Funciona com Cursor, Claude Code, Codex e OpenCode. Tokens e links ficam guardados na sua pasta pessoal, fora de qualquer repositório.",
             summary: "Uma mensagem no Telegram, Discord, Slack ou na sua tela quando o agente termina, falha ou precisa de você.",
             contrast: {
                 without: {
@@ -167,7 +167,7 @@ export const NotifyTopic: TopicDefinition = {
                         "]"
                     ],
                     mark: { line: 1, kind: MarkKind.CIRCLE, note: "Roda quando o agente para." },
-                    result: "Cada vez que o agente para, você recebe o nome do projeto, se ele terminou, falhou ou está esperando você, e o começo da última resposta. Resposta que termina em pergunta conta como esperando. Claude Code e Codex funcionam do mesmo jeito, com --agent=claude ou --agent=codex; se o Codex já roda outro programa quando termina, esse continua no lugar."
+                    result: "Cada vez que o agente para, você recebe o nome do projeto, se ele terminou, falhou ou está esperando você, e o começo da última resposta. Resposta que termina em pergunta conta como esperando. Claude Code, Codex e OpenCode funcionam do mesmo jeito, com --agent=claude, --agent=codex ou --agent=opencode; se o Codex já roda outro programa quando termina, esse continua no lugar."
                 },
                 {
                     title: "Pausa por um tempo",
@@ -191,7 +191,7 @@ export const NotifyTopic: TopicDefinition = {
                 { command: "stillmark notify off", description: "Pausa todos os canais (on volta a avisar)" },
                 { command: "stillmark notify remove <nome>", description: "Apaga um canal" },
                 { command: "stillmark notify send \"…\" --status=done", description: "Manda a sua própria mensagem: done, failed, waiting ou stopped" },
-                { command: "stillmark notify hook install --agent=cursor|claude|codex", description: "Manda uma mensagem toda vez que o agente para (status e remove também funcionam)" }
+                { command: "stillmark notify hook install --agent=cursor|claude|codex|opencode", description: "Manda uma mensagem toda vez que o agente para (status e remove também funcionam)" }
             ]
         }
     }

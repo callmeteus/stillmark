@@ -8,6 +8,8 @@ All notable changes to this project are listed here, newest first.
 
 - Clearer writing: finds the phrases that make text sound machine-written, in English and Portuguese, helps rewrite them, and flags any fact that was lost or made up
 - Commit messages that match the change: the type comes from what changed, never from the last commit, and the text is never cut
+- OpenCode support: install the Stillmark skill and the `/stillmark` command for OpenCode, globally or per project
+- OpenCode finish notifications with a plugin installed by stillmark notify hook install --agent=opencode
 
 ### Fixed
 

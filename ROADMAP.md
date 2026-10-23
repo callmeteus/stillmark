@@ -85,3 +85,7 @@
   priority: high · status: done · done: 2026-10-18
 - [x] **R-029** Commit messages that match the change: the type comes from what changed, never from the last commit, and the text is never cut
   priority: medium · status: done · done: 2026-10-18
+- [x] **R-030** Install agent templates for OpenCode
+  priority: high · status: done · added: 2026-10-23 · done: 2026-10-23
+- [x] **R-031** Finish notifications for OpenCode
+  priority: medium · status: done · done: 2026-10-23

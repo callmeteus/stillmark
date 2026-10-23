@@ -12,7 +12,7 @@ export const InstallTopic: TopicDefinition = {
             label: "Install",
             title: "Install Stillmark",
             lead: "One command sets up the project files. A second one teaches your editor the /stillmark command. You can also paste a single prompt and let your agent do both.",
-            summary: "Set up the project files and add /stillmark to Cursor, Claude Code, or Codex.",
+            summary: "Set up the project files and add /stillmark to Cursor, Claude Code, Codex, or OpenCode.",
             examples: [
                 {
                     title: "Start in a repo",
@@ -42,7 +42,7 @@ export const InstallTopic: TopicDefinition = {
                         "  skills/stillmark/reference/"
                     ],
                     mark: { line: 1, kind: MarkKind.CIRCLE, note: "Only /stillmark, not /design or /coverage." },
-                    result: "Your editor learns /stillmark and the skill behind it (coverage and design stay inside /stillmark, not separate slashes). Claude Code and Codex install the same way with --agent claude or --agent codex."
+                    result: "Your editor learns /stillmark and the skill behind it (coverage and design stay inside /stillmark, not separate slashes). Claude Code, Codex, and OpenCode install the same way with --agent claude, --agent codex, or --agent opencode."
                 },
                 {
                     title: "Every project at once",
@@ -75,7 +75,7 @@ export const InstallTopic: TopicDefinition = {
             commands: [
                 { command: "npx stillmark@latest init", description: "Create the roadmap, the private plan folder, and the settings file" },
                 { command: "npx stillmark@latest init --todos", description: "Same, and put the TODO and FIXME comments already in the code on the roadmap" },
-                { command: "stillmark install --agent cursor|claude|codex", description: "Add /stillmark to your editor (one slash; no separate /coverage or /design)" },
+                { command: "stillmark install --agent cursor|claude|codex|opencode", description: "Add /stillmark to your editor (one slash; no separate /coverage or /design)" },
                 { command: "stillmark install --agent cursor --global", description: "Install once for every project on this computer (--force keeps a project copy too)" },
                 { command: "stillmark update", description: "Look for a new version now and then, once a day by default (--force checks right away)" },
                 { command: "stillmark update apply", description: "Refresh the installed agent files to the latest version" }
@@ -85,7 +85,7 @@ export const InstallTopic: TopicDefinition = {
             label: "Instalar",
             title: "Instale o Stillmark",
             lead: "Um comando prepara os arquivos do projeto. Outro ensina o comando /stillmark ao seu editor. Você também pode colar um único pedido e deixar o agente fazer as duas coisas.",
-            summary: "Prepare os arquivos do projeto e adicione /stillmark ao Cursor, Claude Code ou Codex.",
+            summary: "Prepare os arquivos do projeto e adicione /stillmark ao Cursor, Claude Code, Codex ou OpenCode.",
             examples: [
                 {
                     title: "Comece num repositório",
@@ -115,7 +115,7 @@ export const InstallTopic: TopicDefinition = {
                         "  skills/stillmark/reference/"
                     ],
                     mark: { line: 1, kind: MarkKind.CIRCLE, note: "Só /stillmark, não /design nem /coverage." },
-                    result: "O editor aprende /stillmark e a skill por trás (coverage e design ficam dentro do /stillmark, sem slash separado). Claude Code e Codex instalam do mesmo jeito, com --agent claude ou --agent codex."
+                    result: "O editor aprende /stillmark e a skill por trás (coverage e design ficam dentro do /stillmark, sem slash separado). Claude Code, Codex e OpenCode instalam do mesmo jeito, com --agent claude, --agent codex ou --agent opencode."
                 },
                 {
                     title: "Todos os projetos de uma vez",
@@ -148,7 +148,7 @@ export const InstallTopic: TopicDefinition = {
             commands: [
                 { command: "npx stillmark@latest init", description: "Cria o roadmap, a pasta privada do plano e o arquivo de configurações" },
                 { command: "npx stillmark@latest init --todos", description: "O mesmo, e já coloca no roadmap os comentários TODO e FIXME que estão no código" },
-                { command: "stillmark install --agent cursor|claude|codex", description: "Adiciona /stillmark ao editor (um slash; sem /coverage ou /design separados)" },
+                { command: "stillmark install --agent cursor|claude|codex|opencode", description: "Adiciona /stillmark ao editor (um slash; sem /coverage ou /design separados)" },
                 { command: "stillmark install --agent cursor --global", description: "Instala uma vez para todos os projetos deste computador (--force mantém também uma cópia no projeto)" },
                 { command: "stillmark update", description: "Procura versão nova de tempos em tempos, uma vez por dia por padrão (--force confere na hora)" },
                 { command: "stillmark update apply", description: "Atualiza os arquivos do agente instalados para a versão mais recente" }

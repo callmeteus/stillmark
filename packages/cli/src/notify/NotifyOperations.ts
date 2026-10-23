@@ -294,7 +294,7 @@ export async function runNotifyHook(
 }
 
 /**
- * `stillmark notify hook install|remove|status --agent=cursor|claude|codex`.
+ * `stillmark notify hook install|remove|status --agent=cursor|claude|codex|opencode`.
  */
 export function manageNotifyHook(action: string | undefined, agent: NotifyHookAgent, context: NotifyContext = {}): OperationResult {
     if (action === "install" || action === "remove") {
@@ -305,7 +305,9 @@ export function manageNotifyHook(action: string | undefined, agent: NotifyHookAg
                 ok: false,
                 changed: false,
                 action: `notify hook ${action}`,
-                summary: `Codex already runs another program when it finishes (${result.conflict} in ${result.file}) and accepts only one; Stillmark left it untouched. Remove that line to use Stillmark notifications instead`,
+                summary: agent === "codex"
+                    ? `Codex already runs another program when it finishes (${result.conflict} in ${result.file}) and accepts only one; Stillmark left it untouched. Remove that line to use Stillmark notifications instead`
+                    : `Stillmark left the ${agent} finish hook untouched: ${result.conflict} (${result.file}). Move that file away to use Stillmark notifications instead`,
                 location: result.file
             };
         }

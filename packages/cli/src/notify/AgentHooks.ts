@@ -2,15 +2,16 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import type { NotifyStatus } from "./Channels";
+import { isNotifyStatus, type NotifyStatus } from "./Channels";
 import { codexConfigFile, codexHookState, setCodexHook } from "./CodexNotify";
+import { openCodeHookFile, openCodeHookState, setOpenCodeHook } from "./OpenCodeNotify";
 
 /**
  * Agents whose finish event Stillmark can hook automatically.
  */
-export type NotifyHookAgent = "cursor" | "claude" | "codex";
+export type NotifyHookAgent = "cursor" | "claude" | "codex" | "opencode";
 
-export const NotifyHookAgents: readonly NotifyHookAgent[] = ["cursor", "claude", "codex"];
+export const NotifyHookAgents: readonly NotifyHookAgent[] = ["cursor", "claude", "codex", "opencode"];
 
 const HOOK_MARKER = "stillmark notify run-hook";
 
@@ -28,6 +29,10 @@ function hookCommand(agent: NotifyHookAgent): string {
 function hooksFile(agent: NotifyHookAgent, homeDir: string): string {
     if (agent === "codex") {
         return codexConfigFile(homeDir);
+    }
+
+    if (agent === "opencode") {
+        return openCodeHookFile(homeDir);
     }
 
     return agent === "cursor"
@@ -59,6 +64,10 @@ export function notifyHookInstalled(agent: NotifyHookAgent, homeDir: string = os
         return codexHookState(homeDir).installed;
     }
 
+    if (agent === "opencode") {
+        return openCodeHookState(homeDir).installed;
+    }
+
     const data = readJson(hooksFile(agent, homeDir));
     const hooks = (data.hooks ?? {}) as Record<string, unknown[]>;
 
@@ -73,6 +82,7 @@ export function notifyHookInstalled(agent: NotifyHookAgent, homeDir: string = os
  * Adds or removes the finish hook in the user-level agent settings, keeping every other hook untouched.
  * Cursor: `stop` in `~/.cursor/hooks.json`. Claude Code: `Stop` and `Notification` in `~/.claude/settings.json`.
  * Codex: top-level `notify` in `~/.codex/config.toml`, reported as `conflict` when another program owns it.
+ * OpenCode: `plugins/stillmark-notify.ts` under the OpenCode config directory.
  */
 export function setNotifyHook(
     agent: NotifyHookAgent,
@@ -81,6 +91,10 @@ export function setNotifyHook(
 ): { file: string; changed: boolean; conflict?: string } {
     if (agent === "codex") {
         return setCodexHook(install, homeDir);
+    }
+
+    if (agent === "opencode") {
+        return setOpenCodeHook(install, homeDir);
     }
 
     const file = hooksFile(agent, homeDir);
@@ -213,8 +227,9 @@ export function summarizeReply(text: string | undefined, maxLength = 400): strin
 }
 
 /**
- * Reads the hook payload of Cursor (`stop`), Claude Code (`Stop`, `Notification`), or Codex
- * (`agent-turn-complete`). A final reply ending with a question counts as waiting for the user.
+ * Reads the hook payload of Cursor (`stop`), Claude Code (`Stop`, `Notification`), Codex
+ * (`agent-turn-complete`), or OpenCode (the status, project, and summary written by the plugin).
+ * A final reply ending with a question counts as waiting for the user.
  */
 export function parseAgentFinish(raw: string): AgentFinish {
     let input: Record<string, unknown> = {};
@@ -226,7 +241,8 @@ export function parseAgentFinish(raw: string): AgentFinish {
     }
 
     const roots = Array.isArray(input.workspace_roots) ? input.workspace_roots as string[] : [];
-    const root = roots[0] ?? (typeof input.cwd === "string" ? input.cwd : undefined);
+    const root = roots[0]
+        ?? (typeof input.cwd === "string" ? input.cwd : typeof input.root === "string" ? input.root : undefined);
 
     if (input.hook_event_name === "Notification") {
         return { status: "waiting", root, summary: typeof input.message === "string" ? input.message : undefined };
@@ -235,14 +251,16 @@ export function parseAgentFinish(raw: string): AgentFinish {
     const reply = input.type === "agent-turn-complete"
         ? typeof input["last-assistant-message"] === "string" ? input["last-assistant-message"] : undefined
         : lastAssistantText(typeof input.transcript_path === "string" ? input.transcript_path : undefined);
-    const summary = summarizeReply(reply);
+    const provided = typeof input.summary === "string" ? summarizeReply(input.summary) : undefined;
+    const summary = provided ?? summarizeReply(reply);
+    const explicit = typeof input.status === "string" && isNotifyStatus(input.status) ? input.status : undefined;
     const status: NotifyStatus = input.status === "error"
         ? "failed"
         : input.status === "aborted"
             ? "stopped"
-            : reply?.trim().endsWith("?")
+            : explicit ?? (reply?.trim().endsWith("?")
                 ? "waiting"
-                : "done";
+                : "done");
 
     return { status, root, summary };
 }
